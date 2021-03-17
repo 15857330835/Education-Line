@@ -1,14 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Authorware from '../views/Authorware'
 
 Vue.use(VueRouter)
 
 const routes = [
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: Home
-  // },
+  {
+    path: '/',
+    name: 'Authorware',
+    component: Authorware
+  },
   // {
   //   path: '/about',
   //   name: 'About',
