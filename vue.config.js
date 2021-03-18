@@ -7,6 +7,12 @@ module.exports = {
   filenameHashing: false,
   productionSourceMap: false,
   devServer: {
-    proxy: 'https://openapi.aodianyun.com'
+    proxy: {
+      '/v2': {
+          target: 'https://openapi.aodianyun.com', //API服务器的地址
+          ws: true,  //代理websockets
+          changeOrigin: true, // 虚拟的站点需要更管origin
+      }
+    }
   }
 }

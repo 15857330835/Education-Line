@@ -1,19 +1,24 @@
 <template>
     <div id="recordingDevice">
-        <div class="timing" @mousedown="mousedown" @mouseup="mouseup">
+        <div class="timing" @mousedown="mousedown">
             {{ this.timing }}
         </div>
         <div class="controller">
             <i class="el-icon-caret-right" @click="start"></i>
             <i class="el-icon-s-help" @click="end"></i>
             <i class="el-icon-s-finance"></i>
-            <i class="el-icon-s-ticket"></i>
-            <i class="el-icon-upload"></i>
+            <i class="el-icon-s-ticket" @click="edit"></i>
+            <i class="el-icon-upload" id="upload" @click="upload"></i>
+        </div>
+        <i id="none"></i>
+        <div class="video">
+            <el-link type="primary" :href='url' target="_blank" :underline="false">视频</el-link>
         </div>
     </div>
 </template>
 
 <script>
+  import plupload from 'plupload'
   export default {
     name: 'RecordingDevice',
     data() {
@@ -24,7 +29,10 @@
         timer: null,
         record: null,
         stream: null,
-        new: true
+        new: true,
+        url: null,
+        file: null,
+        uploaderObj: null
       };
     },
     computed: {
@@ -39,6 +47,7 @@
             this.x = e.x - $('#recordingDevice').offset().left
             this.y = e.y - $('#recordingDevice').offset().top
             $(document).on('mousemove',this.mousemove)
+            $(document).one('mouseup',this.mouseup)
         },
         mousemove(e) {
             let left = e.clientX - this.x
@@ -68,8 +77,11 @@
                                 that.record.stop()
                             }
                             that.record.addEventListener("dataavailable",event => {
-                                let videoUrl = URL.createObjectURL(event.data, {type: 'video/ogg'})
-                                console.log(videoUrl)
+                                let videoUrl = URL.createObjectURL(event.data, {type: 'video/mp4'})
+                                that.file = new File([event], '111.mp4', {
+                                    type: 'video/mp4'
+                                });
+                                that.url = videoUrl
                             })
                         })
                         .catch(function(err) {
@@ -92,10 +104,66 @@
             this.stream.getTracks()[0].stop()
             clearInterval(this.timer)
             this.new = true
+            $('.video').css({'display': 'block'})
+        },
+        edit() {
+            
+        },
+        upload() {
+            this.uploaderObj.addFile(this.file)
         }
     },
     mounted() {
-        
+        const that = this
+        this.uploaderObj = new plupload.Uploader({ //实例化一个plupload上传对象
+            browse_button : 'none',//触发文件选择对话框的按钮，为那个元素id
+            runtimes: 'html5,flash,silverlight,html4',
+            url: 'http://upload.dvr.aodianyun.com/v2/DVR.FormUpload',
+            chunk_size: '5mb',
+            max_retries: 3,
+            filters: {
+                // Maximum file size
+                max_file_size : '4096mb',
+                // Select the duplicate files are not allowed
+                prevent_duplicates : true
+            },
+            multipart_params: {
+                access_id       : '110009843585',
+                expires         : 1699771990,
+                signature       : 'ccc94a218c6c3543bef3f857fd1413f0',
+                signature_nonce : '5bea74d65cdf0'
+            },
+            // Flash settings
+            flash_swf_url: 'js/Moxie.swf',
+            // Silverlight settings
+            silverlight_xap_url: 'js/Moxie.xap',
+            init: {
+                Filesadded: function() {
+                    that.uploaderObj.start()
+                },
+                // FileFiltered: function(uploader,file){
+                // //上传前回调，可进行参数过滤
+                // },
+                // UploadProgress: function(uploader,file){
+                // //上传过程中，触发
+                // },
+                // QueueChanged: function(uploader,file){
+                
+                // },
+                // FileUploaded: function(uploader,file,responseObject){
+                // //上传完成回调
+                // //responseObject.status 是http code
+                // //responseObject.response = {Flag = 100,FlagStrgin = "成功",fileName = "文件名",location = "URL地址"}
+                // },
+                // ChunkUploaded: function(uploader,file,responseObject){
+                // //上片上传回调
+                // },
+                // FilesRemoved: function(uploader,file){
+                // //删除操作回调
+                // }
+            }
+        });
+        this.uploaderObj.init(); //初始化
     }
   }
 </script>
@@ -149,6 +217,18 @@
             cursor: pointer;
             padding: 8px;
         }
+    }
+
+    .video {
+        width: 150px;
+        height: 20px;
+        background: rgba($color: white, $alpha: 0.6);
+        position: absolute;
+        top: 45px;
+        left: 50px;
+        text-align: left;
+        padding: 0 10px;
+        display: none;
     }
 }
 </style>

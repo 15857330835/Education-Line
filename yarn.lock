@@ -4436,8 +4436,8 @@ http-proxy-middleware@0.19.1:
 
 http-proxy-middleware@^1.0.0:
   version "1.0.6"
-  resolved "https://registry.npm.taobao.org/http-proxy-middleware/download/http-proxy-middleware-1.0.6.tgz#0618557722f450375d3796d701a8ac5407b3b94e"
-  integrity sha1-BhhVdyL0UDddN5bXAaisVAezuU4=
+  resolved "https://registry.yarnpkg.com/http-proxy-middleware/-/http-proxy-middleware-1.0.6.tgz#0618557722f450375d3796d701a8ac5407b3b94e"
+  integrity sha512-NyL6ZB6cVni7pl+/IT2W0ni5ME00xR0sN27AQZZrpKn1b+qRh+mLbBxIq9Cq1oGfmTc7BUq4HB77mxwCaxAYNg==
   dependencies:
     "@types/http-proxy" "^1.17.4"
     http-proxy "^1.18.1"
@@ -6219,6 +6219,11 @@ pkg-dir@^4.1.0:
   integrity sha1-8JkTPfft5CLoHR2ESCcO6z5CYfM=
   dependencies:
     find-up "^4.0.0"
+
+plupload@^2.3.6:
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/plupload/-/plupload-2.3.6.tgz#2608acf735d5e8db83248724d78d81757bb43866"
+  integrity sha1-Jgis9zXV6NuDJIck142BdXu0OGY=
 
 pnp-webpack-plugin@^1.6.4:
   version "1.6.4"
