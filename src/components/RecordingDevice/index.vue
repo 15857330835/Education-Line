@@ -4,23 +4,29 @@
             {{ this.timing }}
         </div>
         <div class="controller">
-            <i class="el-icon-caret-right" @click="start"></i>
-            <i class="el-icon-s-help" @click="end"></i>
-            <i class="el-icon-s-finance"></i>
-            <i class="el-icon-s-ticket" @click="edit"></i>
-            <i class="el-icon-upload" id="upload" @click="upload"></i>
+            <el-button icon="el-icon-caret-right" circle @click="start" :disabled='isstart'></el-button>
+            <el-button icon="el-icon-s-help" circle @click="end" :disabled='isend'></el-button>
+            <el-button icon="el-icon-s-finance" circle :disabled='issubtitles'></el-button>
+            <el-button icon="el-icon-s-ticket" circle @click="edit" :disabled='isedit'></el-button>
+            <el-button icon="el-icon-upload" circle @click="upload" :disabled='isupload'></el-button>
         </div>
         <i id="none"></i>
         <div class="video">
             <el-link type="primary" :href='url' target="_blank" :underline="false">视频</el-link>
+            <i class="el-icon-close" @click="del"></i>
         </div>
+        <Countdown :action='action'></Countdown>
     </div>
 </template>
 
 <script>
   import plupload from 'plupload'
+  import Countdown from './Countdown'
   export default {
     name: 'RecordingDevice',
+    components: {
+      Countdown
+    },
     data() {
       return {
         x: 0,
@@ -32,7 +38,13 @@
         new: true,
         url: null,
         file: null,
-        uploaderObj: null
+        uploaderObj: null,
+        action: '',
+        isstart: false,
+        isend: true,
+        issubtitles: true,
+        isedit: true,
+        isupload: true,
       };
     },
     computed: {
@@ -69,17 +81,21 @@
                             $('#recordingDevice').addClass('hide')
                             $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
                             that.stream = stream
+                            that.action = '开始'
                             that.record = new MediaRecorder(stream)
-                            that.record.start()
                             that.time = 0
-                            that.timer = setInterval(function() { that.time++ },1000)
+                            setTimeout(function(){
+                                that.record.start()
+                                that.isend = false
+                                that.timer = setInterval(function() { that.time++ },1000)
+                            },2000)
                             stream.getVideoTracks()[0].onended = () => {
                                 that.record.stop()
                             }
                             that.record.addEventListener("dataavailable",event => {
                                 let videoUrl = URL.createObjectURL(event.data, {type: 'video/mp4'})
-                                that.file = new File([event], '111.mp4', {
-                                    type: 'video/mp4'
+                                that.file = new File([event.data], '111.webm', {
+                                    type: 'video/webm'
                                 });
                                 that.url = videoUrl
                             })
@@ -89,28 +105,52 @@
                         })
                 }else {
                     $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
-                    this.timer = setInterval(function() { that.time++ },1000)
-                    that.record.resume()
+                    this.action = '继续'
+                    setTimeout(function(){
+                        that.timer = setInterval(function() { that.time++ },1000)
+                        that.record.resume()
+                    },2000)
                 }
             }else {
                 $('.el-icon-refresh-right').removeClass('el-icon-refresh-right').addClass('el-icon-caret-right')
                 clearInterval(this.timer)
-                that.record.pause()
+                this.action = '暂停'
+                this.record.pause()
             }
         },
         end() {
             $('#recordingDevice').removeClass('hide')
             $('.el-icon-refresh-right').removeClass('el-icon-refresh-right').addClass('el-icon-caret-right')
             this.stream.getTracks()[0].stop()
+            if(this.stream.getTracks()[1]) this.stream.getTracks()[1].stop()
             clearInterval(this.timer)
             this.new = true
+            this.isstart = true
+            this.isend = true
+            this.issubtitles = false
+            this.isedit = false
+            this.isupload = false
             $('.video').css({'display': 'block'})
         },
         edit() {
             
         },
         upload() {
+            this.isstart = false
+            this.isend = true
+            this.issubtitles = true
+            this.isedit = true
+            this.isupload = true
             this.uploaderObj.addFile(this.file)
+        },
+        del() {
+            this.isstart = false
+            this.isend = true
+            this.issubtitles = true
+            this.isedit = true
+            this.isupload = true
+            this.time = 0
+            $('.video').css({'display': 'none'})
         }
     },
     mounted() {
@@ -201,7 +241,7 @@
     }
 
     .controller {
-        width: 200px;
+        width: 230px;
         height: 40px;
         border-radius: 20px;
         background: white;
@@ -213,9 +253,9 @@
         align-items: center;
         justify-content: space-around;
 
-        i {
-            cursor: pointer;
-            padding: 8px;
+        .el-button {
+            border: unset;
+            margin: 0;
         }
     }
 
@@ -229,6 +269,11 @@
         text-align: left;
         padding: 0 10px;
         display: none;
+
+        i {
+            float: right;
+            color: #409EFF;
+        }
     }
 }
 </style>
