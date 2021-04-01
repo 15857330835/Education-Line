@@ -1,23 +1,57 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Authorware from '../views/Authorware'
+import Courseware from '../views/Courseware'
+import CourseManagement from '../views/CourseManagement'
+import Assess from '../views/Assess'
+import Account from '../views/Account'
+import Course from '../views/Course'
+import CourseCatalog from '../views/CourseCatalog'
+import Template from '../views/CourseManagement/Template.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '/authorware',
     name: 'Authorware',
-    component: Authorware
+    component: Authorware,
   },
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
-  // }
+  {
+    path: '/courseware',
+    name: 'Courseware',
+    component: Courseware
+  },
+  {
+    path: '/courseManagement',
+    name: 'CourseManagement',
+    component: CourseManagement
+  },
+  {
+    path: '/template',
+    name: 'Template',
+    component: Template,
+  },
+  {
+    path: '/assess',
+    name: 'Assess',
+    component: Assess
+  },
+  {
+    path: '/account',
+    name: 'Account',
+    component: Account
+  },
+  {
+    path: '/course',
+    name: 'Course',
+    component: Course
+  },
+  {
+    path: '/courseCatalog',
+    name: 'CourseCatalog',
+    component: CourseCatalog
+  }
 ]
 
 const router = new VueRouter({

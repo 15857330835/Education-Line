@@ -1,6 +1,5 @@
 <template>
   <div id="app">
-    <Sidebar></Sidebar>
     <Topbar></Topbar>
     <div id="context">
       <router-view/>
@@ -9,10 +8,9 @@
 </template>
 
 <script>
-  import { Sidebar, Topbar } from './components'
+  import { Topbar } from './components'
   export default {
     components: {
-      Sidebar,
       Topbar
     },
     methods: {
@@ -32,9 +30,11 @@
   #context {
     background: #F0F2F5;
     height: 100%;
-    padding: 60px;
-    padding-left: 210px;
   }
+}
+
+.prompt {
+  background: rgba($color: #000000, $alpha: 0.6) !important;
 }
 
 </style>
