@@ -1,7 +1,7 @@
 <template>
     <div id="topbar">
         <el-menu :default-active="this.activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-            <div class="title">奥点教育</div>
+            <div class="title"></div>
             <el-menu-item v-for="item in this.list" :index="item.index" :key="item.index" @click="switchTab(item.key)">
                 <span slot="title">{{ item.text }}</span>
             </el-menu-item>
@@ -25,8 +25,9 @@
                 size="mini"
                 v-model="input1">
               </el-input>
-              <label>创建时间：</label>
+              <label v-if="this.$route.path !== '/course'">创建时间：</label>
               <el-date-picker
+                v-if="this.$route.path !== '/course'"
                 v-model="value2"
                 type="datetime"
                 size="mini"
@@ -34,7 +35,7 @@
                 align="right"
                 :picker-options="pickerOptions">
               </el-date-picker>
-              <el-button type="primary" plain size="mini" round>查询</el-button>
+              <el-button type="primary" plain size="mini" round v-if="this.$route.path !== '/course'">查询</el-button>
               <el-button type="primary" plain size="mini" round>重置</el-button>
             </div>
         </el-menu>
@@ -60,12 +61,12 @@
             {
               index: "1",
               text: '全部课程',
-              key: 'course'
+              key: 'course?1'
             },
             {
               index: "2",
               text: '我的课程',
-              key: 'course'
+              key: 'course?2'
             }
           ],
           institution: [
@@ -134,7 +135,7 @@
             return window.EL.uin
         },
         ifSearch() {
-          let arr = ['/courseCatalog', '/assess']
+          let arr = ['/courseCatalog', '/assess', '/template', '/history']
           return arr.indexOf(this.$route.path) == -1 ? true : false 
         }
     },
@@ -166,18 +167,26 @@
         width: 70%;
         margin: auto;
         border: none;
+
+        .is-active {
+          border-bottom: none;
+          background: #1890FF;
+          color: white;
+        }
     }
 
     .title {
         float: left;
         height: 60px;
         line-height: 60px;
-        width: 100px;
+        width: 120px;
         text-align: left;
         font-weight: bold;
         color: lightblue;
         user-select: none;
         pointer-events: none;
+        background: url('../../assets/img/分组.png') no-repeat center;
+        margin-right: 60px;
     }
 
     .search {

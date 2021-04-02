@@ -7,6 +7,7 @@ import Assess from '../views/Assess'
 import Account from '../views/Account'
 import Course from '../views/Course'
 import CourseCatalog from '../views/CourseCatalog'
+import History from '../views/CourseCatalog/History.vue'
 import Template from '../views/CourseManagement/Template.vue'
 
 Vue.use(VueRouter)
@@ -51,6 +52,11 @@ const routes = [
     path: '/courseCatalog',
     name: 'CourseCatalog',
     component: CourseCatalog
+  },
+  {
+    path: '/history',
+    name: 'History',
+    component: History
   }
 ]
 

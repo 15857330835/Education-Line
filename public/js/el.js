@@ -10,7 +10,7 @@ window.EL = new el()
 
 EL.Config({
     uin: "陈振兴",
-    identity: 'manager',
+    identity: 'human',
     test: function() {
       console.log(1111,navigator)
     }

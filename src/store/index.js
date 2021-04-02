@@ -12,7 +12,8 @@ export default new Vuex.Store({
       ifOnline: '全部',
       status: '全部',
       state: '全部'
-    }
+    },
+    activeIndex: "1"
   },
   mutations: {
     CHANGE_TABKEY(state, date) {
@@ -20,6 +21,9 @@ export default new Vuex.Store({
     },
     CHANGE_OPTIONS(state, date) {
       state.options[date[0]] = date[1]
+    },
+    CHANGE_ACTIVEINDEX(state, date) {
+      state.activeIndex = date
     }
   },
   actions: {
@@ -29,7 +33,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
         storage: window.sessionStorage,
-        paths: ["tabKey"]
+        paths: ["tabKey", 'activeIndex']
     })
   ]
 })

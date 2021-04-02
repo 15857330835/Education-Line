@@ -26,8 +26,9 @@
       </div>
     </div>
     <div class="content">
-      <div class="course" v-for="(course, index) in courses" :key="index" @click="goto($event, 'courseCatalog')">
+      <div class="course" v-for="(course, index) in courses" :key="index" @click="goto($event, $route.fullPath == '/course?2' ? 'courseCatalog?2' : 'courseCatalog?1')">
         <div class="top">
+          <div class="tag" :class="course.state == '通过' ? 'through' : course.state == '未通过' ? 'nothrough' : 'nofinish'" v-if="$route.fullPath == '/course?2'"></div>
           <el-tag effect="dark" size="mini">新入职</el-tag>
           <p class="title">111</p>
           <el-tooltip class="item" popper-class="prompt" effect="dark" content="Top Left 提示文字" placement="top">
@@ -37,21 +38,40 @@
         <div class="center">
           <p>学习周期：3天 | 8课时<i>奥点教育</i></p>
           <p>创建时间：2020-12-30 12:54:00</p>
+          <div class="schedule" v-if="$route.fullPath == '/course?2'">
+            <div v-if="course.state == '未完成'">
+              进度：{{ course.schedule }}
+            </div>
+            <div v-else>
+              <i :class="course.score > 60 ? 'through' : 'nothrough'"><i>{{ course.score }}</i>分</i>
+              <el-button type="text" v-if="course.score > 60" @click="evaluate($event)"><i class="el-icon-chat-dot-square"></i>评价</el-button>
+            </div>
+          </div>
         </div>
         <div class="bottom">
-          <div>
             <div>
               <p>已有18051人订阅</p>
               <p>好评度 95%</p>
             </div>
             <div>
-              <i class="original">￥80</i>
               <i class="discount">￥50</i>
+              <i class="original">原价￥80</i>
             </div>
-          </div>
         </div>
         <div class="mask" @click="buy($event)">立即购买</div>
       </div>
+        <el-dialog
+          title="课程评价"
+          :visible.sync="dialogVisible"
+          width="40%">
+          <h3>您觉得课程怎么样？</h3>
+          <el-rate v-model="value2" show-text></el-rate>
+          <el-input type="textarea" resize= "none" rows="6" maxlength="1000" show-word-limit v-model="input2" placeholder="请尽可能详尽描述您的学习经历，例如学习成果、老师讲课风格、课程内容等"></el-input>
+          <p>*不可少于15字，评价多于100字将有机会获得200积分奖励哦～</p>
+          <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="dialogVisible = false">提交评价</el-button>
+          </span>
+        </el-dialog>
     </div>
     <div class="bottom">
       <el-pagination
@@ -74,6 +94,8 @@
       return {
         classify: ['全部', '云非编', '云导播', '云精剪'],
         value: [],
+        input2: '',
+        value2: null,
         option: [
             {
                 value: '选项1',
@@ -92,14 +114,26 @@
                 label: '北京烤鸭'
             }
         ],
-        delState: false,
+        dialogVisible: false,
         currentPage4: 4,
         courses: [
           {
-            title: 111
+            title: 111,
+            state: '通过',
+            schedule: '1',
+            score: 90
           },
           {
-            title: 111
+            title: 111,
+            state: '未通过',
+            schedule: '1',
+            score: 30
+          },
+          {
+            title: 111,
+            state: '未完成',
+            schedule: '6/7',
+            score: 0
           }
         ]
       };
@@ -112,6 +146,7 @@
     methods: {
       ...mapMutations([
             'CHANGE_OPTIONS',
+            'CHANGE_ACTIVEINDEX'
       ]),
       select(key, value) {
         this.CHANGE_OPTIONS([key, value])
@@ -124,7 +159,12 @@
       },
       goto(e, address) {
         e.stopPropagation()
+        this.CHANGE_ACTIVEINDEX('2')
         this.$router.push(address)
+      },
+      evaluate(e) {
+        e.stopPropagation()
+        this.dialogVisible = true
       },
       buy(e) {
         e.stopPropagation()
@@ -204,7 +244,7 @@
 
       .course {
         border: 1px solid rgb(242, 242, 242);
-        border-radius: 5px;
+        border-radius: 10px;
         height: 360px;
         width: 316px;
         font-size: 12px;
@@ -224,11 +264,38 @@
           padding: 160px 20px 0;
           position: relative;
           color: white;
+          border-radius: 10px 10px 0 0;
+
+          .tag {
+            position: absolute;
+            width: 62px;
+            height: 65px;
+            top: 0;
+            left: 0;
+
+            &.through {
+              background: url('../../assets/img/通过.png');
+            }
+
+            &.nothrough {
+              background: url('../../assets/img/未通过.png');
+            }
+
+            &.nofinish {
+              background: url('../../assets/img/未完成.png');
+            }
+          }
 
           span {
             position: absolute;
             top: 10px;
             right: 10px;
+            background: rgba($color: #000000, $alpha: 0.5);
+            border: none;
+            width: 58px;
+            height: 28px;
+            line-height: 28px;
+            border-radius: 8px;
           }
 
           .title {
@@ -248,35 +315,63 @@
         .center {
           height: 72px;
           padding: 10px;
+          position: relative;
 
           p {
             text-align: left;
             margin-bottom: 5px;
+          }
+
+          .schedule {
+            position: absolute;
+            top: 8px;
+            right: 12px;
+
+            .through {
+              display: block;
+              color: #019F04;
+
+              i {
+                font-size: 20px;
+              }
+            }
+
+            .nothrough {
+              color: #F23030;
+
+              i {
+                font-size: 20px;
+              }
+            }
+
+            .el-button {
+              padding: 0;
+              padding-top: 3px;
+              font-size: 12px;
+              color: #666666;
+            }
           }
         }
 
         .bottom {
           text-align: left;
           padding: 10px;
-
-          >div {
-            display: flex;
-            line-height: 24px;
-            justify-content: space-between;
-          }
+          display: flex;
+          line-height: 24px;
+          justify-content: space-between;
 
           i {
-            line-height: 48px;
 
             &.original {
-              font-size: 16px;
+              display: block;
+              font-size: 12px;
               text-decoration: line-through;
-              color: #c3c5c7;
+              color: #989898;
             }
 
             &.discount {
               font-size: 24px;
-              color: red;
+              color: #FA6400;
             }
           }
         }
@@ -284,7 +379,7 @@
         .mask {
           width: 100%;
           height: 80px;
-          background: lightblue;
+          background: #1890FF;
           position: absolute;
           bottom: 0;
           left: 0;
@@ -292,12 +387,35 @@
           line-height: 80px;
           cursor: pointer;
           display: none;
+          border-radius: 0 0 10px 10px;
         }
 
         &:hover {
 
           .mask {
             display: block;
+          }
+        }
+      }
+
+      .el-dialog {
+        border-radius: 10px;
+
+        .el-dialog__header {
+          text-align: left;
+        }
+
+        .el-dialog__body {
+
+          .el-rate {
+            margin: 10px 0;
+          }
+
+          p {
+            text-align: right;
+            color: #FA6400;
+            margin-top: 5px;
+            font-size: 12px;
           }
         }
       }

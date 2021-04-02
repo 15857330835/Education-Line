@@ -49,16 +49,14 @@
           <p>创建时间：2020-12-30 12:54:00</p>
         </div>
         <div class="bottom">
-          <div>
             <div>
               <p>已有18051人订阅</p>
               <p>好评度 95%</p>
             </div>
             <div>
-              <i class="original">￥80</i>
               <i class="discount">￥50</i>
+              <i class="original">原价￥80</i>
             </div>
-          </div>
         </div>
         <div class="mask">
           <el-button type="primary" plain round size="mini" @click="goto($event, 'assess')">考核评分</el-button>
@@ -110,7 +108,6 @@
                 label: '北京烤鸭'
             }
         ],
-        delState: false,
         currentPage4: 4,
         courses: [
           {
@@ -260,7 +257,7 @@
 
       .course {
         border: 1px solid rgb(242, 242, 242);
-        border-radius: 5px;
+        border-radius: 10px;
         height: 360px;
         width: 316px;
         font-size: 12px;
@@ -280,6 +277,7 @@
           padding: 160px 20px 0;
           position: relative;
           color: white;
+          border-radius: 10px 10px 0 0;
 
           .el-button {
             position: absolute;
@@ -289,6 +287,8 @@
             background: rgba($color: #000000, $alpha: 0.5);
             border: none;
             color: white;
+            width: 26px;
+            height: 26px;
 
             .choose {
               color: lightblue;
@@ -299,6 +299,12 @@
             position: absolute;
             top: 10px;
             right: 10px;
+            background: rgba($color: #000000, $alpha: 0.5);
+            border: none;
+            width: 58px;
+            height: 28px;
+            line-height: 28px;
+            border-radius: 8px;
           }
 
           .title {
@@ -328,25 +334,22 @@
         .bottom {
           text-align: left;
           padding: 10px;
-
-          >div {
-            display: flex;
-            line-height: 24px;
-            justify-content: space-between;
-          }
+          display: flex;
+          line-height: 24px;
+          justify-content: space-between;
 
           i {
-            line-height: 48px;
 
             &.original {
-              font-size: 16px;
+              display: block;
+              font-size: 12px;
               text-decoration: line-through;
-              color: #c3c5c7;
+              color: #989898;
             }
 
             &.discount {
               font-size: 24px;
-              color: red;
+              color: #FA6400;
             }
           }
         }
@@ -354,7 +357,7 @@
         .mask {
           width: 100%;
           height: 80px;
-          background: lightblue;
+          background: white;
           position: absolute;
           bottom: 0;
           left: 0;
@@ -362,6 +365,7 @@
           line-height: 80px;
           cursor: pointer;
           display: none;
+          border-radius: 10px;
         }
 
         &:hover {

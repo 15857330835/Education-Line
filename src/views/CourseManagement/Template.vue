@@ -41,6 +41,11 @@
             <el-dialog :visible.sync="dialogVisible">
                 <img width="100%" :src="dialogImageUrl" alt="">
             </el-dialog>
+            <div class="text">
+                <p>尺寸推荐：316*208px</p>
+                <p>分辨率推荐：72</p>
+                <p>格式推荐：.jpg/.png</p>
+            </div>
         </div>
         <div>
             <label style="height: 96px">描述：</label>
@@ -195,6 +200,15 @@
                 width: 100px;
                 height: 100px;
             }
+        }
+
+        .text {
+            display: inline-block;
+            vertical-align: bottom;
+            height: 100px;
+            margin-left: 20px;
+            color: #666666;
+            padding-top: 20px;
         }
     }
 
