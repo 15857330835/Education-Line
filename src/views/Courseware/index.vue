@@ -30,7 +30,7 @@
       </div>
     </div>
     <div class="operation">
-      <el-button type="primary" plain size="mini">制作课件</el-button>
+      <el-button type="primary" plain size="mini" @click="production">制作课件</el-button>
       <el-button type="primary" plain size="mini">全选</el-button>
       <el-button type="primary" plain size="mini">批量上线</el-button>
       <el-button type="primary" plain size="mini">批量下线</el-button>
@@ -46,8 +46,8 @@
         <el-table-column align="center" width="150px" prop="title" label="标题"></el-table-column>
         <el-table-column align="center" width="" label="简介">
           <template slot-scope="scope">
-            <el-tooltip class="item" popper-class="prompt" effect="dark" :content="scope.row.introduction" placement="top">
-              <p class="intro">{{ scope.row.introduction }}</p>
+            <el-tooltip class="item" popper-class="prompt" effect="dark" :content="scope.row.remarks" placement="top">
+              <p class="intro">{{ scope.row.remarks }}</p>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -56,31 +56,59 @@
             <el-tag type="warning" size="mini" v-for="(item, index) in scope.row.label" :key="index">{{ item }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="80px" prop="coursewareTime" label="课件时长"></el-table-column>
-        <el-table-column align="center" width="200px" prop="creationTime" label="创建时间" sortable></el-table-column>
+        <el-table-column align="center" width="80px" prop="learnTime" label="课件时长"></el-table-column>
+        <el-table-column align="center" width="200px" prop="createtime" label="创建时间" sortable></el-table-column>
         <el-table-column align="center" width="70px" label="状态">
           <template slot-scope="scope">
-            <span :class="scope.row.state == '已完成' ? 'done' : 'undone'">{{ scope.row.state }}</span>
+            <span :class="scope.row.finishStatus ? 'done' : 'undone'">{{ scope.row.finishStatus ? '完成' : '未完成' }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" width="200px" label="操作">
-          <el-button type="text" size="mini" @click="handleEdit">播放</el-button>
-          <el-button type="text" size="mini" @click="handleEdit">修改</el-button>
-          <el-button type="text" size="mini" @click="handleEdit">成果</el-button>
-          <el-button type="text" size="mini" @click="handleEdit">上线</el-button>
-          <el-button type="text" size="mini" @click="handleEdit">删除</el-button>
+          <template slot-scope="scope">
+            <el-button type="text" size="mini" @click="handleEdit">播放</el-button>
+            <el-button type="text" size="mini" @click="handleEdit">修改</el-button>
+            <el-button type="text" size="mini" @click="handleEdit">成果</el-button>
+            <el-button type="text" size="mini" @click="handleEdit">上线</el-button>
+            <el-button type="text" size="mini" @click="del(scope.row.id)">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
+      <el-dialog title="创建课件" :visible.sync="dialogFormVisible">
+        <el-form :model="form">
+          <el-form-item label="课件名称：" :label-width="formLabelWidth">
+            <el-input v-model="form.title" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="课件简介：" :label-width="formLabelWidth">
+            <el-input v-model="form.remarks" autocomplete="off"></el-input>
+          </el-form-item>
+          <el-form-item label="课件标签：" :label-width="formLabelWidth">
+            <el-select
+              v-model="form.label"
+              multiple
+              collapse-tags
+              style="margin-left: 20px;"
+              placeholder="请选择">
+              <el-option
+                v-for="item in option"
+                :key="item.value"
+                :label="item.label"
+                :value="item.label">
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="create">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
     <div class="bottom">
       <el-pagination
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
-        :page-sizes="[4, 6, 8, 10]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="50">
+        :current-page="currentPage"
+        layout="total, prev, pager, next, jumper"
+        :total="tableData.length">
       </el-pagination>
     </div>
   </div>
@@ -88,6 +116,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
+  import { getCoursewareList, addCourseware, delCourseware } from '@/api/teachercourse'
   export default {
     data() {
       return {
@@ -113,30 +142,25 @@
                 label: '北京烤鸭'
             }
         ],
-        currentPage4: 4,
-        tableData: [{
-          title: 'title',
-          introduction: '这里是描述这里是描述这里是述这里是描述这描述这里是描述',
-          label: ['新入职', '体育'],
-          coursewareTime: '30:12',
-          creationTime: '2020-02-21 09:56:55',
-          state: '已完成'
+        currentPage: 1,
+        tableData: [],
+        dialogFormVisible: false,
+        form: {
+          title: '',
+          remarks: '',
+          label: ''
         },
-        {
-          title: 'title',
-          introduction: '这里是描述这里是描述这里是述这里是描述这描述这里是描述',
-          label: ['新入职', '体育'],
-          coursewareTime: '30:12',
-          creationTime: '2020-02-21 09:56:55',
-          state: '未完成'
-        },
-        ]
+        formLabelWidth: '30%'
       };
     },
     computed: {
       ...mapState([
+          'user',
           'options',
-      ])
+      ]),
+      courseId() {
+        return this.$route.query.data
+      }
     },
     methods: {
       ...mapMutations([
@@ -145,18 +169,50 @@
       select(key, value) {
         this.CHANGE_OPTIONS([key, value])
       },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
       },
       handleEdit() {
 
+      },
+      production() {
+        this.dialogFormVisible = true
+      },
+      create() {
+        this.form.token = this.user.Token
+        this.form.subjectId = this.courseId
+        addCourseware(this.form).then(res => {
+          if(res.Flag == 100) {
+            this.dialogFormVisible = false
+            this.$router.push('production')
+          }
+        })
+      },
+      refresh() {
+        const data = {
+          token: this.user.Token,
+          subjectId: this.courseId
+        }
+        getCoursewareList(data).then(res => {
+          if(res.Flag == 100) {
+            this.tableData = res.data
+          }
+        })
+      },
+      del(id) {
+        const data = {
+          token: this.user.Token,
+          id
+        }
+        delCourseware(data).then(res => {
+          if(res.Flag == 100) {
+            this.refresh()
+          }
+        })
       }
     },
     mounted() {
-      
+      this.refresh()
     }
   }
 </script>
@@ -235,6 +291,20 @@
 
       .undone {
         color: #686868;
+      }
+
+      .el-dialog {
+        width: 30%;
+        border-radius: 10px;
+        text-align: left;
+
+        .el-input {
+          width: 220px;
+        }
+
+        .el-select {
+          margin-left: 0 !important;
+        }
       }
     }
 }

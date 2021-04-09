@@ -6,16 +6,26 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    user: null,
+    identity: '',
     tabKey: 0,
     options: {
       classify: '全部',
       ifOnline: '全部',
       status: '全部',
-      state: '全部'
+      state: '全部',
+      role: '全部',
+      use: '全部'
     },
     activeIndex: "1"
   },
   mutations: {
+    CHANGE_USER(state, date) {
+      state.user = date
+    },
+    CHANGE_IDENTITY(state, date) {
+      state.identity = date
+    },
     CHANGE_TABKEY(state, date) {
       state.tabKey = date
     },
@@ -33,7 +43,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
         storage: window.sessionStorage,
-        paths: ["tabKey", 'activeIndex']
+        paths: ["user", "identity", "tabKey", 'activeIndex']
     })
   ]
 })

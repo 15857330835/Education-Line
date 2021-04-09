@@ -5,18 +5,16 @@
             <el-menu-item v-for="item in this.list" :index="item.index" :key="item.index" @click="switchTab(item.key)">
                 <span slot="title">{{ item.text }}</span>
             </el-menu-item>
-            <el-submenu index="1">
-                <template slot="title">{{ uin }}</template>
-                <el-menu-item index="1-1">选项1</el-menu-item>
-                <el-menu-item index="1-2">选项2</el-menu-item>
-                <el-menu-item index="1-3">选项3</el-menu-item>
+            <el-submenu index="0">
+                <template slot="title">{{ name }}</template>
+                <el-menu-item @click="exit">退出</el-menu-item>
             </el-submenu>
-            <el-submenu index="2">
+            <!-- <el-submenu index="2">
                 <template slot="title"><i class="el-icon-bell" /></template>
                 <el-menu-item index="2-1">选项1</el-menu-item>
                 <el-menu-item index="2-2">选项2</el-menu-item>
                 <el-menu-item index="2-3">选项3</el-menu-item>
-            </el-submenu>
+            </el-submenu> -->
             <div class="search" v-if="this.ifSearch">
               <label>{{ this.$route.path == '/courseware' ? '课件：' :  '课程：'}}</label>
               <el-input
@@ -50,6 +48,7 @@
       return {
         input1: '',
         account: {
+          '': [],
           manager: [
             {
               index: "1",
@@ -73,21 +72,35 @@
             {
               index: "1",
               text: '工具模板',
-              key: 'courseware'
+              key: 'authorware'
             },
             {
               index: "2",
               text: '课程管理',
-              key: 'assess'
+              key: 'institutionCourse'
             },
             {
               index: "3",
               text: '账号管理',
-              key: 'courseManagement'
+              key: 'account'
             }
           ],
           serviceProvider: [
-
+            {
+              index: "1",
+              text: '工具模板',
+              key: 'authorware'
+            },
+            {
+              index: "2",
+              text: '课程管理',
+              key: 'allCourses'
+            },
+            {
+              index: "3",
+              text: '账号管理',
+              key: 'agencyAccount'
+            }
           ]
         },
         value2: '',
@@ -117,25 +130,27 @@
     },
     computed: {
         ...mapState([
+          'user',
+          'identity',
           'tabKey',
         ]),
         list() {
-          return this.account[window.EL.identity]
+          return this.account[this.identity]
         },
         activeIndex() {
-          let index = 0
-          this.account[window.EL.identity].forEach((item, idx) => {
+          let index = 1
+          this.account[this.identity].forEach((item, idx) => {
             if(item.key == this.tabKey) {
               index = idx + 1
             }
           })
           return String(index)
         },
-        uin() {
-            return window.EL.uin
+        name() {
+            return this.user ? this.user.username : ''
         },
         ifSearch() {
-          let arr = ['/courseCatalog', '/assess', '/template', '/history']
+          let arr = ['/courseCatalog', '/assess', '/template', '/history', '/account', '/authorware', '/introduce', '/agencyAccount']
           return arr.indexOf(this.$route.path) == -1 ? true : false 
         }
     },
@@ -151,6 +166,36 @@
         },
         handleSelect(key, keyPath) {
             console.log(key, keyPath);
+        },
+        exit() {
+            let url
+            const that = this
+            switch (this.identity) {
+                case 'human':
+                    url = 'http://edu.aodianyun.com/teach/account/userLogout'
+                    break;
+                case 'manager':
+                    url = 'http://edu.aodianyun.com/teach/account/userLogout'
+                    break;
+                case 'institution':
+                    url = 'http://edu.aodianyun.com/company/account/userLogout'
+                    break;
+                case 'serviceProvider':
+                    url = 'http://edu.aodianyun.com/admin/account/userLogout'
+                    break;
+            }
+            $.post(
+                url,
+                JSON.stringify({
+                    token: this.user.token
+                }),
+                function(res) {
+                    if(res.Flag == 100) {
+                      that.$router.push('/')
+                    }
+                },
+                'json'
+            )
         }
     }
   }
@@ -185,7 +230,7 @@
         color: lightblue;
         user-select: none;
         pointer-events: none;
-        background: url('../../assets/img/分组.png') no-repeat center;
+        background: url('../../assets/img/logo.png') no-repeat center;
         margin-right: 60px;
     }
 

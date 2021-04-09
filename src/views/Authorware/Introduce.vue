@@ -1,0 +1,57 @@
+<template>
+  <div id="introduce">
+      <div>
+        <h3>{{ this.title }}</h3>
+        <p>这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介</p>
+      </div>
+  </div>
+</template>
+
+<script>
+  export default {
+    components: {
+    },
+    data() {
+      return {
+        
+      };
+    },
+    computed: {
+        title() {
+            return this.$route.query.title
+        }
+    },
+    methods: {
+        
+    },
+    mounted() {
+      
+    }
+  }
+</script>
+
+<style lang="scss">
+#introduce {
+    height: 95%;
+    border-radius: 10px;
+    padding: 30px 15%;
+
+    >div {
+        background: white;
+        height: 100%;
+        border-radius: 10px;
+        padding: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+
+        h3 {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+        }
+    }
+}
+
+</style>

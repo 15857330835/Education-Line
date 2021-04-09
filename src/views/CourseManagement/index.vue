@@ -35,11 +35,11 @@
       <el-button type="primary" plain size="mini" @click="del($event)">批量删除</el-button>
     </div>
     <div class="content">
-      <div class="course" v-for="(course, index) in courses" :key="index" @click="goto($event, 'courseware')">
+      <div class="course" v-for="(course, index) in courses" :key="index" @click="goto($event, 'courseware', course.id)">
         <div class="top">
           <el-button size="mini" icon="el-icon-check" class="choice" circle @click="choose($event)"></el-button>
           <el-tag effect="dark" size="mini">新入职</el-tag>
-          <p class="title">111</p>
+          <p class="title">{{ course.title }}</p>
           <el-tooltip class="item" popper-class="prompt" effect="dark" content="Top Left 提示文字" placement="top">
             <p class="intro">这里是描述这里是描述这里是述这里是描述这描述这里是描述</p>
           </el-tooltip>
@@ -54,28 +54,24 @@
               <p>好评度 95%</p>
             </div>
             <div>
-              <i class="discount">￥50</i>
-              <i class="original">原价￥80</i>
+              <i class="discount">￥{{ course.priceDiscount }}</i>
+              <i class="original">原价￥{{ course.price }}</i>
             </div>
         </div>
         <div class="mask">
           <el-button type="primary" plain round size="mini" @click="goto($event, 'assess')">考核评分</el-button>
           <el-button type="primary" plain round size="mini" @click="goto($event, 'template', 'change')">设置</el-button>
-          <el-button type="primary" plain round size="mini" v-if="true" @click="online($event)">上线</el-button>
-          <el-button type="primary" plain round size="mini" v-else @click="online($event)">下线</el-button>
+          <el-button :type="course.status ? 'primary' : 'warning'" plain round size="mini" @click="online($event, course.id, course.status)">{{ course.status ? '上线' : '下线' }}</el-button>
           <el-button type="primary" plain round size="mini" @click="del($event)">删除</el-button>
         </div>
       </div>
     </div>
     <div class="bottom">
       <el-pagination
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="100"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :current-page="currentPage"
+        layout="total, prev, pager, next, jumper"
+        :total="courses.length">
       </el-pagination>
     </div>
   </div>
@@ -83,6 +79,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
+  import { getSubjectList, updateSubjectStatus } from '@/api/teachercourse'
   export default {
     data() {
       return {
@@ -108,19 +105,13 @@
                 label: '北京烤鸭'
             }
         ],
-        currentPage4: 4,
-        courses: [
-          {
-            title: 111
-          },
-          {
-            title: 111
-          }
-        ]
+        currentPage: 1,
+        courses: []
       };
     },
     computed: {
       ...mapState([
+          'user',
           'options',
       ])
     },
@@ -130,9 +121,6 @@
       ]),
       select(key, value) {
         this.CHANGE_OPTIONS([key, value])
-      },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
@@ -152,17 +140,38 @@
           $('.choice>i').addClass('choose')
         }
       },
-      online(e) {
+      refresh() {
+        const data = {
+          token: this.user.Token
+        }
+        getSubjectList(data).then(res => {
+          if(res.Flag == 100) {
+            this.courses = res.data
+          }
+        })
+      },
+      online(e, id, status) {
         e.stopPropagation()
-        this.$confirm('是否上线该课程？', '', {
+        const data = {
+          id,
+          token: this.user.Token,
+          status: status ? 0 : 1
+        }
+        let text = status ? '上线' : '下线'
+        this.$confirm(`是否${text}该课程？`, '', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '上线成功!'
-          });
+          updateSubjectStatus(data).then(res => {
+            if(res.Flag == 100) {
+              this.refresh()
+              this.$message({
+                type: 'success',
+                message: `${text}成功!`
+              });
+            }
+          })
         }).catch(() => {
           this.$message({
             type: 'info',
@@ -190,7 +199,7 @@
       }
     },
     mounted() {
-      
+      this.refresh()
     }
   }
 </script>
@@ -265,6 +274,7 @@
         margin-right: 30px;
         background: white;
         position: relative;
+        cursor: pointer;
 
         &:hover {
           box-shadow: 0 0 5px 1px #c2b8b8;

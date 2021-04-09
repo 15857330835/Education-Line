@@ -37,4 +37,13 @@
   background: rgba($color: #000000, $alpha: 0.6) !important;
 }
 
+.el-menu--popup {
+  min-width: unset !important;
+  width: 100px;
+
+  >li {
+    text-align: center;
+  }
+}
+
 </style>

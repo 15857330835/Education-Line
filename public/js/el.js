@@ -9,9 +9,6 @@ el.prototype.Config = function(options) {
 window.EL = new el()
 
 EL.Config({
-    uin: "陈振兴",
-    identity: 'human',
-    test: function() {
-      console.log(1111,navigator)
-    }
+    uin: "",
+    identity: 'manager',
 })

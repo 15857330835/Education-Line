@@ -37,13 +37,22 @@
                 <p>({{ item.time }})</p>
               </div>
               <div>
-                <el-button plain>播放课件</el-button>
+                <el-button plain @click="play">播放课件</el-button>
                 <el-button plain v-if="$route.fullPath == '/courseCatalog?2'">成果</el-button>
                 <el-button plain v-if="$route.fullPath == '/courseCatalog?2'">考核</el-button>
                 <el-button plain v-if="$route.fullPath == '/courseCatalog?2'" @click="history">历史记录</el-button>
               </div>
             </div>
           </div>
+          <el-dialog
+            :visible.sync="dialogVisible"
+            width="100%">
+            <video
+              style="width: 100%; height: 100%"
+              autoplay
+              playsinline
+            ></video>
+          </el-dialog>
         </div>
         <div class="comments" v-else>
           <div class="summary">
@@ -112,6 +121,7 @@
         ],
         radio: 3,
         value: 3.7,
+        dialogVisible: false,
         evaluations: [
           {
             avatar: ''
@@ -136,6 +146,9 @@
       ]),
       handleSelect(key) {
           this.CHANGE_ACTIVEINDEX(key)
+      },
+      play() {
+        this.dialogVisible = true
       },
       history() {
         this.$router.push('history')
@@ -295,6 +308,19 @@
                 padding: 0 10px;
               }
             }
+          }
+        }
+
+        .el-dialog {
+          margin: 0 !important;
+          height: 100%;
+
+          .el-dialog__header {
+            text-align: left;
+          }
+
+          .el-dialog__body {
+            height: 90%;
           }
         }
       }

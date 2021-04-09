@@ -211,6 +211,8 @@
 <style lang="scss">
 #recordingDevice {
     position: fixed;
+    top: 30px;
+    right: 300px;
 
     &.hide {
         right: 0;
