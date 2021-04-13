@@ -70,7 +70,7 @@
             const that = this
             switch (this.role) {
                 case 'human':
-                    url = 'http://edu.aodianyun.com/teach/account/login'
+                    url = 'http://edu.aodianyun.com/study/account/login'
                     break;
                 case 'manager':
                     url = 'http://edu.aodianyun.com/teach/account/login'

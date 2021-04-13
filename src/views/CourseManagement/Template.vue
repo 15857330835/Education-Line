@@ -1,10 +1,10 @@
 <template>
   <div id="template">
-      <h3>{{ this.title }}</h3>
+      <h3>{{ this.headline }}</h3>
       <div class="content">
         <div>
             <label>课程标题：</label>
-            <el-input v-model="input" placeholder="请输入课程标题"></el-input>
+            <el-input v-model="title" placeholder="请输入课程标题"></el-input>
         </div>
         <div>
             <label style="height: 100px">上传图片：</label>
@@ -49,16 +49,33 @@
         </div>
         <div>
             <label style="height: 96px">描述：</label>
-            <el-input type="textarea" resize= "none" rows="4" maxlength="500" show-word-limit v-model="input2" placeholder="请输入课程描述"></el-input>
+            <el-input type="textarea" resize= "none" rows="4" maxlength="500" show-word-limit v-model="remarks" placeholder="请输入课程描述"></el-input>
         </div>
         <div>
             <label>学习周期：</label>
-            <el-input-number v-model="value" @change="handleChange" :min="1" :max="10" label="描述文字"></el-input-number>  天
+            <el-input-number v-model="period" @change="handleChange" :min="1" :max="10" label="描述文字"></el-input-number>天
+            <label>工具：</label>
+            <el-select v-model="value3" placeholder="请选择">
+                <el-option
+                v-for="item in options"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+                </el-option>
+            </el-select>
+        </div>
+        <div class="price">
+            <label>价格展示：</label>
+            <el-switch v-model="priceStatus" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+            <label>课程原价：</label>
+            <el-input v-model="price"></el-input>元
+            <label>折扣价：</label>
+            <el-input v-model="priceDiscount"></el-input>元
         </div>
         <div>
             <label>标签 ：</label>
             <el-select
-                v-model="value2"
+                v-model="label"
                 multiple
                 filterable
                 collapse-tags
@@ -71,10 +88,11 @@
                 :value="item.value">
                 </el-option>
             </el-select>
+            <el-button type="text" @click="add">添加</el-button>
         </div>
       </div>
       <div class="btn">
-        <el-button @click="create">取消</el-button>
+        <el-button @click="cancel">取消</el-button>
         <el-button type="primary" @click="create">确定</el-button>
       </div>
       <img>
@@ -82,60 +100,91 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+  import { addSubject } from '@/api/teachercourse'
   export default {
     components: {
     },
     data() {
       return {
-        input: '',
-        input2: '',
-        value: '',
+        title: '',
+        remarks: '',
+        price: '',
+        priceDiscount: '',
+        period: '',
+        coverAddr: '',
         dialogImageUrl: '',
         dialogVisible: false,
         disabled: false,
         options: [
             {
-                value: '选项1',
-                label: '黄金糕'
+                value: '1',
+                label: '新入职'
             }, {
-                value: '选项2',
-                label: '双皮奶'
+                value: '2',
+                label: '晚会'
             }, {
-                value: '选项3',
-                label: '蚵仔煎'
+                value: '3',
+                label: '体育'
             }, {
-                value: '选项4',
-                label: '龙须面'
+                value: '4',
+                label: '电竞'
             }, {
-                value: '选项5',
-                label: '北京烤鸭'
+                value: '5',
+                label: '培训'
             }
         ],
-        value2: []
+        label: [],
+        value3: [],
+        priceStatus: true
       };
     },
     computed: {
-        title() {
+        ...mapState([
+            'user',
+        ]),
+        headline() {
             return this.$route.query.data ? '修改课程' : '新建课程'
         }
     },
     methods: {
+        cancel() {
+            this.$router.go(-1)
+        },
         create() {
-
+            const data = {
+                token: this.user.Token,
+                title: this.title,
+                coverAddr: this.coverAddr,
+                remarks: this.remarks,
+                period: this.period,
+                priceStatus: this.priceStatus ? 0 : 1,
+                price: this.price,
+                priceDiscount: this.priceDiscount,
+                label: this.label
+            }
+            addSubject(data).then(res => {
+                console.log(res)
+            })
         },
         handleChange() {
 
         },
-        onChange() {
+        onChange(file) {
             $('.el-upload').css({'display': 'none'})
+            this.coverAddr = file.url
         },
         handleRemove() {
             this.$refs.upload.clearFiles()
+            this.coverAddr = ''
             $('.el-upload').css({'display': 'inline-block'})
         },
         handlePictureCardPreview(file) {
             this.dialogImageUrl = file.url;
             this.dialogVisible = true;
+        },
+        add() {
+
         }
     },
     mounted() {
@@ -178,11 +227,29 @@
 
             >.el-input-number {
                 margin-left: 20px;
+                margin-right: 10px;
             }
 
             >.el-textarea {
                 width: 500px;
                 margin-left: 20px;
+            }
+
+            >.el-select {
+                margin-right: 10px;
+            }
+
+            &.price {
+
+                >.el-switch {
+                    margin-left: 20px;
+                    margin-right: 200px;
+                }
+
+                >.el-input {
+                    width: 100px;
+                    margin-right: 10px;
+                }
             }
         }
 

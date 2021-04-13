@@ -5,11 +5,23 @@
         <el-input v-model="input" size="mini" placeholder="请输入内容"></el-input>
         <el-button type="primary" size="mini">查询</el-button>
         <el-button size="mini">重置</el-button>
+        <div class="add" v-if="identity == 'serviceProvider'">
+          <el-button type="primary" size="mini" @click="create">新建</el-button>
+          <el-button size="mini">批量删除</el-button>
+        </div>
     </div>
     <div class="content">
       <div class="template" v-for="(template, index) in templates" :key="index" @click="click(template.title)">
-        <img :src="template.coverAddr">
-        <p>{{ template.title }}</p>
+        <div class="img">
+          <img :src="template.coverAddr">
+        </div>
+        <div class="title">
+          <p>{{ template.title }}</p>
+          <div v-if="identity == 'serviceProvider'">
+            <i class="el-icon-s-tools" @click="setup($event)"></i>
+            <i class="el-icon-delete-solid" @click="del($event)"></i>
+          </div>
+        </div>
       </div>
     </div>
     <div class="bottom">
@@ -39,6 +51,7 @@
     computed: {
       ...mapState([
           'user',
+          'identity'
       ]),
     },
     methods: {
@@ -47,6 +60,16 @@
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
+      },
+      create() {
+        this.$router.push({name:'Setup'})
+      },
+      setup(e) {
+        e.stopPropagation()
+        this.$router.push({name:'Setup'})
+      },
+      del(e) {
+        e.stopPropagation()
       }
     },
     mounted() {
@@ -70,6 +93,10 @@
   .search {
       margin-bottom: 30px;
       text-align: left;
+
+      .add {
+        margin-top: 20px;
+      }
 
       label {
         line-height: 40px;
@@ -96,6 +123,22 @@
 
       &:hover {
         box-shadow: 0 0 5px 1px #9e9494;
+      }
+
+      .img {
+        height: 140px;
+      }
+
+      .title {
+
+        div {
+          text-align: right;
+          padding: 0 10px;
+
+          i {
+            margin-left: 5px;
+          }
+        }
       }
 
       p {

@@ -49,10 +49,10 @@
         </el-table-column>
         <el-table-column align="center" width="250" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="mini" @click="handleEdit">查看</el-button>
-            <el-button type="text" size="mini" @click="handleEdit" :disabled='scope.row.status ? false : true'>编辑</el-button>
-            <el-button type="text" size="mini" @click="handleEdit" :class="scope.row.status ? 'enable' : 'disable'">禁用</el-button>
-            <el-button type="text" size="mini" @click="handleEdit" :disabled='scope.row.status ? false : true'>重置密码</el-button>
+            <el-button type="text" size="mini" @click="view(scope.row)">查看</el-button>
+            <el-button type="text" size="mini" @click="edit(scope.row)" :disabled='scope.row.status ? false : true' v-if="scope.row.type == 1">编辑</el-button>
+            <el-button type="text" size="mini" @click="ifUse(scope.row.id, scope.row.status)" :class="scope.row.status ? 'enable' : 'disable'">{{ scope.row.status ? '启用' : '禁用' }}</el-button>
+            <el-button type="text" size="mini" @click="Initialize(scope.row.id)" :disabled='scope.row.status ? false : true'>重置密码</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -71,7 +71,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="工具权限：" :label-width="formLabelWidth">
+          <el-form-item label="工具权限：" :label-width="formLabelWidth" v-if="form1.type == 1">
             <el-select
               v-model="form1.power"
               multiple
@@ -104,13 +104,40 @@
         :visible.sync="dialogVisible"
         width="30%"
         >
-        <div><label>机构：</label><span>{{ this.row.name }}</span></div>
-        <div><label>工具权限：</label><el-tag type="info" size="mini" v-for="(item, index) in this.row.power" :key="index">{{ item.title }}</el-tag></div>
+        <div><label>姓名：</label><span>{{ this.row.name }}</span></div>
+        <div><label>角色：</label><span>{{ this.row.type == 1 ? '老师' : '学生' }}</span></div>
+        <div v-if="this.row.type == 1"><label>工具权限：</label><el-tag type="info" size="mini" v-for="(item, index) in this.row.power" :key="index">{{ item.title }}</el-tag></div>
         <div><label>登录账户：</label><span>{{ this.row.username }}</span></div>
         <div><label>状态：</label><span :class="this.row.status ? 'disable' : 'enable'">{{ this.row.status ? '禁用' : '启用' }}</span></div>
         <span slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        </span>
+      </el-dialog>
+      <el-dialog
+        title="编辑"
+        class="view"
+        :visible.sync="dialogVisible1"
+        width="30%"
+        >
+        <div><label>工具权限：</label>
+            <el-select
+              v-model="power"
+              multiple
+              collapse-tags
+              style="margin-left: 20px;"
+              placeholder="请选择">
+              <el-option
+                v-for="item in opt"
+                :key="item.id"
+                :label="item.title"
+                :value="item.id">
+              </el-option>
+            </el-select>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible1 = false">取 消</el-button>
+          <el-button type="primary" @click="modify">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -127,7 +154,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
-  import { getAccountList, addAccount } from '@/api/account'
+  import { getAccountList, addAccount, updateStatus, updatePassword, updatePower } from '@/api/account'
   import { getToolList } from '@/api/tool'
   export default {
     data() {
@@ -140,6 +167,7 @@
         currentPage: 1,
         dialogFormVisible1: false,
         dialogVisible: false,
+        dialogVisible1: false,
         form1: {
           name: '',
           type: '',
@@ -148,6 +176,8 @@
           passwd: ''
         },
         row: [],
+        id: '',
+        power: '',
         types: [{
           value: '2',
           label: '学生'
@@ -193,9 +223,6 @@
           }
         })
       },
-      handleEdit() {
-
-      },
       reset() {
         this.input = ''
         this.input1 = ''
@@ -224,6 +251,53 @@
           objArr[i] = arrTemp;
         }
         return objArr;
+      },
+      view(row) {
+        this.dialogVisible = true
+        this.row = row
+      },
+      edit(row) {
+          this.dialogVisible1 = true
+          let arr = []
+          row.power.forEach(item => arr.push(item.id))
+          this.id = row.id
+          this.power = arr
+      },
+      modify() {
+          const data = {
+            id: this.id,
+            token: this.user.Token,
+            power: this.power
+          }
+          updatePower(data).then(res => {
+            if(res.Flag == 100) {
+              this.dialogVisible1 = false
+              this.refresh()
+            }
+          })
+      },
+      ifUse(id, status) {
+        const data = {
+          id,
+          token: this.user.Token,
+          status: status ? 0 : 1
+        }
+        updateStatus(data).then(res => {
+          if(res.Flag == 100) {
+            this.refresh()
+          }
+        })
+      },
+      Initialize(id) {
+        const data = {
+          id,
+          token: this.user.Token,
+        }
+        updatePassword(data).then(res => {
+          if(res.Flag == 100) {
+            this.refresh()
+          }
+        })
       }
     },
     mounted() {
@@ -312,7 +386,7 @@
       .view {
 
         .el-dialog__body {
-          padding-left: 30%;
+          padding-left: 20%;
 
           >div {
             margin: 10px 0;

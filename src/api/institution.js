@@ -25,3 +25,8 @@ export const delCompany = (payload = {}) => {
 export const updatePassword = (payload = {}) => {
     return axios.post(url + '/updatePassword', payload)
 }
+
+//更新机构信息
+export const updateInfo = (payload = {}) => {
+    return axios.post(url + '/updateInfo', payload)
+}

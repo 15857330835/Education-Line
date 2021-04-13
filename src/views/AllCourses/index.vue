@@ -31,11 +31,11 @@
     </div>
     <div class="operation">
       <el-button type="primary" plain size="mini" @click="allChoose">全选</el-button>
-      <el-button type="primary" plain size="mini" @click="goto($event, 'template')">新建</el-button>
-      <el-button type="primary" plain size="mini" @click="del($event)">批量删除</el-button>
+      <el-button type="primary" plain size="mini">批量复制</el-button>
+      <el-button type="primary" plain size="mini">黏贴</el-button>
     </div>
     <div class="content">
-      <div class="course" v-for="(course, index) in courses" :key="index" @click="goto($event, 'courseware', course.id)">
+      <div class="course" v-for="(course, index) in courses" :key="index">
         <div class="top">
           <el-button size="mini" icon="el-icon-check" class="choice" circle @click="choose($event)"></el-button>
           <el-tag effect="dark" size="mini">新入职</el-tag>
@@ -59,10 +59,7 @@
             </div>
         </div>
         <div class="mask">
-          <el-button type="primary" plain round size="mini" @click="goto($event, 'assess')">考核评分</el-button>
-          <el-button type="primary" plain round size="mini" @click="goto($event, 'template', 'change')">设置</el-button>
-          <el-button :type="course.status ? 'primary' : 'warning'" plain round size="mini" @click="online($event, course.id, course.status)">{{ course.status ? '上线' : '下线' }}</el-button>
-          <el-button type="primary" plain round size="mini" @click="del($event)">删除</el-button>
+          复制
         </div>
       </div>
     </div>
@@ -79,7 +76,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
-  import { getSubjectList, updateSubjectStatus } from '@/api/teachercourse'
+  import { getSubjectList } from '@/api/institutioncourse'
   export default {
     data() {
       return {
@@ -149,53 +146,6 @@
             this.courses = res.data
           }
         })
-      },
-      online(e, id, status) {
-        e.stopPropagation()
-        const data = {
-          id,
-          token: this.user.Token,
-          status: status ? 0 : 1
-        }
-        let text = status ? '上线' : '下线'
-        this.$confirm(`是否${text}该课程？`, '', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          updateSubjectStatus(data).then(res => {
-            if(res.Flag == 100) {
-              this.refresh()
-              this.$message({
-                type: 'success',
-                message: `${text}成功!`
-              });
-            }
-          })
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });          
-        });
-      },
-      del(e) {
-        e.stopPropagation()
-        this.$confirm('此操作将永久删除该课程, 是否继续?', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '删除成功!'
-          });
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消删除'
-          });          
-        });
       }
     },
     mounted() {
@@ -371,7 +321,7 @@
           position: absolute;
           bottom: 0;
           left: 0;
-          color: white;
+          color: lightcoral;
           line-height: 80px;
           cursor: pointer;
           display: none;

@@ -30,3 +30,8 @@ export const delCourseware = (payload = {}) => {
 export const delSubject = (payload = {}) => {
     return axios.post(url + '/delSubject', payload)
 }
+
+//添加课程
+export const addSubject = (payload = {}) => {
+    return axios.post(url + '/addSubject', payload)
+}

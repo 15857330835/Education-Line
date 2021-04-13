@@ -17,6 +17,8 @@
             multiple
             filterable 
             collapse-tags
+            allow-create
+            default-first-option
             size="mini"
             style="margin-left: 20px;"
             placeholder="请选择">
@@ -53,7 +55,7 @@
         </el-table-column>
         <el-table-column align="center" width="" label="标签">
           <template slot-scope="scope">
-            <el-tag type="warning" size="mini" v-for="(item, index) in scope.row.label" :key="index">{{ item }}</el-tag>
+            <el-tag type="warning" size="mini" v-for="(item, index) in scope.row.label.split(',')" :key="index">{{ item }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column align="center" width="80px" prop="learnTime" label="课件时长"></el-table-column>
@@ -66,10 +68,10 @@
         <el-table-column align="center" width="200px" label="操作">
           <template slot-scope="scope">
             <el-button type="text" size="mini" @click="handleEdit">播放</el-button>
-            <el-button type="text" size="mini" @click="handleEdit">修改</el-button>
+            <el-button type="text" size="mini" @click="handleEdit" :disabled='scope.row.status ? true : false'>修改</el-button>
             <el-button type="text" size="mini" @click="handleEdit">成果</el-button>
-            <el-button type="text" size="mini" @click="handleEdit">上线</el-button>
-            <el-button type="text" size="mini" @click="del(scope.row.id)">删除</el-button>
+            <el-button type="text" size="mini" @click="handleEdit" :disabled='scope.row.finishStatus ? false : true'>{{ scope.row.status ? '下线' : '上线' }}</el-button>
+            <el-button type="text" size="mini" @click="del(scope.row.id)" :disabled='scope.row.status ? true : false'>删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -86,6 +88,9 @@
               v-model="form.label"
               multiple
               collapse-tags
+              filterable
+              allow-create
+              default-first-option
               style="margin-left: 20px;"
               placeholder="请选择">
               <el-option
@@ -181,6 +186,7 @@
       create() {
         this.form.token = this.user.Token
         this.form.subjectId = this.courseId
+        this.form.label = this.form.label.join(',')
         addCourseware(this.form).then(res => {
           if(res.Flag == 100) {
             this.dialogFormVisible = false

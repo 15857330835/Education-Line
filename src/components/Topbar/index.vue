@@ -172,7 +172,7 @@
             const that = this
             switch (this.identity) {
                 case 'human':
-                    url = 'http://edu.aodianyun.com/teach/account/userLogout'
+                    url = 'http://edu.aodianyun.com/study/account/userLogout'
                     break;
                 case 'manager':
                     url = 'http://edu.aodianyun.com/teach/account/userLogout'

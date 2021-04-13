@@ -30,9 +30,9 @@
         <div class="top">
           <div class="tag" :class="course.state == '通过' ? 'through' : course.state == '未通过' ? 'nothrough' : 'nofinish'" v-if="$route.fullPath == '/course?2'"></div>
           <el-tag effect="dark" size="mini">新入职</el-tag>
-          <p class="title">111</p>
-          <el-tooltip class="item" popper-class="prompt" effect="dark" content="Top Left 提示文字" placement="top">
-            <p class="intro">这里是描述这里是描述这里是述这里是描述这描述这里是描述</p>
+          <p class="title">{{ course.title }}</p>
+          <el-tooltip class="item" popper-class="prompt" effect="dark" :content="course.remarks" placement="top">
+            <p class="intro">{{ course.remarks }}</p>
           </el-tooltip>
         </div>
         <div class="center">
@@ -54,8 +54,8 @@
               <p>好评度 95%</p>
             </div>
             <div>
-              <i class="discount">￥50</i>
-              <i class="original">原价￥80</i>
+              <i class="discount">￥{{ course.priceDiscount }}</i>
+              <i class="original">原价￥{{ course.price }}</i>
             </div>
         </div>
         <div class="mask" @click="buy($event)">立即购买</div>
@@ -75,13 +75,10 @@
     </div>
     <div class="bottom">
       <el-pagination
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
-        :current-page="currentPage4"
-        :page-sizes="[10, 20, 50, 100]"
-        :page-size="100"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400">
+        :current-page="currentPage"
+        layout="total, prev, pager, next, jumper"
+        :total="courses.length">
       </el-pagination>
     </div>
   </div>
@@ -116,27 +113,8 @@
             }
         ],
         dialogVisible: false,
-        currentPage4: 4,
-        courses: [
-          {
-            title: 111,
-            state: '通过',
-            schedule: '1',
-            score: 90
-          },
-          {
-            title: 111,
-            state: '未通过',
-            schedule: '1',
-            score: 30
-          },
-          {
-            title: 111,
-            state: '未完成',
-            schedule: '6/7',
-            score: 0
-          }
-        ]
+        currentPage: 1,
+        courses: []
       };
     },
     computed: {
@@ -152,9 +130,6 @@
       ]),
       select(key, value) {
         this.CHANGE_OPTIONS([key, value])
-      },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
       },
       handleCurrentChange(val) {
         console.log(`当前页: ${val}`);
@@ -174,8 +149,7 @@
         }
         getSubjectList(data).then(res => {
           if(res.Flag == 100) {
-            // this.courses = res.data
-            console.log(res)
+            this.courses = res.data
           }
         })
       },

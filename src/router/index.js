@@ -4,6 +4,7 @@ import Login from '../views/Login'
 import Authorware from '../views/Authorware'
 import AllCourses from '../views/AllCourses'
 import Introduce from '../views/Authorware/Introduce.vue'
+import Setup from '../views/Authorware/Setup.vue'
 import Courseware from '../views/Courseware'
 import CourseManagement from '../views/CourseManagement'
 import InstitutionCourse from '../views/InstitutionCourse'
@@ -33,6 +34,11 @@ const routes = [
     path: '/introduce',
     name: 'Introduce',
     component: Introduce,
+  },
+  {
+    path: '/setup',
+    name: 'Setup',
+    component: Setup,
   },
   {
     path: '/courseware',

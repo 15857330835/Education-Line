@@ -35,7 +35,7 @@
       <el-button type="primary" plain size="mini" @click="del($event)">批量删除</el-button>
     </div>
     <div class="content">
-      <div class="course" v-for="(course, index) in courses" :key="index" @click="goto($event, 'courseware', course.id)">
+      <div class="course" v-for="(course, index) in courses" :key="index">
         <div class="top">
           <el-button size="mini" icon="el-icon-check" class="choice" circle @click="choose($event)"></el-button>
           <el-tag effect="dark" size="mini">新入职</el-tag>
@@ -59,7 +59,6 @@
             </div>
         </div>
         <div class="mask">
-          <el-button type="primary" plain round size="mini" @click="goto($event, 'assess')">考核评分</el-button>
           <el-button type="primary" plain round size="mini" @click="goto($event, 'template', 'change')">设置</el-button>
           <el-button :type="course.status ? 'primary' : 'warning'" plain round size="mini" @click="online($event, course.id, course.status)">{{ course.status ? '上线' : '下线' }}</el-button>
           <el-button type="primary" plain round size="mini" @click="del($event)">删除</el-button>
@@ -79,7 +78,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
-  import { getSubjectList, updateSubjectStatus } from '@/api/teachercourse'
+  import { getSubjectList, updateSubjectStatus } from '@/api/institutioncourse'
   export default {
     data() {
       return {

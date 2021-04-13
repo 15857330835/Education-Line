@@ -50,7 +50,7 @@
         <el-table-column align="center" width="250" label="操作">
           <template slot-scope="scope">
             <el-button type="text" size="mini" @click="view(scope.row)">查看</el-button>
-            <el-button type="text" size="mini" @click="handleEdit" :disabled='scope.row.status ? false : true'>编辑</el-button>
+            <el-button type="text" size="mini" @click="edit(scope.row)" :disabled='scope.row.status ? false : true'>编辑</el-button>
             <el-button type="text" size="mini" @click="ifUse(scope.row.id, scope.row.status)" :class="scope.row.status ? 'enable' : 'disable'">{{ scope.row.status ? '启用' : '禁用' }}</el-button>
             <el-button type="text" size="mini" @click="del(scope.row.id)" :disabled='scope.row.status ? false : true'>删除</el-button>
             <el-button type="text" size="mini" @click="Initialize(scope.row.id)" :disabled='scope.row.status ? false : true'>重置密码</el-button>
@@ -104,6 +104,33 @@
           <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
         </span>
       </el-dialog>
+      <el-dialog
+        title="编辑"
+        class="view"
+        :visible.sync="dialogVisible1"
+        width="30%"
+        >
+        <div><label>机构：</label><el-input v-model="name" autocomplete="off"></el-input></div>
+        <div><label>工具权限：</label>
+            <el-select
+              v-model="power"
+              multiple
+              collapse-tags
+              style="margin-left: 20px;"
+              placeholder="请选择">
+              <el-option
+                v-for="item in opt"
+                :key="item.id"
+                :label="item.title"
+                :value="item.id">
+              </el-option>
+            </el-select>
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="dialogVisible1 = false">取 消</el-button>
+          <el-button type="primary" @click="modify">确 定</el-button>
+        </span>
+      </el-dialog>
     </div>
     <div class="bottom">
       <el-pagination
@@ -118,7 +145,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
-  import { getCompanyList, updateStatus, addCompany, delCompany, updatePassword } from '@/api/institution'
+  import { getCompanyList, updateStatus, addCompany, delCompany, updatePassword, updateInfo } from '@/api/institution'
   import { getToolList } from '@/api/tool'
   export default {
     data() {
@@ -131,6 +158,7 @@
         currentPage: 1,
         dialogFormVisible: false,
         dialogVisible: false,
+        dialogVisible1: false,
         form: {
           name: '',
           power: '',
@@ -138,6 +166,9 @@
           passwd: ''
         },
         row: [],
+        id: '',
+        name: '',
+        power: '',
         opt: [],
         formLabelWidth: '30%',
         tableDatas: []
@@ -176,9 +207,6 @@
             }
         })
       },
-      handleEdit() {
-
-      },
       reset() {
         this.input = ''
         this.input1 = ''
@@ -211,6 +239,28 @@
       view(row) {
         this.dialogVisible = true
         this.row = row
+      },
+      edit(row) {
+          this.dialogVisible1 = true
+          let arr = []
+          row.power.forEach(item => arr.push(item.id))
+          this.id = row.id
+          this.name = row.name
+          this.power = arr
+      },
+      modify() {
+          const data = {
+            id: this.id,
+            token: this.user.Token,
+            name: this.name,
+            power: this.power
+          }
+          updateInfo(data).then(res => {
+            if(res.Flag == 100) {
+              this.dialogVisible1 = false
+              this.refresh()
+            }
+          })
       },
       ifUse(id, status) {
         const data = {
@@ -333,7 +383,7 @@
       .view {
 
         .el-dialog__body {
-          padding-left: 30%;
+          padding-left: 20%;
 
           >div {
             margin: 10px 0;
