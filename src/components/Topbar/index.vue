@@ -190,7 +190,7 @@
     box-shadow: 0 0 5px 0 rgb(228, 223, 223);
 
     .el-menu {
-        width: 1200px;
+        width: 1332px;
         margin: auto;
         border: none;
 

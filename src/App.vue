@@ -54,7 +54,7 @@
     #content {
       position: relative;
       padding: 30px 0;
-      width: 1200px;
+      width: 1332px;
       height: 100%;
       margin: auto;
       display: flex;

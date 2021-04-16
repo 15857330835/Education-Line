@@ -41,7 +41,7 @@
     background: white;
 
     >div {
-        width: 1200px;
+        width: 1332px;
         margin: auto;
         height: 100%;
         border-radius: 10px;

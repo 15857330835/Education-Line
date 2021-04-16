@@ -7,7 +7,7 @@
       </div>
       <div class="panel">
         <h3>教师登录</h3>
-        <el-input v-model="name" placeholder="请输入账户ID" prefix-icon="el-icon-user"></el-input>
+        <el-input v-model="name" ref="input" placeholder="请输入账户ID" prefix-icon="el-icon-user"></el-input>
         <el-input placeholder="请输入登录密码" v-model="password" prefix-icon="el-icon-lock" show-password></el-input>
         <el-button type="primary" @click="login">登录</el-button>
       </div>
@@ -68,7 +68,7 @@
         }
     },
     mounted() {
-      
+      this.$refs.input.focus()
     }
   }
 </script>

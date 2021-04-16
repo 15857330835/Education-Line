@@ -316,7 +316,7 @@
       text-align: left;
 
       >div {
-        width: 1200px;
+        width: 1332px;
         margin: auto;
         margin-bottom: 15px;
 
@@ -351,7 +351,7 @@
     .content {
       flex: 1;
       display: flex;
-      width: 1200px;
+      width: 1332px;
       margin: auto;
       flex-wrap: wrap;
 
@@ -362,7 +362,7 @@
         width: 316px;
         font-size: 12px;
         color: #666666;
-        margin: 0 42px 15px;
+        margin: 0 8px 15px;
         background: white;
         position: relative;
         cursor: pointer;
