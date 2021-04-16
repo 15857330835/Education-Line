@@ -3,15 +3,15 @@
     <div class="search">
       <div>
         <label>状态：</label>
-        <i v-for="(item, index) in use" :key="index" :class="item == options.use ? 'active' : ''" @click="select('use', item)">{{ item }}</i>
+        <i v-for="(item, index) in use" :key="index" :class="item == using ? 'active' : ''" @click="select(item)">{{ item }}</i>
       </div>
       <div>
         <label>账号：</label>
-        <el-input v-model="input" size="mini" placeholder="请输入内容"></el-input>
+        <el-input v-model="username" size="mini" placeholder="请输入内容"></el-input>
         <label>机构：</label>
-        <el-input v-model="input1" size="mini" placeholder="请输入内容"></el-input>
+        <el-input v-model="name1" size="mini" placeholder="请输入内容"></el-input>
         <label>工具权限：</label>
-        <el-select v-model="input2" size="mini" placeholder="请选择">
+        <el-select v-model="power1" size="mini" placeholder="请选择">
           <el-option
             v-for="item in opt"
             :key="item.id"
@@ -19,7 +19,7 @@
             :value="item.id">
           </el-option>
         </el-select>
-        <el-button type="primary" size="mini">查询</el-button>
+        <el-button type="primary" size="mini" @click="query">查询</el-button>
         <el-button size="mini" @click="reset">重置</el-button>
       </div>
     </div>
@@ -29,7 +29,7 @@
     </div>
     <div class="content">
       <el-table
-        :data="this.tableData"
+        :data="tableDatas"
         style="width: 100%"
         :header-cell-style="{'font-weight': 'bold', 'background-color': '#F8F8F8'}"
         :default-sort = "{prop: 'date', order: 'descending'}"
@@ -144,17 +144,18 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex'
+  import { mapState } from 'vuex'
   import { getCompanyList, updateStatus, addCompany, delCompany, updatePassword, updateInfo } from '@/api/institution'
   import { getToolList } from '@/api/tool'
   export default {
     data() {
       return {
-        role: ['全部', '老师', '学生'],
         use: ['全部', '启用', '禁用'],
-        input: '',
-        input1: '',
-        input2: '',
+        using: '全部',
+        username: '',
+        name1: '',
+        power1: '',
+        ifSearch: false,
         currentPage: 1,
         dialogFormVisible: false,
         dialogVisible: false,
@@ -177,23 +178,16 @@
     computed: {
       ...mapState([
           'user',
-          'identity',
-          'options',
-      ]),
-      tableData() {
-        const arr = this.chunk(this.tableDatas, 10)
-        return arr[this.currentPage - 1]
-      }
+      ])
     },
     methods: {
-      ...mapMutations([
-            'CHANGE_OPTIONS',
-      ]),
-      select(key, value) {
-        this.CHANGE_OPTIONS([key, value])
+      select(value) {
+        this.using = value
+        this.search()
       },
       handleCurrentChange(val) {
         this.currentPage = val
+        this.search()
       },
       create() {
         this.dialogFormVisible = true
@@ -201,40 +195,48 @@
       add() {
         this.form.token = this.user.Token
         addCompany(this.form).then(res => {
-            if(res.Flag == 100) {
+            if(res.flag == 100) {
                 this.dialogFormVisible = false
-                this.refresh()
+                this.reset()
             }
         })
       },
+      query() {
+        this.ifSearch = true
+        this.search()
+      },
       reset() {
-        this.input = ''
-        this.input1 = ''
-        this.input2 = ''
+        this.using = '全部'
+        this.username = ''
+        this.name1 = ''
+        this.power1 = ''
+        this.currentPage = 1
+        this.ifSearch = false
+        this.search()
       },
       refresh() {
         const data = {
-          token: this.user.Token
+          token: this.user.Token,
+          page: this.currentPage
         }
         getCompanyList(data).then(res => {
             this.tableDatas = res.data
         })
       },
-      chunk(arr, size) {
-        var objArr = new Array();
-        var index = 0;
-        var objArrLen = arr.length/size;
-        for(var i=0;i<objArrLen;i++){
-          var arrTemp = new Array();
-          for(var j=0;j<size;j++){
-              arrTemp[j] = arr[index++];
-              if(index==arr.length){
-                  break;
-              }
-          }
-          objArr[i] = arrTemp;
+      search() {
+        const data = {
+          token: this.user.Token,
+          page: this.currentPage,
+          status: this.using == '全部' ? -1 : this.using == '启用' ? 0 : 1
         }
-        return objArr;
+        if(this.ifSearch) {
+          data.username = this.username
+          data.name = this.name1
+          data.power = this.power1
+        }
+        getCompanyList(data).then(res => {
+            this.tableDatas = res.data
+        })
       },
       view(row) {
         this.dialogVisible = true
@@ -256,7 +258,7 @@
             power: this.power
           }
           updateInfo(data).then(res => {
-            if(res.Flag == 100) {
+            if(res.flag == 100) {
               this.dialogVisible1 = false
               this.refresh()
             }
@@ -269,7 +271,7 @@
           status: status ? 0 : 1
         }
         updateStatus(data).then(res => {
-          if(res.Flag == 100) {
+          if(res.flag == 100) {
             this.refresh()
           }
         })
@@ -280,7 +282,7 @@
           token: this.user.Token,
         }
         delCompany(data).then(res => {
-          if(res.Flag == 100) {
+          if(res.flag == 100) {
             this.refresh()
           }
         })
@@ -291,7 +293,7 @@
           token: this.user.Token,
         }
         updatePassword(data).then(res => {
-          if(res.Flag == 100) {
+          if(res.flag == 100) {
             this.refresh()
           }
         })

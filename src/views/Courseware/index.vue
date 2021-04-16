@@ -3,16 +3,25 @@
     <div class="search">
       <div>
         <label>上下线：</label>
-        <i v-for="(item, index) in ifOnline" :key="index" :class="item == options.ifOnline ? 'active' : ''" @click="select('ifOnline', item)">{{ item }}</i>
+        <i v-for="(item, index) in ifOnline" :key="index" :class="item == online ? 'active' : ''" @click="selectifOnline(item)">{{ item }}</i>
       </div>
       <div>
         <label>状态：</label>
-        <i v-for="(item, index) in state" :key="index" :class="item == options.state ? 'active' : ''" @click="select('state', item)">{{ item }}</i>
+        <i v-for="(item, index) in state" :key="index" :class="item == status ? 'active' : ''" @click="selectstate(item)">{{ item }}</i>
       </div>
       <div>
+        <label>课件：</label>
+        <el-input v-model="title" size="mini" placeholder="请输入内容"></el-input>
+        <label>创建时间：</label>
+        <el-date-picker
+          v-model="stime"
+          size="mini"
+          type="datetime"
+          placeholder="选择日期时间">
+        </el-date-picker>
         <label>标签：</label>
         <el-select
-            v-model="value4"
+            v-model="label"
             class="label"
             multiple
             filterable 
@@ -26,9 +35,11 @@
             v-for="item in option"
             :key="item.value"
             :label="item.label"
-            :value="item.value">
+            :value="item.label">
             </el-option>
         </el-select>
+        <el-button type="primary" size="mini" @click="query">查询</el-button>
+        <el-button size="mini" @click="reset">重置</el-button>
       </div>
     </div>
     <div class="operation">
@@ -59,7 +70,11 @@
           </template>
         </el-table-column>
         <el-table-column align="center" width="80px" prop="learnTime" label="课件时长"></el-table-column>
-        <el-table-column align="center" width="200px" prop="createtime" label="创建时间" sortable></el-table-column>
+        <el-table-column align="center" width="200px" label="创建时间" sortable>
+          <template slot-scope="scope">
+            <span>{{ formatDate(scope.row.createtime) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" width="70px" label="状态">
           <template slot-scope="scope">
             <span :class="scope.row.finishStatus ? 'done' : 'undone'">{{ scope.row.finishStatus ? '完成' : '未完成' }}</span>
@@ -120,31 +135,36 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex'
+  import { mapState } from 'vuex'
   import { getCoursewareList, addCourseware, delCourseware } from '@/api/teachercourse'
   export default {
     data() {
       return {
         ifOnline: ['全部', '上线', '下线'],
         state: ['全部', '已完成', '未完成'],
+        online: '全部',
+        status: '全部',
+        title: '',
+        stime: '',
         input: '',
-        value4: [],
+        label: [],
+        ifSearch: false,
         option: [
             {
-                value: '选项1',
-                label: '黄金糕'
+                value: '1',
+                label: '新入职'
             }, {
-                value: '选项2',
-                label: '双皮奶'
+                value: '2',
+                label: '晚会'
             }, {
-                value: '选项3',
-                label: '蚵仔煎'
+                value: '3',
+                label: '体育'
             }, {
-                value: '选项4',
-                label: '龙须面'
+                value: '4',
+                label: '电竞'
             }, {
-                value: '选项5',
-                label: '北京烤鸭'
+                value: '5',
+                label: '培训'
             }
         ],
         currentPage: 1,
@@ -160,22 +180,24 @@
     },
     computed: {
       ...mapState([
-          'user',
-          'options',
+          'user'
       ]),
       courseId() {
         return this.$route.query.data
       }
     },
     methods: {
-      ...mapMutations([
-            'CHANGE_OPTIONS',
-      ]),
-      select(key, value) {
-        this.CHANGE_OPTIONS([key, value])
+      selectstate(value) {
+        this.status = value
+        this.search()
+      },
+      selectifOnline(value) {
+        this.online = value
+        this.search()
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        this.currentPage = val
+        this.search()
       },
       handleEdit() {
 
@@ -188,9 +210,42 @@
         this.form.subjectId = this.courseId
         this.form.label = this.form.label.join(',')
         addCourseware(this.form).then(res => {
-          if(res.Flag == 100) {
+          if(res.flag == 100) {
             this.dialogFormVisible = false
             this.$router.push('production')
+          }
+        })
+      },
+      reset() {
+        this.online = '全部'
+        this.status = '全部'
+        this.title = ''
+        this.stime = ''
+        this.label = []
+        this.currentPage = 1
+        this.ifSearch = false
+        this.search()
+      },
+      query() {
+        this.ifSearch = true
+        this.search()
+      },
+      search() {
+        const data = {
+          token: this.user.Token,
+          subjectId: this.courseId,
+          page: this.currentPage,
+          status: this.online == '全部' ? '' : this.online == '上线' ? 1 : 0,
+          finishStatus: this.status == '全部' ? '' : this.status == '已完成' ? 1 : 0
+        }
+        if(this.ifSearch) {
+          data.title = this.title
+          data.stime = this.stime ? this.stime.getTime()/1000 : ''
+          data.label = this.label.join(',')
+        }
+        getCoursewareList(data).then(res => {
+          if(res.flag == 100) {
+            this.tableData = res.data
           }
         })
       },
@@ -200,7 +255,7 @@
           subjectId: this.courseId
         }
         getCoursewareList(data).then(res => {
-          if(res.Flag == 100) {
+          if(res.flag == 100) {
             this.tableData = res.data
           }
         })
@@ -211,10 +266,29 @@
           id
         }
         delCourseware(data).then(res => {
-          if(res.Flag == 100) {
+          if(res.flag == 100) {
             this.refresh()
           }
         })
+      },
+      formatDate (value) {
+        if (typeof (value) == 'undefined') {
+            return ''
+        } else {
+            let date = new Date(parseInt(value * 1000))
+            let y = date.getFullYear()
+            let MM = date.getMonth() + 1
+            MM = MM < 10 ? ('0' + MM) : MM
+            let d = date.getDate()
+            d = d < 10 ? ('0' + d) : d
+            let h = date.getHours()
+            h = h < 10 ? ('0' + h) : h
+            let m = date.getMinutes()
+            m = m < 10 ? ('0' + m) : m
+            let s = date.getSeconds()
+            s = s < 10 ? ('0' + s) : s
+            return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
+        }
       }
     },
     mounted() {

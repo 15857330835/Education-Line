@@ -15,7 +15,7 @@
                 <el-menu-item index="2-2">选项2</el-menu-item>
                 <el-menu-item index="2-3">选项3</el-menu-item>
             </el-submenu> -->
-            <div class="search" v-if="this.ifSearch">
+            <!-- <div class="search" v-if="this.ifSearch">
               <label>{{ this.$route.path == '/courseware' ? '课件：' :  '课程：'}}</label>
               <el-input
                 placeholder="请输入"
@@ -30,12 +30,11 @@
                 type="datetime"
                 size="mini"
                 placeholder="选择日期"
-                align="right"
-                :picker-options="pickerOptions">
+                align="right">
               </el-date-picker>
               <el-button type="primary" plain size="mini" round v-if="this.$route.path !== '/course'">查询</el-button>
               <el-button type="primary" plain size="mini" round>重置</el-button>
-            </div>
+            </div> -->
         </el-menu>
     </div>
 </template>
@@ -103,29 +102,7 @@
             }
           ]
         },
-        value2: '',
-        pickerOptions: {
-          shortcuts: [{
-            text: '今天',
-            onClick(picker) {
-              picker.$emit('pick', new Date());
-            }
-          }, {
-            text: '昨天',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24);
-              picker.$emit('pick', date);
-            }
-          }, {
-            text: '一周前',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', date);
-            }
-          }]
-        },
+        value2: ''
       };
     },
     computed: {
@@ -150,7 +127,7 @@
             return this.user ? this.user.username : ''
         },
         ifSearch() {
-          let arr = ['/courseCatalog', '/assess', '/template', '/history', '/account', '/authorware', '/introduce', '/agencyAccount']
+          let arr = ['/courseCatalog', '/assess', '/template', '/history', '/account', '/authorware', '/introduce', '/agencyAccount', '/setup', '/course']
           return arr.indexOf(this.$route.path) == -1 ? true : false 
         }
     },
@@ -190,7 +167,7 @@
                     token: this.user.token
                 }),
                 function(res) {
-                    if(res.Flag == 100) {
+                    if(res.flag == 100) {
                       that.$router.push('/')
                     }
                 },

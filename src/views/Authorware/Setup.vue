@@ -4,7 +4,7 @@
         <h3>数据配置</h3>
         <div>
           <label>XX接口地址：</label>
-          <el-input placeholder="请输入内容" v-model="input1">
+          <el-input placeholder="请输入内容" v-model="connectAddr">
             <template slot="prepend">Http://</template>
             <template slot="append">.com</template>
           </el-input>
@@ -52,42 +52,52 @@
         </div>
         <h3>工具介绍</h3>
         <div>
-            <label>课程标题：</label>
+            <label>标题：</label>
             <el-input v-model="title" placeholder="请输入课程标题"></el-input>
         </div>
         <div>
-            <label style="height: 96px">描述：</label>
+            <label style="height: 96px">工具介绍：</label>
             <el-input type="textarea" resize= "none" rows="4" maxlength="500" show-word-limit v-model="remarks" placeholder="请输入课程描述"></el-input>
         </div>
         <div class="btn">
-          <el-button>取消</el-button>
-          <el-button type="primary">确定</el-button>
+          <el-button @click="cancel">取消</el-button>
+          <el-button type="primary" @click="modify ? change() : create()">确定</el-button>
         </div>
       </div>
   </div>
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+  import { addTool, getToolInfo, updateTool } from '@/api/tool'
   export default {
     components: {
     },
     data() {
       return {
-        input1: '',
+        connectAddr: '',
         title: '',
         remarks: '',
+        coverAddr: '',
         dialogImageUrl: '',
         dialogVisible: false,
         disabled: false,
       };
     },
     computed: {
-        
+      ...mapState([
+        'user',
+        'modify'
+      ]),
     },
     methods: {
         onChange(file) {
             $('.el-upload').css({'display': 'none'})
-            this.coverAddr = file.url
+            let reader = new FileReader()
+            reader.readAsDataURL(file.raw)
+            reader.onload = () => {
+              this.coverAddr = reader.result
+            }
         },
         handleRemove() {
             this.$refs.upload.clearFiles()
@@ -98,9 +108,54 @@
             this.dialogImageUrl = file.url;
             this.dialogVisible = true;
         },
+        cancel() {
+            this.$router.go(-1)
+        },
+        create() {
+            const data = {
+              token: this.user.Token,
+              title: this.title,
+              connectAddr: 'http://' + this.connectAddr + '.com',
+              coverAddr: this.coverAddr,
+              remarks: this.remarks
+            }
+            addTool(data).then(res => {
+              if(res.flag == 100) {
+                this.$router.go(-1)
+              }
+            })
+        },
+        change() {
+          const data = {
+              token: this.user.Token,
+              id: this.$route.query.id,
+              title: this.title,
+              connectAddr: 'http://' + this.connectAddr + '.com',
+              coverAddr: this.coverAddr,
+              remarks: this.remarks
+          }
+          updateTool(data).then(res => {
+              if(res.flag == 100) {
+                this.$router.go(-1)
+              }
+          })
+        }
     },
     mounted() {
-      
+      if(this.modify) {
+        const data = {
+          token: this.user.Token,
+          id: this.$route.query.id
+        }
+        getToolInfo(data).then(res => {
+        if(res.flag == 100) {
+          this.title = res.data.title
+          this.remarks = res.data.remarks
+          this.coverAddr = res.data.coverAddr
+          this.connectAddr = res.data.connectAddr.replace('http://', '').replace('.com', '')
+        }
+      })
+      }
     }
   }
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <div id="template">
+  <div id="institutionTemplate">
       <h3>{{ modify ? '修改课程' : '新建课程' }}</h3>
       <div class="content">
         <div>
@@ -100,7 +100,7 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { addSubject, getSubjectInfo, updateSubject } from '@/api/teachercourse'
+  import { addSubject, getSubjectInfo, updateSubject } from '@/api/institutioncourse'
   import { getToolList } from '@/api/tool'
   export default {
     components: {
@@ -240,7 +240,7 @@
 </script>
 
 <style lang="scss">
-#template {
+#institutionTemplate {
     height: 95%;
     background: white;
     border-radius: 10px;

@@ -8,6 +8,7 @@ import Setup from '../views/Authorware/Setup.vue'
 import Courseware from '../views/Courseware'
 import CourseManagement from '../views/CourseManagement'
 import InstitutionCourse from '../views/InstitutionCourse'
+import InstitutionTemplate from '../views/InstitutionCourse/InstitutionTemplate.vue'
 import Assess from '../views/Assess'
 import Account from '../views/Account'
 import AgencyAccount from '../views/Account/AgencyAccount.vue'
@@ -99,6 +100,11 @@ const routes = [
     path: '/institutionCourse',
     name: 'InstitutionCourse',
     component: InstitutionCourse
+  },
+  {
+    path: '/institutionTemplate',
+    name: 'InstitutionTemplate',
+    component: InstitutionTemplate
   },
 ]
 

@@ -3,12 +3,14 @@
     <div class="search">
       <div>
         <label>分类：</label>
-        <i v-for="(item, index) in classify" :key="index" :class="item == options.classify ? 'active' : ''" @click="select('classify', item)">{{ item }}</i>
+        <i v-for="(item, index) in classify" :key="index" :class="item == classifying ? 'active' : ''" @click="select(item)">{{ item }}</i>
       </div>  
       <div>
+        <label>课程：</label>
+        <el-input v-model="title" size="mini" placeholder="请输入内容"></el-input>
         <label>标签：</label>
         <el-select
-            v-model="value"
+            v-model="label"
             class="label"
             multiple
             filterable 
@@ -20,24 +22,26 @@
             v-for="item in option"
             :key="item.value"
             :label="item.label"
-            :value="item.value">
+            :value="item.label">
             </el-option>
         </el-select>
+        <el-button type="primary" size="mini" @click="query">查询</el-button>
+        <el-button size="mini" @click="reset">重置</el-button>
       </div>
     </div>
     <div class="content">
-      <div class="course" v-for="(course, index) in courses" :key="index" @click="goto($event, $route.fullPath == '/course?2' ? 'courseCatalog?2' : 'courseCatalog?1')">
+      <div class="course" v-for="(course, index) in courses" :key="index" @click="goto($event, course.id)">
         <div class="top">
           <div class="tag" :class="course.state == '通过' ? 'through' : course.state == '未通过' ? 'nothrough' : 'nofinish'" v-if="$route.fullPath == '/course?2'"></div>
-          <el-tag effect="dark" size="mini">新入职</el-tag>
+          <el-tag effect="dark" size="mini">{{ course.label }}</el-tag>
           <p class="title">{{ course.title }}</p>
           <el-tooltip class="item" popper-class="prompt" effect="dark" :content="course.remarks" placement="top">
             <p class="intro">{{ course.remarks }}</p>
           </el-tooltip>
         </div>
         <div class="center">
-          <p>学习周期：3天 | 8课时<i>奥点教育</i></p>
-          <p>创建时间：2020-12-30 12:54:00</p>
+          <p>学习周期：{{ course.period }}天 | 8课时<i>奥点教育</i></p>
+          <p>创建时间：{{ formatDate(course.createtime) }}</p>
           <div class="schedule" v-if="$route.fullPath == '/course?2'">
             <div v-if="course.state == '未完成'">
               进度：{{ course.schedule }}
@@ -58,7 +62,8 @@
               <i class="original">原价￥{{ course.price }}</i>
             </div>
         </div>
-        <div class="mask" @click="buy($event)">立即购买</div>
+        <div class="mask" @click="buy($event, course.id, course.priceDiscount)" v-if="$route.fullPath == '/course?1'">立即购买</div>
+        <div class="mask" v-else>马上学习</div>
       </div>
         <el-dialog
           title="课程评价"
@@ -86,95 +91,195 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
-  import { getSubjectList } from '@/api/studentcourse'
+  import { getSubjectList, signUpSubject, getMySubjectList } from '@/api/studentcourse'
+  import { getToolList } from '@/api/tool'
   export default {
     data() {
       return {
-        classify: ['全部', '云非编', '云导播', '云精剪'],
-        value: [],
+        classify: ['全部'],
+        classifying: '全部',
+        title: '',
+        label: [],
         input2: '',
         value2: null,
+        ifSearch: false,
         option: [
             {
-                value: '选项1',
-                label: '黄金糕'
+                value: '1',
+                label: '新入职'
             }, {
-                value: '选项2',
-                label: '双皮奶'
+                value: '2',
+                label: '晚会'
             }, {
-                value: '选项3',
-                label: '蚵仔煎'
+                value: '3',
+                label: '体育'
             }, {
-                value: '选项4',
-                label: '龙须面'
+                value: '4',
+                label: '电竞'
             }, {
-                value: '选项5',
-                label: '北京烤鸭'
+                value: '5',
+                label: '培训'
             }
         ],
         dialogVisible: false,
         currentPage: 1,
-        courses: []
+        courses: [],
+        tool: []
       };
     },
     computed: {
       ...mapState([
           'user',
-          'options',
-      ])
+      ]),
+      route() {
+        return this.$route.fullPath
+      }
+    },
+    watch: {
+      route() {
+        this.courses = []
+        this.refresh()
+      }
     },
     methods: {
       ...mapMutations([
-            'CHANGE_OPTIONS',
-            'CHANGE_ACTIVEINDEX'
+            'CHANGE_ACTIVEINDEX',
+            'CHANGE_OWN'
       ]),
-      select(key, value) {
-        this.CHANGE_OPTIONS([key, value])
+      select(value) {
+        this.classifying = value
+        this.search()
       },
       handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
+        this.currentPage = val
+        this.search()
       },
-      goto(e, address) {
+      goto(e, id) {
         e.stopPropagation()
+        const own = this.$route.fullPath == '/course?2' ? true : false
+        this.CHANGE_OWN(own)
         this.CHANGE_ACTIVEINDEX('2')
-        this.$router.push(address)
+        this.$router.push({path: 'courseCatalog', query: {id}})
       },
       evaluate(e) {
         e.stopPropagation()
         this.dialogVisible = true
       },
+      reset() {
+        this.classifying = '全部'
+        this.title = ''
+        this.label = []
+        this.currentPage = 1
+        this.ifSearch = false
+        this.search()
+      },
+      query() {
+        this.ifSearch = true
+        this.search()
+      },
+      search() {
+        const tool = this.tool.filter(item => item.title == this.classifying)[0]
+        const data = {
+          token: this.user.Token,
+          page: this.currentPage,
+          toolId: tool ? tool.id : ''
+        }
+        if(this.ifSearch) {
+          data.title = this.title
+          data.label = this.label.join(',')
+        }
+        if(this.$route.fullPath == '/course?1') {
+          getSubjectList(data).then(res => {
+            if(res.flag == 100) {
+              this.courses = res.data
+            }
+          })
+        }else {
+          getMySubjectList(data).then(res => {
+            if(res.flag == 100) {
+              this.courses = res.data
+            }
+          })
+        }
+      },
       refresh() {
         const data = {
           token: this.user.Token
         }
-        getSubjectList(data).then(res => {
-          if(res.Flag == 100) {
-            this.courses = res.data
-          }
-        })
+        if(this.$route.fullPath == '/course?1') {
+          getSubjectList(data).then(res => {
+            if(res.flag == 100) {
+              this.courses = res.data
+            }
+          })
+        }else {
+          getMySubjectList(data).then(res => {
+            if(res.flag == 100) {
+              this.courses = res.data
+            }
+          })
+        }
       },
-      buy(e) {
+      buy(e, id, price) {
         e.stopPropagation()
-        this.$confirm('购买此课程<br><i style="color:#FA6400">将花费780元</i>，您还要继续吗？', '', {
+        this.$confirm(`购买此课程<br><i style="color:#FA6400">将花费${price}元</i>，您还要继续吗？`, '', {
           confirmButtonText: '继续',
           cancelButtonText: '取消',
           dangerouslyUseHTMLString: true,
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '购买成功!'
-          });
+          const data = {
+            token: this.user.Token,
+            subjectId: id
+          }
+          signUpSubject(data).then(res => {
+            if(res.flag == 100) {
+              this.$message({
+                type: 'success',
+                message: '购买成功!'
+              });
+            }
+          })
         }).catch(() => {
           this.$message({
             type: 'info',
             message: '已取消'
           });          
         });
-      }
+      },
+      formatDate (value) {
+        if (typeof (value) == 'undefined') {
+            return ''
+        } else {
+            let date = new Date(parseInt(value * 1000))
+            let y = date.getFullYear()
+            let MM = date.getMonth() + 1
+            MM = MM < 10 ? ('0' + MM) : MM
+            let d = date.getDate()
+            d = d < 10 ? ('0' + d) : d
+            let h = date.getHours()
+            h = h < 10 ? ('0' + h) : h
+            let m = date.getMinutes()
+            m = m < 10 ? ('0' + m) : m
+            let s = date.getSeconds()
+            s = s < 10 ? ('0' + s) : s
+            return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
+        }
+    }
     },
     mounted() {
       this.refresh()
+      const data = {
+        token: this.user.Token
+      }
+      getToolList(data).then(res => {
+        if(res.flag == 100) {
+          this.tool = res.data
+          res.data.forEach(item => {
+            this.classify.push(item.title)
+          })
+        }
+      })
     }
   }
 </script>

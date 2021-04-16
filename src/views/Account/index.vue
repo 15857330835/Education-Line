@@ -3,18 +3,18 @@
     <div class="search">
       <div>
         <label>角色：</label>
-        <i v-for="(item, index) in role" :key="index" :class="item == options.role ? 'active' : ''" @click="select('role', item)">{{ item }}</i>
+        <i v-for="(item, index) in roles" :key="index" :class="item == role ? 'active' : ''" @click="selectrole(item)">{{ item }}</i>
       </div>
       <div>
         <label>状态：</label>
-        <i v-for="(item, index) in use" :key="index" :class="item == options.use ? 'active' : ''" @click="select('use', item)">{{ item }}</i>
+        <i v-for="(item, index) in use" :key="index" :class="item == using ? 'active' : ''" @click="selectusing(item)">{{ item }}</i>
       </div>
       <div>
         <label>账号：</label>
-        <el-input v-model="input" size="mini" placeholder="请输入内容"></el-input>
+        <el-input v-model="username" size="mini" placeholder="请输入内容"></el-input>
         <label>姓名：</label>
-        <el-input v-model="input1" size="mini" placeholder="请输入内容"></el-input>
-        <el-button type="primary" size="mini">查询</el-button>
+        <el-input v-model="name" size="mini" placeholder="请输入内容"></el-input>
+        <el-button type="primary" size="mini" @click="query">查询</el-button>
         <el-button size="mini" @click="reset">重置</el-button>
       </div>
     </div>
@@ -24,7 +24,7 @@
     </div>
     <div class="content">
       <el-table
-        :data="this.tableData"
+        :data="tableDatas"
         style="width: 100%"
         :header-cell-style="{'font-weight': 'bold', 'background-color': '#F8F8F8'}"
         :default-sort = "{prop: 'date', order: 'descending'}"
@@ -153,17 +153,19 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex'
+  import { mapState } from 'vuex'
   import { getAccountList, addAccount, updateStatus, updatePassword, updatePower } from '@/api/account'
   import { getToolList } from '@/api/tool'
   export default {
     data() {
       return {
-        role: ['全部', '老师', '学生'],
+        roles: ['全部', '老师', '学生'],
         use: ['全部', '启用', '禁用'],
-        input: '',
-        input1: '',
-        input2: '',
+        role: '全部',
+        using: '全部',
+        username: '',
+        name: '',
+        ifSearch: false,
         currentPage: 1,
         dialogFormVisible1: false,
         dialogVisible: false,
@@ -193,23 +195,20 @@
     computed: {
       ...mapState([
           'user',
-          'identity',
-          'options',
-      ]),
-      tableData() {
-        const arr = this.chunk(this.tableDatas, 10)
-        return arr[this.currentPage - 1]
-      }
+      ])
     },
     methods: {
-      ...mapMutations([
-            'CHANGE_OPTIONS',
-      ]),
-      select(key, value) {
-        this.CHANGE_OPTIONS([key, value])
+      selectrole(value) {
+        this.role = value
+        this.search()
+      },
+      selectusing(value) {
+        this.using = value
+        this.search()
       },
       handleCurrentChange(val) {
         this.currentPage = val
+        this.search()
       },
       create() {
         this.dialogFormVisible1 = true
@@ -217,40 +216,48 @@
       add() {
         this.form1.token = this.user.Token
         addAccount(this.form1).then(res => {
-          if(res.Flag == 100) {
+          if(res.flag == 100) {
             this.dialogFormVisible1 = false
-            this.refresh()
+            this.reset()
           }
         })
       },
+      query() {
+        this.ifSearch = true
+        this.search()
+      },
       reset() {
-        this.input = ''
-        this.input1 = ''
-        this.input2 = ''
+        this.role = '全部'
+        this.using = '全部'
+        this.username = ''
+        this.name = ''
+        this.currentPage = 1
+        this.ifSearch = false
+        this.search()
       },
       refresh() {
         const data = {
-          token: this.user.Token
+          token: this.user.Token,
+          page: this.currentPage
         }
         getAccountList(data).then(res => {
           this.tableDatas = res.data
         })
       },
-      chunk(arr, size) {
-        var objArr = new Array();
-        var index = 0;
-        var objArrLen = arr.length/size;
-        for(var i=0;i<objArrLen;i++){
-          var arrTemp = new Array();
-          for(var j=0;j<size;j++){
-              arrTemp[j] = arr[index++];
-              if(index==arr.length){
-                  break;
-              }
-          }
-          objArr[i] = arrTemp;
+      search() {
+        const data = {
+          token: this.user.Token,
+          page: this.currentPage,
+          status: this.using == '全部' ? -1 : this.using == '启用' ? 0 : 1,
+          type: this.role == '全部' ? -1 : this.role == '老师' ? 1 : 2
         }
-        return objArr;
+        if(this.ifSearch) {
+          data.username = this.username
+          data.name = this.name
+        }
+        getAccountList(data).then(res => {
+            this.tableDatas = res.data
+        })
       },
       view(row) {
         this.dialogVisible = true
@@ -270,7 +277,7 @@
             power: this.power
           }
           updatePower(data).then(res => {
-            if(res.Flag == 100) {
+            if(res.flag == 100) {
               this.dialogVisible1 = false
               this.refresh()
             }
@@ -283,7 +290,7 @@
           status: status ? 0 : 1
         }
         updateStatus(data).then(res => {
-          if(res.Flag == 100) {
+          if(res.flag == 100) {
             this.refresh()
           }
         })
@@ -294,7 +301,7 @@
           token: this.user.Token,
         }
         updatePassword(data).then(res => {
-          if(res.Flag == 100) {
+          if(res.flag == 100) {
             this.refresh()
           }
         })

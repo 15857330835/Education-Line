@@ -2,13 +2,13 @@
   <div id="courseCatalog">
       <div class="head">
           <div class="title">
-              <h2>新入职员工考核</h2>
-              <el-tag effect="dark" size="mini">新入职</el-tag>
+              <h2>{{ courseInfo.title }}</h2>
+              <el-tag effect="dark" size="mini">{{ courseInfo.label }}</el-tag>
               <i>奥点教育</i>
-              <el-button type="info">信息按钮</el-button>
+              <el-button type="info" v-if="own">已报名</el-button>
           </div>
           <div class="details">
-              <p><i>最近在学  2003人</i><i>累计订阅 218215人</i><i>好评度100%</i><i>8课时</i><i>学习周期3天</i></p>
+              <p><i>最近在学  2003人</i><i>累计订阅 218215人</i><i>好评度100%</i><i>8课时</i><i>学习周期{{ courseInfo.period }}天</i></p>
           </div>
           <el-menu :default-active="this.activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
             <el-menu-item index="1">课程概述</el-menu-item>
@@ -19,28 +19,28 @@
       <div class="content"> 
         <div class="overview" v-if="activeIndex == 1">
           <label>简介：</label>
-          <p>《财政学》：也称《政府经济学》，它是经济学中的一个分支。其研究对象是政府经济行为的规律。它主要回答政府为什么要介入人们的经济生活、是怎样介入、介入之后对人们的经济行为会产生什么样的影响以及应该怎样介入等基本问题。它通常包括基础理论、财政支出、财政收入、财政政策和财政体制等四个方面的内容。财政学是财经类专业的学生必修的专业基础课程之一。</p>
+          <p>{{ courseInfo.remarks }}</p>
         </div>
         <div class="directory" v-else-if="activeIndex == 2">
           <div class="block" v-for="(item, index) in coursewares" :key="index">
             <div class="img"></div>
             <div class="introduce">
               <h3>{{ index + 1 > 9 ? (index + 1 + item.title) : ('0' + (index + 1 + item.title))}}
-                <i :class="item.state == '已通过' ? 'through' : item.state == '未通过' ? 'nothrough' : 'nofinish'" v-if="$route.fullPath == '/courseCatalog?2'">{{ item.state }}</i>
+                <i :class="item.state == '已通过' ? 'through' : item.state == '未通过' ? 'nothrough' : 'nofinish'" v-if="own">{{ item.status }}</i>
               </h3>
-              <p>{{ item.text }}</p>
+              <p>{{ item.remarks }}</p>
             </div>
             <div class="video">
               <div class="title">
                 <i class="el-icon-video-play"></i>
                 <h4>{{ item.title }}</h4>
-                <p>({{ item.time }})</p>
+                <p>({{ item.learnTime }})</p>
               </div>
               <div>
                 <el-button plain @click="play">播放课件</el-button>
-                <el-button plain v-if="$route.fullPath == '/courseCatalog?2'">成果</el-button>
-                <el-button plain v-if="$route.fullPath == '/courseCatalog?2'">考核</el-button>
-                <el-button plain v-if="$route.fullPath == '/courseCatalog?2'" @click="history">历史记录</el-button>
+                <el-button plain v-if="own">成果</el-button>
+                <el-button plain v-if="own">考核</el-button>
+                <el-button plain v-if="own" @click="history">历史记录</el-button>
               </div>
             </div>
           </div>
@@ -91,34 +91,14 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
+  import { getSubjectInfo, getCoursewareList } from '@/api/studentcourse'
   export default {
     components: {
     },
     data() {
       return {
-        coursewares: [
-          {
-            title: '课件',
-            state: '已通过',
-            text: '这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍',
-            img: '',
-            time: '8分20秒'
-          },
-          {
-            title: '课件',
-            state: '未通过',
-            text: '这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍',
-            img: '',
-            time: '8分20秒'
-          },
-          {
-            title: '课件',
-            state: '未完成',
-            text: '这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍这是课件介绍',
-            img: '',
-            time: '8分20秒'
-          }
-        ],
+        courseInfo: '',
+        coursewares: [],
         radio: 3,
         value: 3.7,
         dialogVisible: false,
@@ -137,6 +117,8 @@
     },
     computed: {
       ...mapState([
+          'user',
+          'own',
           'activeIndex',
       ])
     },
@@ -155,7 +137,24 @@
       }
     },
     mounted() {
-      
+      const data = {
+        token: this.user.Token,
+        id: this.$route.query.id
+      }
+      const data1 = {
+        token: this.user.Token,
+        subjectId: this.$route.query.id
+      }
+      getSubjectInfo(data).then(res => {
+        if(res.flag == 100) {
+          this.courseInfo = res.data
+        }
+      })
+      getCoursewareList(data1).then(res => {
+        if(res.flag == 100) {
+          this.coursewares = res.data
+        }
+      })
     }
   }
 </script>

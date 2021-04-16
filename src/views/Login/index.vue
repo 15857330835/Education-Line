@@ -89,7 +89,7 @@
                     password: this.password
                 }),
                 function(res) {
-                    if(res.Flag == 100) {
+                    if(res.flag == 100) {
                         that.CHANGE_USER(res.data)
                          switch (that.role) {
                              case 'human':

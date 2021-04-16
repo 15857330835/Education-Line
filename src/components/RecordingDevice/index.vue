@@ -193,7 +193,7 @@
                 // FileUploaded: function(uploader,file,responseObject){
                 // //上传完成回调
                 // //responseObject.status 是http code
-                // //responseObject.response = {Flag = 100,FlagStrgin = "成功",fileName = "文件名",location = "URL地址"}
+                // //responseObject.response = {flag = 100,FlagStrgin = "成功",fileName = "文件名",location = "URL地址"}
                 // },
                 // ChunkUploaded: function(uploader,file,responseObject){
                 // //上片上传回调

@@ -7,7 +7,7 @@
     <div class="search">
       <div>
         <label>状态：</label>
-        <i v-for="(item, index) in status" :key="index" :class="item == options.status ? 'active' : ''" @click="select('status', item)">{{ item }}</i>
+        <i v-for="(item, index) in status" :key="index" :class="item == status1 ? 'active' : ''" @click="select(item)">{{ item }}</i>
       </div>
       <div>
         <label>姓名：</label>
@@ -22,8 +22,7 @@
           size="mini"
           type="datetime"
           placeholder="选择日期时间"
-          align="right"
-          :picker-options="pickerOptions">
+          align="right">
         </el-date-picker>
         <el-button type="primary" plain round size="mini">查询</el-button>
         <el-button type="primary" plain round size="mini">重置</el-button>
@@ -92,38 +91,16 @@
 </template>
 
 <script>
-  import { mapState, mapMutations } from 'vuex'
   export default {
     data() {
       return {
         status: ['全部', '已通过', '未通过', '未完成'],
+        status1: '全部',
         state: 'course',
         input: '',
         value2: '',
         coursePage: 1,
         coursewarePage: 1,
-        pickerOptions: {
-          shortcuts: [{
-            text: '今天',
-            onClick(picker) {
-              picker.$emit('pick', new Date());
-            }
-          }, {
-            text: '昨天',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24);
-              picker.$emit('pick', date);
-            }
-          }, {
-            text: '一周前',
-            onClick(picker) {
-              const date = new Date();
-              date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit('pick', date);
-            }
-          }]
-        },
         tableData: [{
           name: '陈振兴',
           title: 'title',
@@ -152,19 +129,13 @@
       };
     },
     computed: {
-      ...mapState([
-          'options',
-      ]),
       currentPage() {
         return this.state == 'course' ? this.coursePage : this.coursewarePage
       }
     },
     methods: {
-      ...mapMutations([
-            'CHANGE_OPTIONS',
-      ]),
-      select(key, value) {
-        this.CHANGE_OPTIONS([key, value])
+      select(value) {
+        this.status1 = value
       },
       handleSelect(key) {
         this.state = key

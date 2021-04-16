@@ -2,7 +2,7 @@
   <div id="introduce">
       <div>
         <h3>{{ this.title }}</h3>
-        <p>这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介</p>
+        <p>{{ this.remarks }}</p>
       </div>
   </div>
 </template>
@@ -19,6 +19,9 @@
     computed: {
         title() {
             return this.$route.query.title
+        },
+        remarks() {
+            return this.$route.query.remarks
         }
     },
     methods: {

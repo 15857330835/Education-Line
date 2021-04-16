@@ -35,3 +35,13 @@ export const delSubject = (payload = {}) => {
 export const addSubject = (payload = {}) => {
     return axios.post(url + '/addSubject', payload)
 }
+
+//获取课程详情
+export const getSubjectInfo = (payload = {}) => {
+    return axios.post(url + '/getSubjectInfo', payload)
+}
+
+//更新课程
+export const updateSubject = (payload = {}) => {
+    return axios.post(url + '/updateSubject', payload)
+}
