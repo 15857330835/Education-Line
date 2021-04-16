@@ -169,6 +169,8 @@
                 function(res) {
                     if(res.flag == 100) {
                       that.$router.push('/')
+                    }else {
+                      that.$message.error(res.flagString);
                     }
                 },
                 'json'
@@ -186,7 +188,7 @@
     box-shadow: 0 0 5px 0 rgb(228, 223, 223);
 
     .el-menu {
-        width: 70%;
+        width: 1200px;
         margin: auto;
         border: none;
 

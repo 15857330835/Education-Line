@@ -70,7 +70,11 @@
           title: this.title
         }
         getToolList(data).then(res => {
-          this.templates =  res.data
+          if(res.flag == 100) {
+            this.templates =  res.data
+          }else {
+            this.$message.error(res.flagString);
+          }
         })
       },
       refresh() {
@@ -79,7 +83,11 @@
           token: this.user.Token
         }
         getToolList(data).then(res => {
-          this.templates =  res.data
+          if(res.flag == 100) {
+            this.templates =  res.data
+          }else {
+            this.$message.error(res.flagString);
+          }
         })
       },
       create() {
@@ -100,6 +108,8 @@
         delTool(data).then(res => {
           if(res.flag == 100) {
             this.refresh()
+          }else {
+            this.$message.error(res.flagString);
           }
         })
       }
@@ -114,7 +124,9 @@
 #authorware {
   display: flex;
   height: 95%;
-  padding: 30px 15%;
+  padding: 30px 0;
+  width: 1200px;
+  margin: auto;
   flex-direction: column;
 
   .search {

@@ -213,6 +213,8 @@
           if(res.flag == 100) {
             this.dialogFormVisible = false
             this.$router.push('production')
+          }else {
+            this.$message.error(res.flagString);
           }
         })
       },
@@ -246,6 +248,8 @@
         getCoursewareList(data).then(res => {
           if(res.flag == 100) {
             this.tableData = res.data
+          }else {
+            this.$message.error(res.flagString);
           }
         })
       },
@@ -257,6 +261,8 @@
         getCoursewareList(data).then(res => {
           if(res.flag == 100) {
             this.tableData = res.data
+          }else {
+            this.$message.error(res.flagString);
           }
         })
       },
@@ -268,6 +274,8 @@
         delCourseware(data).then(res => {
           if(res.flag == 100) {
             this.refresh()
+          }else {
+            this.$message.error(res.flagString);
           }
         })
       },
@@ -303,7 +311,9 @@
     background: white;
     border-radius: 10px;
     position: relative;
-    padding: 30px 15%;
+    padding: 30px 0;
+    width: 1200px;
+    margin: auto;
     display: flex;
     flex-direction: column;
 

@@ -148,11 +148,15 @@
       getSubjectInfo(data).then(res => {
         if(res.flag == 100) {
           this.courseInfo = res.data
+        }else {
+          this.$message.error(res.flagString);
         }
       })
       getCoursewareList(data1).then(res => {
         if(res.flag == 100) {
           this.coursewares = res.data
+        }else {
+          this.$message.error(res.flagString);
         }
       })
     }
@@ -168,7 +172,9 @@
     flex-direction: column;
     
     .head {
-        padding: 30px 15% 0;
+        padding: 30px 0 0;
+        width: 1200px;
+        margin: auto;
         background: white;
         text-align: left;
         position: relative;
@@ -219,7 +225,9 @@
     .content {
       flex: 1;
       background: white;
-      padding: 30px 15% 0;
+      padding: 30px 0 0;
+      width: 1200px;
+      margin: auto;
 
       .overview {
         text-align: left;

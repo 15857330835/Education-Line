@@ -122,6 +122,8 @@
             addTool(data).then(res => {
               if(res.flag == 100) {
                 this.$router.go(-1)
+              }else {
+                this.$message.error(res.flagString);
               }
             })
         },
@@ -137,6 +139,8 @@
           updateTool(data).then(res => {
               if(res.flag == 100) {
                 this.$router.go(-1)
+              }else {
+                this.$message.error(res.flagString);
               }
           })
         }
@@ -153,6 +157,8 @@
           this.remarks = res.data.remarks
           this.coverAddr = res.data.coverAddr
           this.connectAddr = res.data.connectAddr.replace('http://', '').replace('.com', '')
+        }else {
+          this.$message.error(res.flagString);
         }
       })
       }

@@ -117,7 +117,7 @@
                                  break;
                          }
                     }else {
-                        that.$message.error(res.FlagString);
+                        that.$message.error(res.flagString);
                         return
                     }
                 },
@@ -139,7 +139,7 @@
     top: 0;
     left: 0;
     z-index: 100;
-    background: url('../../assets/img/登录.png') no-repeat center;
+    background: url('../../assets/img/登录.png') no-repeat center/cover;
     display: flex;
     align-items: center;
     justify-content: center;

@@ -166,6 +166,8 @@
             addSubject(data).then(res => {
                 if(res.flag == 100) {
                     this.$router.go(-1)
+                }else {
+                    this.$message.error(res.flagString);
                 }
             })
         },
@@ -186,6 +188,8 @@
             updateSubject(data).then(res => {
                 if(res.flag == 100) {
                     this.$router.go(-1)
+                }else {
+                    this.$message.error(res.flagString);
                 }
             })
         },
@@ -214,6 +218,8 @@
       getToolList(data).then(res => {
         if(res.flag == 100) {
           this.tool = res.data
+        }else {
+            this.$message.error(res.flagString);
         }
       })
       if(this.modify) {
@@ -232,6 +238,8 @@
                 this.price = res.data.price,
                 this.priceDiscount = res.data.priceDiscount,
                 this.label= res.data.label.split(',')
+            }else {
+                this.$message.error(res.flagString);
             }
         })
       }
@@ -246,7 +254,9 @@
     border-radius: 10px;
     position: relative;
     text-align: left;
-    padding: 30px 15%;
+    padding: 30px 0;
+    width: 1200px;
+    margin: auto;
     display: flex;
     flex-direction: column;
 

@@ -37,7 +37,9 @@
 #introduce {
     height: 95%;
     border-radius: 10px;
-    padding: 30px 15%;
+    padding: 30px 0;
+    width: 1200px;
+    margin: auto;
 
     >div {
         background: white;

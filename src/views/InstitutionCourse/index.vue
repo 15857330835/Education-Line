@@ -196,6 +196,8 @@
         getSubjectList(data).then(res => {
           if(res.flag == 100) {
             this.courses = res.data
+          }else {
+            this.$message.error(res.flagString);
           }
         })
       },
@@ -206,6 +208,8 @@
         getSubjectList(data).then(res => {
           if(res.flag == 100) {
             this.courses = res.data
+          }else {
+            this.$message.error(res.flagString);
           }
         })
       },
@@ -229,6 +233,8 @@
                 type: 'success',
                 message: `${text}成功!`
               });
+            }else {
+              this.$message.error(res.flagString);
             }
           })
         }).catch(() => {
@@ -256,6 +262,8 @@
                 type: 'success',
                 message: '删除成功!'
               });
+            }else {
+              this.$message.error(res.flagString);
             }
           })
         }).catch(() => {
@@ -296,6 +304,8 @@
           res.data.forEach(item => {
             this.classify.push(item.title)
           })
+        }else {
+          this.$message.error(res.flagString);
         }
       })
     }
@@ -304,15 +314,21 @@
 
 <style lang="scss">
 #institutionCourse {
-    height: 95%;
+    height: 90%;
     border-radius: 10px;
     position: relative;
     display: flex;
     flex-direction: column;
+    overflow: auto;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     .search {
-      padding: 15px 15%;
-      margin-bottom: 15px;
+      padding: 15px 0;
+      width: 1200px;
+      margin: auto;
       background: white;
       text-align: left;
 
@@ -350,7 +366,9 @@
     .operation {
       text-align: right;
       margin-bottom: 15px;
-      padding: 0 15%;
+      width: 1200px;
+      margin: auto;
+      margin-bottom: 15px;
 
       button {
         margin-right: 20px;
@@ -360,7 +378,9 @@
     .content {
       flex: 1;
       display: flex;
-      padding: 0 15%;
+      width: 1200px;
+      margin: auto;
+      flex-wrap: wrap;
 
       .course {
         border: 1px solid rgb(242, 242, 242);
@@ -369,7 +389,7 @@
         width: 316px;
         font-size: 12px;
         color: #666666;
-        margin-right: 30px;
+        margin: 0 42px 15px;
         background: white;
         position: relative;
         cursor: pointer;

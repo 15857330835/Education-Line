@@ -198,6 +198,8 @@
             if(res.flag == 100) {
                 this.dialogFormVisible = false
                 this.reset()
+            }else {
+                this.$message.error(res.flagString);
             }
         })
       },
@@ -220,7 +222,11 @@
           page: this.currentPage
         }
         getCompanyList(data).then(res => {
+          if(res.flag == 100) {
             this.tableDatas = res.data
+          }else {
+            this.$message.error(res.flagString);
+          }
         })
       },
       search() {
@@ -235,7 +241,11 @@
           data.power = this.power1
         }
         getCompanyList(data).then(res => {
+          if(res.flag == 100) {
             this.tableDatas = res.data
+          }else {
+            this.$message.error(res.flagString);
+          }
         })
       },
       view(row) {
@@ -261,6 +271,8 @@
             if(res.flag == 100) {
               this.dialogVisible1 = false
               this.refresh()
+            }else {
+              this.$message.error(res.flagString);
             }
           })
       },
@@ -273,6 +285,8 @@
         updateStatus(data).then(res => {
           if(res.flag == 100) {
             this.refresh()
+          }else {
+            this.$message.error(res.flagString);
           }
         })
       },
@@ -284,6 +298,8 @@
         delCompany(data).then(res => {
           if(res.flag == 100) {
             this.refresh()
+          }else {
+            this.$message.error(res.flagString);
           }
         })
       },
@@ -295,6 +311,8 @@
         updatePassword(data).then(res => {
           if(res.flag == 100) {
             this.refresh()
+          }else {
+            this.$message.error(res.flagString);
           }
         })
       }
@@ -305,7 +323,11 @@
         token: this.user.Token
       }
       getToolList(data).then(res => {
-        this.opt =  res.data
+        if(res.flag == 100) {
+          this.opt =  res.data
+        }else {
+          this.$message.error(res.flagString);
+        }
       })
     }
   }
@@ -317,7 +339,9 @@
     background: white;
     border-radius: 10px;
     position: relative;
-    padding: 30px 15%;
+    padding: 30px 0;
+    width: 1200px;
+    margin: auto;
     display: flex;
     flex-direction: column;
 

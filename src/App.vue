@@ -28,7 +28,7 @@
   height: 100%;
 
   #context {
-    background: #F0F2F5;
+    background: white;
     height: 100%;
   }
 }

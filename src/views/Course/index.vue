@@ -192,12 +192,16 @@
           getSubjectList(data).then(res => {
             if(res.flag == 100) {
               this.courses = res.data
+            }else {
+              this.$message.error(res.flagString);
             }
           })
         }else {
           getMySubjectList(data).then(res => {
             if(res.flag == 100) {
               this.courses = res.data
+            }else {
+              this.$message.error(res.flagString);
             }
           })
         }
@@ -210,12 +214,16 @@
           getSubjectList(data).then(res => {
             if(res.flag == 100) {
               this.courses = res.data
+            }else {
+              this.$message.error(res.flagString);
             }
           })
         }else {
           getMySubjectList(data).then(res => {
             if(res.flag == 100) {
               this.courses = res.data
+            }else {
+              this.$message.error(res.flagString);
             }
           })
         }
@@ -238,6 +246,8 @@
                 type: 'success',
                 message: '购买成功!'
               });
+            }else {
+              this.$message.error(res.flagString);
             }
           })
         }).catch(() => {
@@ -278,6 +288,8 @@
           res.data.forEach(item => {
             this.classify.push(item.title)
           })
+        }else {
+          this.$message.error(res.flagString);
         }
       })
     }
@@ -286,14 +298,21 @@
 
 <style lang="scss">
 #allCourse {
-    height: 95%;
+    height: 90%;
     border-radius: 10px;
     position: relative;
     display: flex;
     flex-direction: column;
+    overflow: auto;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     .search {
-      padding: 15px 15%;
+      padding: 15px 0;
+      width: 1200px;
+      margin: auto;
       margin-bottom: 30px;
       background: white;
       text-align: left;
@@ -332,7 +351,9 @@
     .content {
       flex: 1;
       display: flex;
-      padding: 0 15%;
+      width: 1200px;
+      margin: auto;
+      flex-wrap: wrap;
 
       .course {
         border: 1px solid rgb(242, 242, 242);
@@ -341,7 +362,7 @@
         width: 316px;
         font-size: 12px;
         color: #666666;
-        margin-right: 30px;
+        margin: 0 42px 15px;
         background: white;
         position: relative;
         cursor: pointer;
