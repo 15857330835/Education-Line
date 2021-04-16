@@ -1,5 +1,6 @@
 <template>
   <div id="assess">
+    <div id="content">
     <el-menu :default-active="state" class="el-menu-demo" mode="horizontal" @select="handleSelect">
       <el-menu-item index="course">课程</el-menu-item>
       <el-menu-item index="courseware">课件</el-menu-item>
@@ -87,6 +88,7 @@
         :total="50">
       </el-pagination>
     </div>
+    </div>
   </div>
 </template>
 
@@ -160,13 +162,6 @@
 #assess {
     height: 95%;
     background: white;
-    border-radius: 10px;
-    position: relative;
-    padding: 30px 0 0;
-    width: 1200px;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
 
     .el-menu {
       margin-bottom: 30px;
@@ -231,7 +226,7 @@
       }
     }
 
-    >.bottom {
+    .bottom {
         height: 70px;
     }
 }

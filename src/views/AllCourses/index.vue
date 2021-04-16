@@ -257,12 +257,12 @@
 
     .search {
       padding: 15px 0;
-      width: 1200px;
-      margin: auto;
       background: white;
       text-align: left;
 
       >div {
+        width: 1200px;
+        margin: auto;
         margin-bottom: 15px;
 
         >i {
@@ -295,10 +295,8 @@
 
     .operation {
       text-align: right;
-      margin-bottom: 15px;
       width: 1200px;
-      margin: auto;
-      margin-bottom: 15px;
+      margin: 15px auto;
 
       button {
         margin-right: 20px;
@@ -433,10 +431,6 @@
           }
         }
       }
-    }
-
-    >.bottom {
-        height: 70px;
     }
 }
 

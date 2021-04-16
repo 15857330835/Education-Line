@@ -1,5 +1,6 @@
 <template>
   <div id="account">
+    <div id="content">
     <div class="search">
       <div>
         <label>角色：</label>
@@ -148,6 +149,7 @@
         layout="total, prev, pager, next, jumper"
         :total="tableDatas.length">
       </el-pagination>
+    </div>
     </div>
   </div>
 </template>
@@ -343,13 +345,6 @@
 #account {
     height: 95%;
     background: white;
-    border-radius: 10px;
-    position: relative;
-    padding: 30px 0;
-    width: 1200px;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
 
     .search {
       margin-bottom: 30px;

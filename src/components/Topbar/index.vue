@@ -134,6 +134,7 @@
     methods: {
         ...mapMutations([
             'CHANGE_TABKEY',
+            'CHANGE_USER'
         ]),
         switchTab(key) {
             this.CHANGE_TABKEY(key)
@@ -168,6 +169,7 @@
                 }),
                 function(res) {
                     if(res.flag == 100) {
+                      that.CHANGE_USER('')
                       that.$router.push('/')
                     }else {
                       that.$message.error(res.flagString);

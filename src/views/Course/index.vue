@@ -311,13 +311,13 @@
 
     .search {
       padding: 15px 0;
-      width: 1200px;
-      margin: auto;
       margin-bottom: 30px;
       background: white;
       text-align: left;
 
       >div {
+        width: 1200px;
+        margin: auto;
         margin-bottom: 15px;
 
         >i {
@@ -533,10 +533,6 @@
           }
         }
       }
-    }
-
-    >.bottom {
-        height: 70px;
     }
 }
 

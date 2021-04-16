@@ -38,11 +38,11 @@
     height: 95%;
     border-radius: 10px;
     padding: 30px 0;
-    width: 1200px;
-    margin: auto;
+    background: white;
 
     >div {
-        background: white;
+        width: 1200px;
+        margin: auto;
         height: 100%;
         border-radius: 10px;
         padding: 30px;

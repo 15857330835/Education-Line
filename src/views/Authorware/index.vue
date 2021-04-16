@@ -1,5 +1,6 @@
 <template>
   <div id="authorware">
+    <div id="content">
     <div class="search">
         <label>工具名称：</label>
         <el-input v-model="title" size="mini" placeholder="请输入内容"></el-input>
@@ -32,6 +33,7 @@
         :total="templates.length">
       </el-pagination>
     </div> -->
+    </div>
   </div>
 </template>
 
@@ -122,12 +124,9 @@
 
 <style lang="scss">
 #authorware {
-  display: flex;
   height: 95%;
-  padding: 30px 0;
-  width: 1200px;
-  margin: auto;
-  flex-direction: column;
+  background: white;
+
 
   .search {
       margin-bottom: 30px;
@@ -154,7 +153,8 @@
     .template {
       width: 140px;
       height: 180px;
-      background: white;
+      background: #2D2D2D;
+      color: white;
       border-radius: 10px;
       margin-right: 60px;
       margin-bottom: 30px;

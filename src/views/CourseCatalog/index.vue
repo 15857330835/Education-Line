@@ -170,12 +170,12 @@
     position: relative;
     display: flex;
     flex-direction: column;
+    background: white;
     
     .head {
         padding: 30px 0 0;
         width: 1200px;
         margin: auto;
-        background: white;
         text-align: left;
         position: relative;
 
@@ -224,7 +224,6 @@
 
     .content {
       flex: 1;
-      background: white;
       padding: 30px 0 0;
       width: 1200px;
       margin: auto;

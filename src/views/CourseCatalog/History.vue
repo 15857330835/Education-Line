@@ -1,34 +1,36 @@
 <template>
   <div id="history">
-    <div class="btn">
-        <el-button type="primary" size="small">开始考核</el-button>
-        <el-button type="primary" size="small">提交</el-button>
-    </div>
-    <el-table
-        :data="tableData"
-        style="width: 100%"
-        :header-cell-style="{'font-weight': 'bold', 'border-top': '1px solid #EEEEEE'}"
-        :default-sort = "{prop: 'date', order: 'descending'}"
-        >
-        <el-table-column width="30">
-          <template slot-scope="scope">
-            <el-radio v-model="radio" :label="scope.row.ID"></el-radio>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" width="50" prop="ID" label="ID"></el-table-column>
-        <el-table-column align="center" prop="title" label="标题"></el-table-column>
-        <el-table-column align="center" prop="startTime" label="开始时间" sortable></el-table-column>
-        <el-table-column align="center" prop="endTime" label="结束时间" sortable></el-table-column>
-        <el-table-column align="center" label="状态">
-          <template slot-scope="scope">
-            <span :class="scope.row.state == '已提交' ? 'submitted' : 'nosubmitted'">{{ scope.row.state }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column align="center" label="操作">
-          <el-button type="text" size="mini" @click="handleEdit">成果</el-button>
-          <el-button type="text" size="mini" @click="del">删除</el-button>
-        </el-table-column>
-      </el-table>
+    <div id="content">
+      <div class="btn">
+          <el-button type="primary" size="small">开始考核</el-button>
+          <el-button type="primary" size="small">提交</el-button>
+      </div>
+      <el-table
+          :data="tableData"
+          style="width: 100%"
+          :header-cell-style="{'font-weight': 'bold', 'border-top': '1px solid #EEEEEE'}"
+          :default-sort = "{prop: 'date', order: 'descending'}"
+          >
+          <el-table-column width="30">
+            <template slot-scope="scope">
+              <el-radio v-model="radio" :label="scope.row.ID"></el-radio>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" width="50" prop="ID" label="ID"></el-table-column>
+          <el-table-column align="center" prop="title" label="标题"></el-table-column>
+          <el-table-column align="center" prop="startTime" label="开始时间" sortable></el-table-column>
+          <el-table-column align="center" prop="endTime" label="结束时间" sortable></el-table-column>
+          <el-table-column align="center" label="状态">
+            <template slot-scope="scope">
+              <span :class="scope.row.state == '已提交' ? 'submitted' : 'nosubmitted'">{{ scope.row.state }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="操作">
+            <el-button type="text" size="mini" @click="handleEdit">成果</el-button>
+            <el-button type="text" size="mini" @click="del">删除</el-button>
+          </el-table-column>
+        </el-table>
+      </div>
   </div>
 </template>
 
@@ -103,14 +105,6 @@
 #history {
     height: 95%;
     background: white;
-    border-radius: 10px;
-    position: relative;
-    text-align: left;
-    padding: 30px 0;
-    width: 1200px;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
 
     .btn {
         text-align: right;

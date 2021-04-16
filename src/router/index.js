@@ -1,6 +1,10 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login'
+import InstitutionLogin from '../views/Login/InstitutionLogin.vue'
+import ServiceProviderLogin from '../views/Login/ServiceProviderLogin.vue'
+import StudentLogin from '../views/Login/StudentLogin.vue'
+import TeacherLogin from '../views/Login/TeacherLogin.vue'
 import Authorware from '../views/Authorware'
 import AllCourses from '../views/AllCourses'
 import Introduce from '../views/Authorware/Introduce.vue'
@@ -25,6 +29,26 @@ const routes = [
     path: '/',
     name: 'Login',
     component: Login,
+  },
+  {
+    path: '/institutionLogin',
+    name: 'InstitutionLogin',
+    component: InstitutionLogin,
+  },
+  {
+    path: '/serviceProviderLogin',
+    name: 'ServiceProviderLogin',
+    component: ServiceProviderLogin,
+  },
+  {
+    path: '/studentLogin',
+    name: 'StudentLogin',
+    component: StudentLogin,
+  },
+  {
+    path: '/teacherLogin',
+    name: 'TeacherLogin',
+    component: TeacherLogin,
   },
   {
     path: '/authorware',

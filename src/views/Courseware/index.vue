@@ -1,5 +1,6 @@
 <template>
   <div id="courseware">
+    <div id="content">
     <div class="search">
       <div>
         <label>上下线：</label>
@@ -130,6 +131,7 @@
         layout="total, prev, pager, next, jumper"
         :total="tableData.length">
       </el-pagination>
+    </div>
     </div>
   </div>
 </template>
@@ -309,13 +311,6 @@
 #courseware {
     height: 95%;
     background: white;
-    border-radius: 10px;
-    position: relative;
-    padding: 30px 0;
-    width: 1200px;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
 
     .search {
       margin-bottom: 30px;

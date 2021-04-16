@@ -8,10 +8,30 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
   import { Topbar } from './components'
   export default {
     components: {
       Topbar
+    },
+    computed: {
+      ...mapState([
+          'user',
+      ]),
+      page() {
+        return this.$route.path
+      }
+    },
+    watch: {
+      page() {
+        const arr = ['/', '/studentLogin', '/teacherLogin', '/institutionLogin', '/serviceProviderLogin']
+        if(arr.indexOf(this.page) == -1) {
+          if(this.user == '') {
+            this.$message.error('请登录！');
+            this.$router.push('/')
+          }
+        }
+      }
     },
     methods: {
     }
@@ -28,8 +48,18 @@
   height: 100%;
 
   #context {
-    background: white;
+    background: #F5F6F6;
     height: 100%;
+
+    #content {
+      position: relative;
+      padding: 30px 0;
+      width: 1200px;
+      height: 100%;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+    }
   }
 }
 

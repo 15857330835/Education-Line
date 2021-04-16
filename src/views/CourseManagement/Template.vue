@@ -1,5 +1,6 @@
 <template>
   <div id="template">
+      <div id="content">
       <h3>{{ modify ? '修改课程' : '新建课程' }}</h3>
       <div class="content">
         <div>
@@ -94,7 +95,7 @@
         <el-button @click="cancel">取消</el-button>
         <el-button type="primary" @click="modify ? change() : create()">确定</el-button>
       </div>
-      <img>
+      </div>
   </div>
 </template>
 
@@ -251,16 +252,9 @@
 #template {
     height: 95%;
     background: white;
-    border-radius: 10px;
-    position: relative;
     text-align: left;
-    padding: 30px 0;
-    width: 1200px;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
 
-    >h3 {
+    h3 {
         height: 10%;
     }
 
