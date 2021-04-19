@@ -69,7 +69,7 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { addTool, getToolInfo, updateTool } from '@/api/tool'
+  import { addTool, getToolInfo, updateTool, uploadPic } from '@/api/tool'
   export default {
     components: {
     },
@@ -93,11 +93,16 @@
     methods: {
         onChange(file) {
             $('.el-upload').css({'display': 'none'})
-            let reader = new FileReader()
-            reader.readAsDataURL(file.raw)
-            reader.onload = () => {
-              this.coverAddr = reader.result
-            }
+            const data = new FormData()
+            data.append('token', this.user.Token)
+            data.append('pic', file.raw)
+            uploadPic(data).then(res => {
+              if(res.flag == 100) {
+                this.coverAddr = res.url
+              }else {
+                this.$message.error(res.flagString);
+              }
+            })
         },
         handleRemove() {
             this.$refs.upload.clearFiles()

@@ -1,5 +1,10 @@
 import axios from '@/request'
 const url = 'http://edu.aodianyun.com/teach/courseware'
+let config = {
+    headers: {
+        'Content-Type': 'multipart/form-data;charset=UTF-8',
+    }
+}
 
 //获取课程列表
 export const getSubjectList = (payload = {}) => {
@@ -44,4 +49,9 @@ export const getSubjectInfo = (payload = {}) => {
 //更新课程
 export const updateSubject = (payload = {}) => {
     return axios.post(url + '/updateSubject', payload)
+}
+
+//上传图片
+export const uploadPic = (payload = {}) => {
+    return axios.post(url + '/uploadPic', payload, config)
 }

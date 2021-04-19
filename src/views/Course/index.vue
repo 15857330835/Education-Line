@@ -31,7 +31,7 @@
     </div>
     <div class="content">
       <div class="course" v-for="(course, index) in courses" :key="index" @click="goto($event, course.id)">
-        <div class="top">
+        <div class="top" :style="{backgroundImage: `url(${course.coverAddr})`}">
           <div class="tag" :class="course.state == '通过' ? 'through' : course.state == '未通过' ? 'nothrough' : 'nofinish'" v-if="$route.fullPath == '/course?2'"></div>
           <el-tag effect="dark" size="mini">{{ course.label }}</el-tag>
           <p class="title">{{ course.title }}</p>
@@ -372,7 +372,7 @@
         }
 
         .top {
-          background: url('../../assets/img/img.jpeg');
+          background: center/cover;
           border-bottom: 1px solid rgb(242, 242, 242);
           height: 208px;
           padding: 160px 20px 0;
@@ -406,7 +406,6 @@
             right: 10px;
             background: rgba($color: #000000, $alpha: 0.5);
             border: none;
-            width: 58px;
             height: 28px;
             line-height: 28px;
             border-radius: 8px;

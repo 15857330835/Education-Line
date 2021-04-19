@@ -101,7 +101,7 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { addSubject, getSubjectInfo, updateSubject } from '@/api/teachercourse'
+  import { addSubject, getSubjectInfo, updateSubject, uploadPic } from '@/api/teachercourse'
   import { getToolList } from '@/api/tool'
   export default {
     components: {
@@ -196,11 +196,16 @@
         },
         onChange(file) {
             $('.el-upload').css({'display': 'none'})
-            let reader = new FileReader()
-            reader.readAsDataURL(file.raw)
-            reader.onload = () => {
-              this.coverAddr = reader.result
-            }
+            const data = new FormData()
+            data.append('token', this.user.Token)
+            data.append('pic', file.raw)
+            uploadPic(data).then(res => {
+              if(res.flag == 100) {
+                this.coverAddr = res.url
+              }else {
+                this.$message.error(res.flagString);
+              }
+            })
         },
         handleRemove() {
             this.$refs.upload.clearFiles()

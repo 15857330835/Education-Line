@@ -1,5 +1,10 @@
 import axios from '@/request'
 const url = 'http://edu.aodianyun.com/company/subject'
+let config = {
+    headers: {
+        'Content-Type': 'multipart/form-data;charset=UTF-8',
+    }
+}
 
 //获取课程列表
 export const getSubjectList = (payload = {}) => {
@@ -29,4 +34,9 @@ export const updateSubject = (payload = {}) => {
 //删除课程
 export const delSubject = (payload = {}) => {
     return axios.post(url + '/delSubject', payload)
+}
+
+//上传图片
+export const uploadPic = (payload = {}) => {
+    return axios.post(url + '/uploadPic', payload, config)
 }

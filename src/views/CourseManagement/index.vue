@@ -47,7 +47,7 @@
     </div>
     <div class="content">
       <div class="course" v-for="(course, index) in courses" :key="index" @click="goto($event, 'courseware', course.id)">
-        <div class="top">
+        <div class="top" :style="{backgroundImage: `url(${course.coverAddr})`}">
           <el-button size="mini" icon="el-icon-check" class="choice" circle @click="choose($event)"></el-button>
           <el-tag effect="dark" size="mini">{{ course.label }}</el-tag>
           <p class="title">{{ course.title }}</p>
@@ -398,7 +398,7 @@
         }
 
         .top {
-          background: url('../../assets/img/img.jpeg');
+          background: center/cover;
           border-bottom: 1px solid rgb(242, 242, 242);
           height: 208px;
           padding: 160px 20px 0;
@@ -428,7 +428,6 @@
             right: 10px;
             background: rgba($color: #000000, $alpha: 0.5);
             border: none;
-            width: 58px;
             height: 28px;
             line-height: 28px;
             border-radius: 8px;
