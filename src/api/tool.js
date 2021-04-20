@@ -1,5 +1,5 @@
 import axios from '@/request'
-const url = 'http://edu.aodianyun.com/admin/tool'
+const url = window.EL.host + '/admin/tool'
 let config = {
     headers: {
         'Content-Type': 'multipart/form-data;charset=UTF-8',

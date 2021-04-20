@@ -44,7 +44,7 @@
                 });
                 return
             }
-            let url = 'http://edu.aodianyun.com/company/account/login'
+            let url = window.EL.host + '/company/account/login'
             const that = this
             $.post(
                 url,

@@ -1,5 +1,5 @@
 import axios from '@/request'
-const url = 'http://edu.aodianyun.com/study/courseware'
+const url = window.EL.host + '/study/courseware'
 
 //获取全部课程
 export const getSubjectList = (payload = {}) => {

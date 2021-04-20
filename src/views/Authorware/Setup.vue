@@ -6,7 +6,6 @@
           <label>XX接口地址：</label>
           <el-input placeholder="请输入内容" v-model="connectAddr">
             <template slot="prepend">Http://</template>
-            <template slot="append">.com</template>
           </el-input>
         </div>
         <div>
@@ -120,7 +119,7 @@
             const data = {
               token: this.user.Token,
               title: this.title,
-              connectAddr: 'http://' + this.connectAddr + '.com',
+              connectAddr: 'http://' + this.connectAddr,
               coverAddr: this.coverAddr,
               remarks: this.remarks
             }
@@ -137,7 +136,7 @@
               token: this.user.Token,
               id: this.$route.query.id,
               title: this.title,
-              connectAddr: 'http://' + this.connectAddr + '.com',
+              connectAddr: 'http://' + this.connectAddr,
               coverAddr: this.coverAddr,
               remarks: this.remarks
           }
@@ -161,7 +160,7 @@
           this.title = res.data.title
           this.remarks = res.data.remarks
           this.coverAddr = res.data.coverAddr
-          this.connectAddr = res.data.connectAddr.replace('http://', '').replace('.com', '')
+          this.connectAddr = res.data.connectAddr.replace('http://', '')
         }else {
           this.$message.error(res.flagString);
         }

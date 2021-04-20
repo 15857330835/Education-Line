@@ -6,9 +6,12 @@ el.prototype.Config = function(options) {
     }
 }
 
+var port = window.location.href.slice(0, 5) == 'https' ? 'https' : 'http'
+
 window.EL = new el()
 
 EL.Config({
     uin: "",
     identity: 'manager',
+    host: port + '://edu.aodianyun.com'
 })

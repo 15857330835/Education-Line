@@ -1,5 +1,5 @@
 import axios from '@/request'
-const url = 'http://edu.aodianyun.com/admin/company'
+const url = window.EL.host + '/admin/company'
 
 //更新机构状态
 export const updateStatus = (payload = {}) => {

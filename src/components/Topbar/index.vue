@@ -150,16 +150,16 @@
             const that = this
             switch (this.identity) {
                 case 'human':
-                    url = 'http://edu.aodianyun.com/study/account/userLogout'
+                    url = window.EL.host + '/study/account/userLogout'
                     break;
                 case 'manager':
-                    url = 'http://edu.aodianyun.com/teach/account/userLogout'
+                    url = window.EL.host + '/teach/account/userLogout'
                     break;
                 case 'institution':
-                    url = 'http://edu.aodianyun.com/company/account/userLogout'
+                    url = window.EL.host + '/company/account/userLogout'
                     break;
                 case 'serviceProvider':
-                    url = 'http://edu.aodianyun.com/admin/account/userLogout'
+                    url = window.EL.host + '/admin/account/userLogout'
                     break;
             }
             $.post(

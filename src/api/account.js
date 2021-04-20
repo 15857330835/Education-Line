@@ -1,5 +1,5 @@
 import axios from '@/request'
-const url = 'http://edu.aodianyun.com/company/teacher'
+const url = window.EL.host + '/company/teacher'
 
 //获取师生列表
 export const getAccountList = (payload = {}) => {
