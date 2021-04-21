@@ -224,9 +224,13 @@
 
     .content {
       flex: 1;
-      padding: 30px 0 0;
       width: 1332px;
-      margin: auto;
+      margin: 30px auto;
+      overflow: auto;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
 
       .overview {
         text-align: left;

@@ -1,29 +1,54 @@
 <template>
   <div id="production">
-      <iframe src="http://www.baidu.com"></iframe>
-      <RecordingDevice></RecordingDevice>
+      <iframe src="https://www.baidu.com"></iframe>
+      <RecordingDevice :parameters='parameters'></RecordingDevice>
   </div>
 </template>
 
 <script>
   import { RecordingDevice } from '@/components'
+  import { mapState } from 'vuex'
+  import { getAccessStudent } from '@/api/student'
+  import { getAccessTeacher } from '@/api/teacher'
   export default {
     components: {
         RecordingDevice
     },
     data() {
       return {
-        
+        parameters: null
       };
     },
     computed: {
-        
+        ...mapState([
+          'user',
+          'identity',
+      ])
     },
     methods: {
         
     },
     mounted() {
-      
+      const data = {
+        token: this.user.Token,
+      }
+      if(this.identity == 'manager') {
+        getAccessTeacher(data).then(res => {
+          if(res.flag == 100) {
+            this.parameters = res.data
+          }else {
+            this.$message.error(res.flagString);
+          }
+        })
+      }else {
+        getAccessStudent(data).then(res => {
+          if(res.flag == 100) {
+            this.parameters = res.data
+          }else {
+            this.$message.error(res.flagString);
+          }
+        })
+      }
     }
   }
 </script>

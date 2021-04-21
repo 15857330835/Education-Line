@@ -27,6 +27,7 @@
     components: {
       Countdown
     },
+    props: ['parameters'],
     data() {
       return {
         x: 0,
@@ -52,6 +53,40 @@
             var min = this.time/60 > 9 ? parseInt(this.time/60) : '0' + parseInt(this.time/60)
             var sec = this.time%60 > 9 ? this.time%60 : '0' + this.time%60
             return this.time ? min + ' : ' + sec : "-- : --"
+        }
+    },
+    watch: {
+        parameters() {
+            const that = this
+            this.uploaderObj = new plupload.Uploader({ //实例化一个plupload上传对象
+                browse_button : 'none',//触发文件选择对话框的按钮，为那个元素id
+                runtimes: 'html5,flash,silverlight,html4',
+                url: window.EL.upload,
+                chunk_size: '5mb',
+                max_retries: 3,
+                filters: {
+                    // Maximum file size
+                    max_file_size : '4096mb',
+                    // Select the duplicate files are not allowed
+                    prevent_duplicates : true
+                },
+                multipart_params: {
+                    access_id       : this.parameters.accessId,
+                    expires         : this.parameters.expires,
+                    signature       : this.parameters.signature,
+                    signature_nonce : this.parameters.signatureOnce
+                },
+                // Flash settings
+                flash_swf_url: 'js/Moxie.swf',
+                // Silverlight settings
+                silverlight_xap_url: 'js/Moxie.xap',
+                init: {
+                    Filesadded: function() {
+                        that.uploaderObj.start()
+                    }
+                }
+            });
+            this.uploaderObj.init(); //初始化
         }
     },
     methods: {
@@ -94,7 +129,7 @@
                             }
                             that.record.addEventListener("dataavailable",event => {
                                 let videoUrl = URL.createObjectURL(event.data, {type: 'video/mp4'})
-                                that.file = new File([event.data], '111.webm', {
+                                that.file = new File([event.data], 'video.webm', {
                                     type: 'video/webm'
                                 });
                                 that.url = videoUrl
@@ -154,56 +189,7 @@
         }
     },
     mounted() {
-        const that = this
-        this.uploaderObj = new plupload.Uploader({ //实例化一个plupload上传对象
-            browse_button : 'none',//触发文件选择对话框的按钮，为那个元素id
-            runtimes: 'html5,flash,silverlight,html4',
-            url: 'http://upload.dvr.aodianyun.com/v2/DVR.FormUpload',
-            chunk_size: '5mb',
-            max_retries: 3,
-            filters: {
-                // Maximum file size
-                max_file_size : '4096mb',
-                // Select the duplicate files are not allowed
-                prevent_duplicates : true
-            },
-            multipart_params: {
-                access_id       : '110009843585',
-                expires         : 1699771990,
-                signature       : 'ccc94a218c6c3543bef3f857fd1413f0',
-                signature_nonce : '5bea74d65cdf0'
-            },
-            // Flash settings
-            flash_swf_url: 'js/Moxie.swf',
-            // Silverlight settings
-            silverlight_xap_url: 'js/Moxie.xap',
-            init: {
-                Filesadded: function() {
-                    that.uploaderObj.start()
-                },
-                // FileFiltered: function(uploader,file){
-                // //上传前回调，可进行参数过滤
-                // },
-                // UploadProgress: function(uploader,file){
-                // //上传过程中，触发
-                // },
-                // QueueChanged: function(uploader,file){
-                
-                // },
-                // FileUploaded: function(uploader,file,responseObject){
-                // //上传完成回调
-                // //responseObject.status 是http code
-                // //responseObject.response = {flag = 100,FlagStrgin = "成功",fileName = "文件名",location = "URL地址"}
-                // },
-                // ChunkUploaded: function(uploader,file,responseObject){
-                // //上片上传回调
-                // },
-                // FilesRemoved: function(uploader,file){
-                // //删除操作回调
-                // }
-            }
-        });
-        this.uploaderObj.init(); //初始化
+
     }
   }
 </script>

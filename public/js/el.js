@@ -13,5 +13,6 @@ window.EL = new el()
 EL.Config({
     uin: "",
     identity: 'manager',
-    host: port + '://edu.aodianyun.com'
+    host: port + '://edu.aodianyun.com',
+    upload: port == 'http' ? 'http://upload.dvr.aodianyun.com/v2/DVR.FormUpload' : 'https://upload-dvr.aodianyun.com/v2/DVR.FormUpload'
 })
