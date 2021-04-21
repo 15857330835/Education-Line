@@ -137,7 +137,7 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
+  import { mapState, mapMutations } from 'vuex'
   import { getCoursewareList, addCourseware, delCourseware } from '@/api/teachercourse'
   export default {
     data() {
@@ -189,6 +189,9 @@
       }
     },
     methods: {
+      ...mapMutations([
+            'CHANGE_COURSEWAREID',
+      ]),
       selectstate(value) {
         this.status = value
         this.search()
@@ -214,6 +217,7 @@
         addCourseware(this.form).then(res => {
           if(res.flag == 100) {
             this.dialogFormVisible = false
+            this.CHANGE_COURSEWAREID(res.data.id)
             this.$router.push('production')
           }else {
             this.$message.error(res.flagString);

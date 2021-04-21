@@ -11,7 +11,8 @@ export default new Vuex.Store({
     tabKey: 0,
     own: false,
     modify: false,
-    activeIndex: "1"
+    activeIndex: "1",
+    coursewareID: 0
   },
   mutations: {
     CHANGE_USER(state, date) {
@@ -31,7 +32,10 @@ export default new Vuex.Store({
     },
     CHANGE_ACTIVEINDEX(state, date) {
       state.activeIndex = date
-    }
+    },
+    CHANGE_COURSEWAREID(state, date) {
+      state.coursewareID = date
+    },
   },
   actions: {
   },

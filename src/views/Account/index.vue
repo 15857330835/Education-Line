@@ -175,7 +175,7 @@
         form1: {
           name: '',
           type: '',
-          power: '',
+          power: [],
           username: '',
           passwd: ''
         },

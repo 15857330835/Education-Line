@@ -6,7 +6,6 @@
         <div class="controller">
             <el-button icon="el-icon-caret-right" circle @click="start" :disabled='isstart'></el-button>
             <el-button icon="el-icon-s-help" circle @click="end" :disabled='isend'></el-button>
-            <el-button icon="el-icon-s-finance" circle :disabled='issubtitles'></el-button>
             <el-button icon="el-icon-s-ticket" circle @click="edit" :disabled='isedit'></el-button>
             <el-button icon="el-icon-upload" circle @click="upload" :disabled='isupload'></el-button>
         </div>
@@ -22,6 +21,8 @@
 <script>
   import plupload from 'plupload'
   import Countdown from './Countdown'
+  import { mapState } from 'vuex'
+  import { saveVideoUrl } from '@/api/teachercourse'
   export default {
     name: 'RecordingDevice',
     components: {
@@ -43,12 +44,15 @@
         action: '',
         isstart: false,
         isend: true,
-        issubtitles: true,
         isedit: true,
         isupload: true,
       };
     },
     computed: {
+        ...mapState([
+          'user',
+          'coursewareID'
+        ]),
         timing() {
             var min = this.time/60 > 9 ? parseInt(this.time/60) : '0' + parseInt(this.time/60)
             var sec = this.time%60 > 9 ? this.time%60 : '0' + this.time%60
@@ -83,6 +87,27 @@
                 init: {
                     Filesadded: function() {
                         that.uploaderObj.start()
+                    },
+                    FileUploaded: function(uploader,file,responseObject) {
+                        const res = JSON.parse(responseObject.response)
+                        const data = {
+                            token: that.user.Token,
+                            coursewareId: that.coursewareID,
+                            urlAddr: res.location
+                        }
+                        saveVideoUrl(data).then(res => {
+                            if(res.flag == 100) {
+                                that.$message({
+                                    message: '上传成功！',
+                                    type: 'success'
+                                });
+                            }else {
+                                that.$message.error(res.flagString);
+                            }
+                        })
+                    },
+                    Error: function(uploader,errObject) {
+                        that.$message.error(errObject.message)
                     }
                 }
             });
@@ -112,27 +137,30 @@
                 if(this.new) {
                     navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
                         .then(function(stream) {
-                            that.new = false
-                            $('#recordingDevice').addClass('hide')
-                            $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
-                            that.stream = stream
-                            that.action = '开始'
-                            that.record = new MediaRecorder(stream)
-                            that.time = 0
-                            setTimeout(function(){
-                                that.record.start()
-                                that.isend = false
-                                that.timer = setInterval(function() { that.time++ },1000)
-                            },2000)
-                            stream.getVideoTracks()[0].onended = () => {
-                                that.record.stop()
-                            }
-                            that.record.addEventListener("dataavailable",event => {
-                                let videoUrl = URL.createObjectURL(event.data, {type: 'video/mp4'})
-                                that.file = new File([event.data], 'video.webm', {
-                                    type: 'video/webm'
-                                });
-                                that.url = videoUrl
+                            navigator.mediaDevices.getUserMedia({ audio: true }).then(mediastream => {
+                                stream.addTrack(mediastream.getTracks()[0])
+                                that.new = false
+                                $('#recordingDevice').addClass('hide')
+                                $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
+                                that.stream = stream
+                                that.action = '开始'
+                                that.record = new MediaRecorder(stream)
+                                that.time = 0
+                                setTimeout(function(){
+                                    that.record.start()
+                                    that.isend = false
+                                    that.timer = setInterval(function() { that.time++ },1000)
+                                },2000)
+                                stream.getVideoTracks()[0].onended = () => {
+                                    that.record.stop()
+                                }
+                                that.record.addEventListener("dataavailable",event => {
+                                    let videoUrl = URL.createObjectURL(event.data, {type: 'video/mp4'})
+                                    that.file = new File([event.data], 'video.webm', {
+                                        type: 'video/webm'
+                                    });
+                                    that.url = videoUrl
+                                })
                             })
                         })
                         .catch(function(err) {
@@ -158,11 +186,11 @@
             $('.el-icon-refresh-right').removeClass('el-icon-refresh-right').addClass('el-icon-caret-right')
             this.stream.getTracks()[0].stop()
             if(this.stream.getTracks()[1]) this.stream.getTracks()[1].stop()
+            if(this.stream.getTracks()[2]) this.stream.getTracks()[2].stop()
             clearInterval(this.timer)
             this.new = true
             this.isstart = true
             this.isend = true
-            this.issubtitles = false
             this.isedit = false
             this.isupload = false
             $('.video').css({'display': 'block'})
@@ -173,7 +201,6 @@
         upload() {
             this.isstart = false
             this.isend = true
-            this.issubtitles = true
             this.isedit = true
             this.isupload = true
             this.uploaderObj.addFile(this.file)
@@ -181,7 +208,6 @@
         del() {
             this.isstart = false
             this.isend = true
-            this.issubtitles = true
             this.isedit = true
             this.isupload = true
             this.time = 0

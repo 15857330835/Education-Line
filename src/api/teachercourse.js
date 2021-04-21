@@ -55,3 +55,8 @@ export const updateSubject = (payload = {}) => {
 export const uploadPic = (payload = {}) => {
     return axios.post(url + '/uploadPic', payload, config)
 }
+
+//保存视频
+export const saveVideoUrl = (payload = {}) => {
+    return axios.post(url + '/saveVideoUrl', payload)
+}
