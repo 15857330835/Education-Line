@@ -203,7 +203,8 @@
     methods: {
       ...mapMutations([
             'CHANGE_COURSEWAREID',
-            'CHANGE_URL'
+            'CHANGE_URL',
+            'CHANGE_RECORD'
       ]),
       selectstate(value) {
         this.status = value
@@ -222,6 +223,7 @@
         this.url = url
       },
       modify() {
+        this.CHANGE_RECORD(false)
         this.$router.push('production')
       },
       line() {
@@ -239,8 +241,9 @@
           if(res.flag == 100) {
             this.dialogFormVisible = false
             this.CHANGE_COURSEWAREID(res.data.id)
+            this.CHANGE_RECORD(true)
             this.CHANGE_URL('https://' + res.data.project.pageUrl)
-            this.$router.push('production')
+            this.$router.push({name:'Production',query: {data: res.data}})
           }else {
             this.$message.error(res.flagString);
           }

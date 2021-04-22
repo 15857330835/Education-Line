@@ -128,6 +128,7 @@
     methods: {
         ...mapMutations([
             'CHANGE_URL',
+            'CHANGE_RECORDSTATUS'
         ]),
         mousedown(e) {
             this.x = e.x - $('#recordingDevice').offset().left
@@ -163,6 +164,7 @@
                                 that.time = 0
                                 setTimeout(function(){
                                     that.record.start()
+                                    that.CHANGE_RECORDSTATUS(1)
                                     that.isend = false
                                     that.timer = setInterval(function() { that.time++ },1000)
                                 },2000)
@@ -203,6 +205,7 @@
             if(this.stream.getTracks()[1]) this.stream.getTracks()[1].stop()
             if(this.stream.getTracks()[2]) this.stream.getTracks()[2].stop()
             clearInterval(this.timer)
+            this.CHANGE_RECORDSTATUS(2)
             this.new = true
             this.isstart = true
             this.isend = true

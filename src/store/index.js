@@ -12,8 +12,11 @@ export default new Vuex.Store({
     own: false,
     modify: false,
     activeIndex: "1",
-    coursewareID: 0,
-    url: 'https://www.baidu.com'
+    coursewareID: 0, //课件ID
+    toolId: 0, //工具ID
+    url: 'https://www.baidu.com', //工具地址
+    record: true, //是否出现录制悬浮窗
+    recordStatus: 0 //录制状态 0 默认 1 开始录制 2 结束录制
   },
   mutations: {
     CHANGE_USER(state, date) {
@@ -37,8 +40,17 @@ export default new Vuex.Store({
     CHANGE_COURSEWAREID(state, date) {
       state.coursewareID = date
     },
+    CHANGE_TOOLID(state, date) {
+      state.toolId = date
+    },
     CHANGE_URL(state, date) {
       state.url = date
+    },
+    CHANGE_RECORD(state, date) {
+      state.record = date
+    },
+    CHANGE_RECORDSTATUS(state, date) {
+      state.recordStatus = date
     },
   },
   actions: {
@@ -48,7 +60,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
         storage: window.sessionStorage,
-        paths: ["user", "identity", "tabKey", 'own', 'modify', 'activeIndex', 'coursewareID']
+        paths: ["user", "identity", "tabKey", 'own', 'modify', 'activeIndex', 'coursewareID', 'toolId']
     })
   ]
 })

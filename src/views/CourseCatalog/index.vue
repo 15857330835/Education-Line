@@ -25,7 +25,7 @@
           <div class="block" v-for="(item, index) in coursewares" :key="index">
             <div class="img"></div>
             <div class="introduce">
-              <h3>{{ index + 1 > 9 ? (index + 1 + item.title) : ('0' + (index + 1 + item.title))}}
+              <h3>{{ index + 1 > 9 ? (index + 1 + ' ' + item.title) : ('0' + (index + 1 + ' ' + item.title))}}
                 <i :class="item.state == '已通过' ? 'through' : item.state == '未通过' ? 'nothrough' : 'nofinish'" v-if="own">{{ item.status }}</i>
               </h3>
               <p>{{ item.remarks }}</p>
@@ -128,7 +128,9 @@
     methods: {
       ...mapMutations([
             'CHANGE_ACTIVEINDEX',
-            'CHANGE_COURSEWAREID'
+            'CHANGE_COURSEWAREID',
+            'CHANGE_RECORD',
+            'CHANGE_TOOLID'
       ]),
       handleSelect(key) {
           this.CHANGE_ACTIVEINDEX(key)
@@ -146,7 +148,8 @@
         }
         addExam(data).then(res => {
           if(res.flag == 100) {
-            this.$router.push('production')
+            this.CHANGE_RECORD(true)
+            this.$router.push({name:'Production',query: {coursewareId: id, toolId: this.courseInfo.toolId}})
           }else {
             this.$message.error(res.flagString);
           }
@@ -169,6 +172,7 @@
       getSubjectInfo(data).then(res => {
         if(res.flag == 100) {
           this.courseInfo = res.data
+          this.CHANGE_TOOLID(res.data.toolId)
         }else {
           this.$message.error(res.flagString);
         }

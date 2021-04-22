@@ -35,3 +35,13 @@ export const getExamList = (payload = {}) => {
 export const addExam = (payload = {}) => {
     return axios.post(url + '/addExam', payload)
 }
+
+//开始录制
+export const startVideoStudent = (payload = {}) => {
+    return axios.post(url + '/startVideo', payload)
+}
+
+//结束录制
+export const endVideoStudent = (payload = {}) => {
+    return axios.post(url + '/endVideo', payload)
+}

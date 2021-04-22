@@ -64,7 +64,8 @@
     computed: {
         ...mapState([
           'user',
-          'coursewareID'
+          'coursewareID',
+          'toolId'
       ])
     },
     methods: {
@@ -77,7 +78,7 @@
           }
           addExam(data).then(res => {
             if(res.flag == 100) {
-              this.$router.push('production')
+              this.$router.push({name:'Production',query: {coursewareId: this.coursewareID, toolId: this.toolId}})
             }else {
               this.$message.error(res.flagString);
             }

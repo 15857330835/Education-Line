@@ -60,3 +60,13 @@ export const uploadPic = (payload = {}) => {
 export const saveVideoUrl = (payload = {}) => {
     return axios.post(url + '/saveVideoUrl', payload)
 }
+
+//开始录制
+export const startVideoTeacher = (payload = {}) => {
+    return axios.post(url + '/startVideo', payload)
+}
+
+//结束录制
+export const endVideoTeacher = (payload = {}) => {
+    return axios.post(url + '/endVideo', payload)
+}
