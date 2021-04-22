@@ -83,15 +83,15 @@
         </el-table-column>
         <el-table-column align="center" width="200px" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="mini" @click="handleEdit">播放</el-button>
-            <el-button type="text" size="mini" @click="handleEdit" :disabled='scope.row.status ? true : false'>修改</el-button>
-            <el-button type="text" size="mini" @click="handleEdit">成果</el-button>
-            <el-button type="text" size="mini" @click="handleEdit" :disabled='scope.row.finishStatus ? false : true'>{{ scope.row.status ? '下线' : '上线' }}</el-button>
+            <el-button type="text" size="mini" @click="play">播放</el-button>
+            <el-button type="text" size="mini" @click="modify" :disabled='scope.row.status ? true : false'>修改</el-button>
+            <el-button type="text" size="mini" @click="play">成果</el-button>
+            <el-button type="text" size="mini" @click="line" :disabled='scope.row.finishStatus ? false : true'>{{ scope.row.status ? '下线' : '上线' }}</el-button>
             <el-button type="text" size="mini" @click="del(scope.row.id)" :disabled='scope.row.status ? true : false'>删除</el-button>
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog title="创建课件" :visible.sync="dialogFormVisible">
+      <el-dialog title="创建课件" :visible.sync="dialogFormVisible" class="create">
         <el-form :model="form">
           <el-form-item label="课件名称：" :label-width="formLabelWidth">
             <el-input v-model="form.title" autocomplete="off"></el-input>
@@ -123,6 +123,18 @@
           <el-button type="primary" @click="create">确 定</el-button>
         </div>
       </el-dialog>
+      <el-dialog
+        class="play"
+        :visible.sync="dialogVisible"
+        width="100%">
+        <video
+          style="width: 100%; height: 100%"
+          autoplay
+          playsinline
+          controls
+          src="../../assets/test.mp4"
+        ></video>
+      </el-dialog>
     </div>
     <div class="bottom">
       <el-pagination
@@ -151,6 +163,7 @@
         input: '',
         label: [],
         ifSearch: false,
+        dialogVisible: false,
         option: [
             {
                 value: '1',
@@ -204,7 +217,13 @@
         this.currentPage = val
         this.search()
       },
-      handleEdit() {
+      play() {
+        this.dialogVisible = true
+      },
+      modify() {
+        this.$router.push('production')
+      },
+      line() {
 
       },
       production() {
@@ -382,17 +401,36 @@
         color: #686868;
       }
 
-      .el-dialog {
-        width: 30%;
-        border-radius: 10px;
-        text-align: left;
+      .create {
 
-        .el-input {
-          width: 220px;
+        .el-dialog {
+          width: 30%;
+          border-radius: 10px;
+          text-align: left;
+
+          .el-input {
+            width: 220px;
+          }
+
+          .el-select {
+            margin-left: 0 !important;
+          }
         }
+      }
 
-        .el-select {
-          margin-left: 0 !important;
+      .play {
+
+        .el-dialog {
+          margin: 0 !important;
+          height: 100%;
+
+          .el-dialog__header {
+            text-align: left;
+          }
+
+          .el-dialog__body {
+            height: 90%;
+          }
         }
       }
     }

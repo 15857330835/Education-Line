@@ -2,8 +2,8 @@
   <div id="history">
     <div id="content">
       <div class="btn">
-          <el-button type="primary" size="small">开始考核</el-button>
-          <el-button type="primary" size="small">提交</el-button>
+          <el-button type="primary" size="small" @click="assess">开始考核</el-button>
+          <el-button type="primary" size="small" @click="submit">提交</el-button>
       </div>
       <el-table
           :data="tableData"
@@ -30,50 +30,48 @@
             <el-button type="text" size="mini" @click="del">删除</el-button>
           </el-table-column>
         </el-table>
+        <el-dialog
+          :visible.sync="dialogVisible"
+          width="100%">
+          <video
+            style="width: 100%; height: 100%"
+            autoplay
+            playsinline
+            src="../../assets/test.mp4"
+          ></video>
+        </el-dialog>
       </div>
   </div>
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+  import { getExamList } from '@/api/studentcourse'
   export default {
     components: {
     },
     data() {
       return {
-        tableData: [{
-          ID: '1',
-          title: 'title',
-          startTime: '2020-02-21 08:53:21',
-          endTime: '2020-02-21 08:53:21',
-          state: '已提交',
-          score: '36'
-        },
-        {
-          ID: '2',
-          title: 'title',
-          startTime: '2020-02-21 08:53:21',
-          endTime: '2020-02-21 08:53:21',
-          state: '-',
-          score: '80'
-        },
-        {
-          ID: '3',
-          title: 'title',
-          startTime: '2020-02-21 08:53:21',
-          endTime: '2020-02-21 08:53:21',
-          state: '-',
-          score: '30'
-        }
-        ],
-        radio: '1'
+        tableData: [{}],
+        radio: '1',
+        dialogVisible: false,
       };
     },
     computed: {
-        
+        ...mapState([
+          'user',
+          'coursewareID'
+      ])
     },
     methods: {
-        handleEdit() {
+        assess() {
+          this.$router.push('production')
+        },
+        submit() {
 
+        },
+        handleEdit() {
+          this.dialogVisible = true
         },
         del() {
             this.$confirm('是否确定删除该课件？<br><i style="color:#FA6400">课件删除后将无法恢复，</i>您还要继续吗？', '', {
@@ -96,7 +94,17 @@
         }
     },
     mounted() {
-      
+      const data = {
+        token: this.user.Token,
+        coursewareId: this.coursewareID
+      }
+      getExamList(data).then(res => {
+        if(res.flag == 100) {
+          this.tableData = res.data
+        }else {
+          this.$message.error(res.flagString);
+        }
+      })
     }
   }
 </script>
@@ -117,6 +125,19 @@
 
     .nosubmitted {
         color: #666666;
+    }
+
+    .el-dialog {
+      margin: 0 !important;
+      height: 100%;
+
+      .el-dialog__header {
+        text-align: left;
+      }
+
+      .el-dialog__body {
+        height: 90%;
+      }
     }
 }
 

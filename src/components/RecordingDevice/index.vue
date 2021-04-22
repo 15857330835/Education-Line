@@ -1,13 +1,13 @@
 <template>
     <div id="recordingDevice">
         <div class="timing" @mousedown="mousedown">
-            {{ this.timing }}
+            {{ uploading ? progress + '%' : this.timing }}
         </div>
         <div class="controller">
             <el-button icon="el-icon-caret-right" circle @click="start" :disabled='isstart'></el-button>
             <el-button icon="el-icon-s-help" circle @click="end" :disabled='isend'></el-button>
-            <el-button icon="el-icon-s-ticket" circle @click="edit" :disabled='isedit'></el-button>
             <el-button icon="el-icon-upload" circle @click="upload" :disabled='isupload'></el-button>
+            <el-button icon="el-icon-s-ticket" circle @click="edit" :disabled='isedit'></el-button>
         </div>
         <i id="none"></i>
         <div class="video">
@@ -21,7 +21,7 @@
 <script>
   import plupload from 'plupload'
   import Countdown from './Countdown'
-  import { mapState } from 'vuex'
+  import { mapState, mapMutations } from 'vuex'
   import { saveVideoUrl } from '@/api/teachercourse'
   export default {
     name: 'RecordingDevice',
@@ -46,6 +46,8 @@
         isend: true,
         isedit: true,
         isupload: true,
+        uploading: false,
+        progress: 0
       };
     },
     computed: {
@@ -87,8 +89,13 @@
                 init: {
                     Filesadded: function() {
                         that.uploaderObj.start()
+                        that.uploading = true
+                    },
+                    UploadProgress: function(uploader,file) {
+                        that.progress = ((file['loaded']/file['size'])*100).toFixed(2)
                     },
                     FileUploaded: function(uploader,file,responseObject) {
+                        that.uploading = false
                         const res = JSON.parse(responseObject.response)
                         const data = {
                             token: that.user.Token,
@@ -115,6 +122,9 @@
         }
     },
     methods: {
+        ...mapMutations([
+            'CHANGE_URL',
+        ]),
         mousedown(e) {
             this.x = e.x - $('#recordingDevice').offset().left
             this.y = e.y - $('#recordingDevice').offset().top
@@ -140,6 +150,7 @@
                             navigator.mediaDevices.getUserMedia({ audio: true }).then(mediastream => {
                                 stream.addTrack(mediastream.getTracks()[0])
                                 that.new = false
+                                that.isedit = true
                                 $('#recordingDevice').addClass('hide')
                                 $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
                                 that.stream = stream
@@ -191,17 +202,17 @@
             this.new = true
             this.isstart = true
             this.isend = true
-            this.isedit = false
+            this.isedit = true
             this.isupload = false
             $('.video').css({'display': 'block'})
         },
         edit() {
-            
+            this.CHANGE_URL('https://www.aodianyun.com/')
         },
         upload() {
             this.isstart = false
             this.isend = true
-            this.isedit = true
+            this.isedit = false
             this.isupload = true
             this.uploaderObj.addFile(this.file)
         },

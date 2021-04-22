@@ -25,3 +25,8 @@ export const signUpSubject = (payload = {}) => {
 export const getMySubjectList = (payload = {}) => {
     return axios.post(url + '/getMySubjectList', payload)
 }
+
+//获取考核列表
+export const getExamList = (payload = {}) => {
+    return axios.post(url + '/getExamList', payload)
+}

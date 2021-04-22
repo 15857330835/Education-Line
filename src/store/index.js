@@ -12,7 +12,8 @@ export default new Vuex.Store({
     own: false,
     modify: false,
     activeIndex: "1",
-    coursewareID: 0
+    coursewareID: 0,
+    url: 'https://www.baidu.com'
   },
   mutations: {
     CHANGE_USER(state, date) {
@@ -35,6 +36,9 @@ export default new Vuex.Store({
     },
     CHANGE_COURSEWAREID(state, date) {
       state.coursewareID = date
+    },
+    CHANGE_URL(state, date) {
+      state.url = date
     },
   },
   actions: {

@@ -1,13 +1,13 @@
 <template>
   <div id="production">
-      <iframe src="https://www.baidu.com"></iframe>
+      <iframe :src="url"></iframe>
       <RecordingDevice :parameters='parameters'></RecordingDevice>
   </div>
 </template>
 
 <script>
   import { RecordingDevice } from '@/components'
-  import { mapState } from 'vuex'
+  import { mapState, mapMutations } from 'vuex'
   import { getAccessStudent } from '@/api/student'
   import { getAccessTeacher } from '@/api/teacher'
   export default {
@@ -23,12 +23,16 @@
         ...mapState([
           'user',
           'identity',
+          'url'
       ])
     },
     methods: {
-        
+        ...mapMutations([
+            'CHANGE_URL',
+        ]),
     },
     mounted() {
+      this.CHANGE_URL('https://www.baidu.com')
       const data = {
         token: this.user.Token,
       }

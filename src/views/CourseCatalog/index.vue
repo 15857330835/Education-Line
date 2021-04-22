@@ -38,9 +38,9 @@
               </div>
               <div>
                 <el-button plain @click="play">播放课件</el-button>
-                <el-button plain v-if="own">成果</el-button>
-                <el-button plain v-if="own">考核</el-button>
-                <el-button plain v-if="own" @click="history">历史记录</el-button>
+                <el-button plain @click="play" v-if="own">成果</el-button>
+                <el-button plain @click="assess" v-if="own">考核</el-button>
+                <el-button plain v-if="own" @click="history(item.id)">历史记录</el-button>
               </div>
             </div>
           </div>
@@ -125,6 +125,7 @@
     methods: {
       ...mapMutations([
             'CHANGE_ACTIVEINDEX',
+            'CHANGE_COURSEWAREID'
       ]),
       handleSelect(key) {
           this.CHANGE_ACTIVEINDEX(key)
@@ -132,7 +133,11 @@
       play() {
         this.dialogVisible = true
       },
-      history() {
+      assess() {
+        this.$router.push('production')
+      },
+      history(id) {
+        this.CHANGE_COURSEWAREID(id)
         this.$router.push('history')
       }
     },
