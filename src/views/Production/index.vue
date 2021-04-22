@@ -32,7 +32,6 @@
         ]),
     },
     mounted() {
-      this.CHANGE_URL('https://www.baidu.com')
       const data = {
         token: this.user.Token,
       }

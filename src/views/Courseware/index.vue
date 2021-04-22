@@ -83,9 +83,9 @@
         </el-table-column>
         <el-table-column align="center" width="200px" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="mini" @click="play">播放</el-button>
+            <el-button type="text" size="mini" @click="play(scope.row.urlAddr)">播放</el-button>
             <el-button type="text" size="mini" @click="modify" :disabled='scope.row.status ? true : false'>修改</el-button>
-            <el-button type="text" size="mini" @click="play">成果</el-button>
+            <el-button type="text" size="mini" @click="play(scope.row.urlVideo)">成果</el-button>
             <el-button type="text" size="mini" @click="line" :disabled='scope.row.finishStatus ? false : true'>{{ scope.row.status ? '下线' : '上线' }}</el-button>
             <el-button type="text" size="mini" @click="del(scope.row.id)" :disabled='scope.row.status ? true : false'>删除</el-button>
           </template>
@@ -132,7 +132,7 @@
           autoplay
           playsinline
           controls
-          src="../../assets/test.mp4"
+          :src="url"
         ></video>
       </el-dialog>
     </div>
@@ -164,8 +164,8 @@
         label: [],
         ifSearch: false,
         dialogVisible: false,
-        option: [
-            {
+        url: '',
+        option: [{
                 value: '1',
                 label: '新入职'
             }, {
@@ -180,8 +180,7 @@
             }, {
                 value: '5',
                 label: '培训'
-            }
-        ],
+            }],
         currentPage: 1,
         tableData: [],
         dialogFormVisible: false,
@@ -204,6 +203,7 @@
     methods: {
       ...mapMutations([
             'CHANGE_COURSEWAREID',
+            'CHANGE_URL'
       ]),
       selectstate(value) {
         this.status = value
@@ -217,8 +217,9 @@
         this.currentPage = val
         this.search()
       },
-      play() {
+      play(url) {
         this.dialogVisible = true
+        this.url = url
       },
       modify() {
         this.$router.push('production')
@@ -230,13 +231,15 @@
         this.dialogFormVisible = true
       },
       create() {
-        this.form.token = this.user.Token
-        this.form.subjectId = this.courseId
-        this.form.label = this.form.label.join(',')
-        addCourseware(this.form).then(res => {
+        const data = {...this.form}
+        data.token = this.user.Token
+        data.subjectId = this.courseId
+        data.label = data.label.join(',')
+        addCourseware(data).then(res => {
           if(res.flag == 100) {
             this.dialogFormVisible = false
             this.CHANGE_COURSEWAREID(res.data.id)
+            this.CHANGE_URL('https://' + res.data.project.pageUrl)
             this.$router.push('production')
           }else {
             this.$message.error(res.flagString);

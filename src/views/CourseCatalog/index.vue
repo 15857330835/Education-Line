@@ -37,9 +37,9 @@
                 <p>({{ item.learnTime }})</p>
               </div>
               <div>
-                <el-button plain @click="play">播放课件</el-button>
-                <el-button plain @click="play" v-if="own">成果</el-button>
-                <el-button plain @click="assess" v-if="own">考核</el-button>
+                <el-button plain @click="play(item.urlAddr)">播放课件</el-button>
+                <el-button plain @click="play(item.urlVideo)" v-if="own">成果</el-button>
+                <el-button plain @click="assess(item.id)" v-if="own">考核</el-button>
                 <el-button plain v-if="own" @click="history(item.id)">历史记录</el-button>
               </div>
             </div>
@@ -51,6 +51,8 @@
               style="width: 100%; height: 100%"
               autoplay
               playsinline
+              controls
+              :src='url'
             ></video>
           </el-dialog>
         </div>
@@ -91,7 +93,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
-  import { getSubjectInfo, getCoursewareList } from '@/api/studentcourse'
+  import { getSubjectInfo, getCoursewareList, addExam } from '@/api/studentcourse'
   export default {
     components: {
     },
@@ -102,6 +104,7 @@
         radio: 3,
         value: 3.7,
         dialogVisible: false,
+        url: '',
         evaluations: [
           {
             avatar: ''
@@ -130,11 +133,24 @@
       handleSelect(key) {
           this.CHANGE_ACTIVEINDEX(key)
       },
-      play() {
+      play(url) {
         this.dialogVisible = true
+        this.url = url
       },
-      assess() {
-        this.$router.push('production')
+      assess(id) {
+        const data = {
+          token: this.user.Token,
+          subjectId: this.$route.query.id,
+          coursewareId: id,
+          title: 'test'
+        }
+        addExam(data).then(res => {
+          if(res.flag == 100) {
+            this.$router.push('production')
+          }else {
+            this.$message.error(res.flagString);
+          }
+        })
       },
       history(id) {
         this.CHANGE_COURSEWAREID(id)

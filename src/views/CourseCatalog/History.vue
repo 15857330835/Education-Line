@@ -16,18 +16,20 @@
               <el-radio v-model="radio" :label="scope.row.ID"></el-radio>
             </template>
           </el-table-column>
-          <el-table-column align="center" width="50" prop="ID" label="ID"></el-table-column>
+          <el-table-column align="center" width="50" prop="id" label="ID"></el-table-column>
           <el-table-column align="center" prop="title" label="标题"></el-table-column>
-          <el-table-column align="center" prop="startTime" label="开始时间" sortable></el-table-column>
+          <el-table-column align="center" prop="createtime" label="开始时间" sortable></el-table-column>
           <el-table-column align="center" prop="endTime" label="结束时间" sortable></el-table-column>
           <el-table-column align="center" label="状态">
             <template slot-scope="scope">
-              <span :class="scope.row.state == '已提交' ? 'submitted' : 'nosubmitted'">{{ scope.row.state }}</span>
+              <span :class="scope.row.status == '1' ? 'submitted' : 'nosubmitted'">{{ scope.row.status }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="操作">
-            <el-button type="text" size="mini" @click="handleEdit">成果</el-button>
-            <el-button type="text" size="mini" @click="del">删除</el-button>
+            <template slot-scope="scope">
+              <el-button type="text" size="mini" @click="handleEdit(scope.row.urlAddr)">成果</el-button>
+              <el-button type="text" size="mini" @click="del">删除</el-button>
+            </template>
           </el-table-column>
         </el-table>
         <el-dialog
@@ -37,7 +39,8 @@
             style="width: 100%; height: 100%"
             autoplay
             playsinline
-            src="../../assets/test.mp4"
+            controls
+            :src="url"
           ></video>
         </el-dialog>
       </div>
@@ -46,15 +49,16 @@
 
 <script>
   import { mapState } from 'vuex'
-  import { getExamList } from '@/api/studentcourse'
+  import { getExamList, addExam } from '@/api/studentcourse'
   export default {
     components: {
     },
     data() {
       return {
-        tableData: [{}],
+        tableData: [],
         radio: '1',
         dialogVisible: false,
+        url: ''
       };
     },
     computed: {
@@ -65,13 +69,26 @@
     },
     methods: {
         assess() {
-          this.$router.push('production')
+          const data = {
+            token: this.user.Token,
+            subjectId: this.tableData[0].subjectId,
+            coursewareId: this.coursewareID,
+            title: 'test'
+          }
+          addExam(data).then(res => {
+            if(res.flag == 100) {
+              this.$router.push('production')
+            }else {
+              this.$message.error(res.flagString);
+            }
+          })
         },
         submit() {
 
         },
-        handleEdit() {
+        handleEdit(url) {
           this.dialogVisible = true
+          this.url = url
         },
         del() {
             this.$confirm('是否确定删除该课件？<br><i style="color:#FA6400">课件删除后将无法恢复，</i>您还要继续吗？', '', {

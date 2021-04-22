@@ -48,7 +48,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
         storage: window.sessionStorage,
-        paths: ["user", "identity", "tabKey", 'own', 'modify', 'activeIndex']
+        paths: ["user", "identity", "tabKey", 'own', 'modify', 'activeIndex', 'coursewareID']
     })
   ]
 })

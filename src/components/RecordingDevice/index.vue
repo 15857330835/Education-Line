@@ -7,7 +7,7 @@
             <el-button icon="el-icon-caret-right" circle @click="start" :disabled='isstart'></el-button>
             <el-button icon="el-icon-s-help" circle @click="end" :disabled='isend'></el-button>
             <el-button icon="el-icon-upload" circle @click="upload" :disabled='isupload'></el-button>
-            <el-button icon="el-icon-s-ticket" circle @click="edit" :disabled='isedit'></el-button>
+            <el-button icon="el-icon-s-ticket" circle @click="edit" :disabled='isedit' v-if="identity == 'manager'"></el-button>
         </div>
         <i id="none"></i>
         <div class="video">
@@ -53,6 +53,7 @@
     computed: {
         ...mapState([
           'user',
+          'identity',
           'coursewareID'
         ]),
         timing() {
@@ -108,6 +109,9 @@
                                     message: '上传成功！',
                                     type: 'success'
                                 });
+                                if(that.identity == 'human') {
+                                    that.$router.push('history')
+                                }
                             }else {
                                 that.$message.error(res.flagString);
                             }

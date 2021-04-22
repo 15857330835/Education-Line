@@ -30,3 +30,8 @@ export const getMySubjectList = (payload = {}) => {
 export const getExamList = (payload = {}) => {
     return axios.post(url + '/getExamList', payload)
 }
+
+//开始考核
+export const addExam = (payload = {}) => {
+    return axios.post(url + '/addExam', payload)
+}
