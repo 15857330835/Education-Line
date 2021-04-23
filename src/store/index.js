@@ -12,7 +12,9 @@ export default new Vuex.Store({
     own: false,
     modify: false,
     activeIndex: "1",
+    subjectId: 0, //课程ID
     coursewareID: 0, //课件ID
+    projectId: 0, //工程ID
     toolId: 0, //工具ID
     url: 'https://www.baidu.com', //工具地址
     record: true, //是否出现录制悬浮窗
@@ -37,8 +39,14 @@ export default new Vuex.Store({
     CHANGE_ACTIVEINDEX(state, date) {
       state.activeIndex = date
     },
+    CHANGE_SUBJECTID(state, date) {
+      state.subjectId = date
+    },
     CHANGE_COURSEWAREID(state, date) {
       state.coursewareID = date
+    },
+    CHANGE_PROJECTID(state, date) {
+      state.projectId = date
     },
     CHANGE_TOOLID(state, date) {
       state.toolId = date
@@ -60,7 +68,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
         storage: window.sessionStorage,
-        paths: ["user", "identity", "tabKey", 'own', 'modify', 'activeIndex', 'coursewareID', 'toolId']
+        paths: ["user", "identity", "tabKey", 'own', 'modify', 'activeIndex', 'subjectId', 'coursewareID', 'projectId', 'toolId']
     })
   ]
 })

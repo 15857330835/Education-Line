@@ -78,7 +78,7 @@
           }
           addExam(data).then(res => {
             if(res.flag == 100) {
-              this.$router.push({name:'Production',query: {coursewareId: this.coursewareID, toolId: this.toolId}})
+              this.$router.push('production')
             }else {
               this.$message.error(res.flagString);
             }

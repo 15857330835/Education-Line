@@ -27,7 +27,11 @@
           'identity',
           'url',
           'record',
-          'recordStatus'
+          'recordStatus',
+          'coursewareID',
+          'projectId',
+          'subjectId',
+          'toolId'
       ])
     },
     watch: {
@@ -35,9 +39,9 @@
         if(this.identity == 'manager') {
           const data = {
             token: this.user.Token,
-            coursewareId: this.$route.query.data.id,
-            projectId: this.$route.query.data.projectId,
-            subjectId: this.$route.query.data.subjectId
+            coursewareId: this.coursewareID,
+            projectId: this.projectId,
+            subjectId: this.subjectId
           }
           if(this.recordStatus == 1) {
             startVideoTeacher(data).then(res => {
@@ -55,8 +59,8 @@
         }else {
           const data1 = {
             token: this.user.Token,
-            coursewareId: this.$route.query.coursewareId,
-            toolId: this.$route.query.toolId
+            coursewareId: this.coursewareId,
+            toolId: this.toolId
           }
           if(this.recordStatus == 1) {
             startVideoStudent(data1).then(res => {

@@ -22,7 +22,7 @@
   import plupload from 'plupload'
   import Countdown from './Countdown'
   import { mapState, mapMutations } from 'vuex'
-  import { saveVideoUrl } from '@/api/teachercourse'
+  import { saveVideoUrl, createNces } from '@/api/teachercourse'
   export default {
     name: 'RecordingDevice',
     components: {
@@ -47,13 +47,15 @@
         isedit: true,
         isupload: true,
         uploading: false,
-        progress: 0
+        progress: 0,
+        location: ''
       };
     },
     computed: {
         ...mapState([
           'user',
           'identity',
+          'subjectId',
           'coursewareID'
         ]),
         timing() {
@@ -103,6 +105,7 @@
                             coursewareId: that.coursewareID,
                             urlAddr: res.location
                         }
+                        that.location = res.location
                         saveVideoUrl(data).then(res => {
                             if(res.flag == 100) {
                                 that.$message({
@@ -214,7 +217,19 @@
             $('.video').css({'display': 'block'})
         },
         edit() {
-            this.CHANGE_URL('https://www.aodianyun.com/')
+            const data = {
+                token: this.user.Token,
+                coursewareId: this.coursewareID,
+                subjectId: this.subjectId,
+                url: this.location
+            }
+            createNces(data).then(res => {
+                if(res.flag == 100) {
+                    this.CHANGE_URL('https://' + res.data.pageUrl)
+                }else {
+                    this.$message.error(res.flagString);
+                }
+            })
         },
         upload() {
             this.isstart = false

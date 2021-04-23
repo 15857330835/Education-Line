@@ -84,10 +84,10 @@
         <el-table-column align="center" width="200px" label="操作">
           <template slot-scope="scope">
             <el-button type="text" size="mini" @click="play(scope.row.urlAddr)">播放</el-button>
-            <el-button type="text" size="mini" @click="modify" :disabled='scope.row.status ? true : false'>修改</el-button>
+            <el-button type="text" size="mini" @click="modify(scope.row.projectId, scope.row.subjectId)" :disabled='scope.row.status ? true : false'>修改</el-button>
             <el-button type="text" size="mini" @click="play(scope.row.urlVideo)">成果</el-button>
             <el-button type="text" size="mini" @click="line" :disabled='scope.row.finishStatus ? false : true'>{{ scope.row.status ? '下线' : '上线' }}</el-button>
-            <el-button type="text" size="mini" @click="del(scope.row.id)" :disabled='scope.row.status ? true : false'>删除</el-button>
+            <el-button type="text" size="mini" @click="del(scope.row.id, scope.row.projectId, scope.row.subjectId)" :disabled='scope.row.status ? true : false'>删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -150,7 +150,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
-  import { getCoursewareList, addCourseware, delCourseware } from '@/api/teachercourse'
+  import { getCoursewareList, addCourseware, delCourseware, editNces } from '@/api/teachercourse'
   export default {
     data() {
       return {
@@ -204,7 +204,9 @@
       ...mapMutations([
             'CHANGE_COURSEWAREID',
             'CHANGE_URL',
-            'CHANGE_RECORD'
+            'CHANGE_RECORD',
+            'CHANGE_SUBJECTID',
+            'CHANGE_PROJECTID'
       ]),
       selectstate(value) {
         this.status = value
@@ -222,9 +224,21 @@
         this.dialogVisible = true
         this.url = url
       },
-      modify() {
-        this.CHANGE_RECORD(false)
-        this.$router.push('production')
+      modify(projectId, subjectId) {
+        const data = {
+          token: this.user.Token,
+          ncesId: projectId,
+          subjectId
+        }
+        editNces(data).then(res => {
+          if(res.flag == 100) {
+            this.CHANGE_RECORD(false)
+            this.CHANGE_URL('https://' + res.data.pageUrl)
+            this.$router.push('production')
+          }else {
+            this.$message.error(res.flagString);
+          }
+        })
       },
       line() {
 
@@ -241,9 +255,10 @@
           if(res.flag == 100) {
             this.dialogFormVisible = false
             this.CHANGE_COURSEWAREID(res.data.id)
+            this.CHANGE_PROJECTID(res.data.projectId)
             this.CHANGE_RECORD(true)
             this.CHANGE_URL('https://' + res.data.project.pageUrl)
-            this.$router.push({name:'Production',query: {data: res.data}})
+            this.$router.push('production')
           }else {
             this.$message.error(res.flagString);
           }
@@ -297,10 +312,12 @@
           }
         })
       },
-      del(id) {
+      del(id, projectId, subjectId) {
         const data = {
           token: this.user.Token,
-          id
+          id,
+          projectId,
+          subjectId
         }
         delCourseware(data).then(res => {
           if(res.flag == 100) {
@@ -332,6 +349,7 @@
     },
     mounted() {
       this.refresh()
+      this.CHANGE_SUBJECTID(this.courseId)
     }
   }
 </script>

@@ -70,3 +70,18 @@ export const startVideoTeacher = (payload = {}) => {
 export const endVideoTeacher = (payload = {}) => {
     return axios.post(url + '/endVideo', payload)
 }
+
+//创建非编工程
+export const createNces = (payload = {}) => {
+    return axios.post(url + '/createNces', payload)
+}
+
+//修改非编工程
+export const editNces = (payload = {}) => {
+    return axios.post(url + '/editNces', payload)
+}
+
+//保存成果地址
+export const saveRstUrl = (payload = {}) => {
+    return axios.post(url + '/saveRstUrl', payload)
+}

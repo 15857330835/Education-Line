@@ -149,7 +149,8 @@
         addExam(data).then(res => {
           if(res.flag == 100) {
             this.CHANGE_RECORD(true)
-            this.$router.push({name:'Production',query: {coursewareId: id, toolId: this.courseInfo.toolId}})
+            this.CHANGE_COURSEWAREID(id)
+            this.$router.push('production')
           }else {
             this.$message.error(res.flagString);
           }
