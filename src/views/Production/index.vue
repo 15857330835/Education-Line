@@ -59,7 +59,7 @@
         }else {
           const data1 = {
             token: this.user.Token,
-            coursewareId: this.coursewareId,
+            coursewareId: this.coursewareID,
             toolId: this.toolId
           }
           if(this.recordStatus == 1) {
