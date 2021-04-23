@@ -45,3 +45,8 @@ export const startVideoStudent = (payload = {}) => {
 export const endVideoStudent = (payload = {}) => {
     return axios.post(url + '/endVideo', payload)
 }
+
+//提交考核视频
+export const submitExam = (payload = {}) => {
+    return axios.post(url + '/submitExam', payload)
+}

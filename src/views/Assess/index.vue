@@ -12,21 +12,21 @@
       </div>
       <div>
         <label>姓名：</label>
-        <el-input v-model="input" size="mini" placeholder="请输入内容"></el-input>
+        <el-input v-model="studentName" size="mini" placeholder="请输入内容"></el-input>
         <div style="display: inline-block" v-if="state == 'courseware'">
           <label>标题：</label>
-          <el-input v-model="input" size="mini" placeholder="请输入内容"></el-input>
+          <el-input v-model="title" size="mini" placeholder="请输入内容"></el-input>
         </div>
         <label>提交时间：</label>
         <el-date-picker
-          v-model="value2"
+          v-model="submitTime"
           size="mini"
           type="datetime"
           placeholder="选择日期时间"
           align="right">
         </el-date-picker>
-        <el-button type="primary" plain round size="mini">查询</el-button>
-        <el-button type="primary" plain round size="mini">重置</el-button>
+        <el-button type="primary" plain round size="mini" @click="query">查询</el-button>
+        <el-button type="primary" plain round size="mini" @click="reset">重置</el-button>
       </div>
     </div>
     <div class="content">
@@ -37,12 +37,12 @@
         :header-cell-style="{'font-weight': 'bold', 'background-color': '#F8F8F8'}"
         :default-sort = "{prop: 'date', order: 'descending'}"
         >
-        <el-table-column align="center" prop="name" label="姓名"></el-table-column>
-        <el-table-column align="center" prop="inspectionTime" label="考核时长"></el-table-column>
+        <el-table-column align="center" prop="studentName" label="姓名"></el-table-column>
+        <el-table-column align="center" prop="stratTime" label="考核时长"></el-table-column>
         <el-table-column align="center" prop="submitTime" label="提交时间" sortable></el-table-column>
         <el-table-column align="center" label="状态">
           <template slot-scope="scope">
-            <span :class="scope.row.state == '已通过' ? 'through' : scope.row.state == '未通过' ? 'nothrough' : 'nofinish'">{{ scope.row.state }}</span>
+            <span :class="scope.row.state == '已通过' ? 'through' : scope.row.state == '未通过' ? 'nothrough' : 'nofinish'">{{ scope.row.submitStatus }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="分数">
@@ -58,7 +58,7 @@
         :header-cell-style="{'font-weight': 'bold', 'background-color': '#F8F8F8'}"
         :default-sort = "{prop: 'date', order: 'descending'}"
         >
-        <el-table-column align="center" prop="name" label="姓名"></el-table-column>
+        <el-table-column align="center" prop="studentName" label="姓名"></el-table-column>
         <el-table-column align="center" prop="title" label="标题"></el-table-column>
         <el-table-column align="center" prop="inspectionTime" label="考核次数"></el-table-column>
         <el-table-column align="center" label="提交时间" sortable>
@@ -68,7 +68,7 @@
         </el-table-column>
         <el-table-column align="center" label="状态">
           <template slot-scope="scope">
-            <span :class="scope.row.state == '已通过' ? 'through' : scope.row.state == '未通过' ? 'nothrough' : 'nofinish'">{{ scope.row.state }}</span>
+            <span :class="scope.row.state == '已通过' ? 'through' : scope.row.state == '未通过' ? 'nothrough' : 'nofinish'">{{ scope.row.submitStatus }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
@@ -79,13 +79,10 @@
     </div>
     <div class="bottom">
       <el-pagination
-        @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="this.currentPage"
-        :page-sizes="[4, 6, 8, 10]"
-        :page-size="10"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="50">
+        layout="total, prev, pager, next, jumper"
+        :total="tableData.length">
       </el-pagination>
     </div>
     </div>
@@ -93,67 +90,99 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex'
+  import { getExamList } from '@/api/teachercourse'
   export default {
     data() {
       return {
         status: ['全部', '已通过', '未通过', '未完成'],
         status1: '全部',
         state: 'course',
-        input: '',
-        value2: '',
+        studentName: '',
+        title: '',
+        submitTime: '',
+        ifSearch: false,
         coursePage: 1,
         coursewarePage: 1,
-        tableData: [{
-          name: '陈振兴',
-          title: 'title',
-          inspectionTime: '30:12',
-          submitTime: '2020-02-21',
-          state: '已通过',
-          score: '36'
-        },
-        {
-          name: '陈振兴',
-          title: 'title',
-          inspectionTime: '30:12',
-          submitTime: '2020-02-21',
-          state: '未通过',
-          score: '80'
-        },
-        {
-          name: '陈振兴',
-          title: 'title',
-          inspectionTime: '30:12',
-          submitTime: '2020-02-21',
-          state: '未完成',
-          score: '30'
-        }
-        ]
+        tableData: []
       };
     },
     computed: {
+      ...mapState([
+          'user'
+      ]),
       currentPage() {
         return this.state == 'course' ? this.coursePage : this.coursewarePage
+      },
+      courseId() {
+        return this.$route.query.data
       }
     },
     methods: {
       select(value) {
         this.status1 = value
+        this.search()
       },
       handleSelect(key) {
         this.state = key
-      },
-      handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
+        this.refresh()
       },
       handleCurrentChange(val) {
         this.state == 'course' ? this.coursePage = val : this.coursewarePage = val
+        this.search()
       },
       handleEdit() {
 
-      }
+      },
+      reset() {
+        this.status1 = '全部'
+        this.studentName = ''
+        this.title = ''
+        this.submitTime = ''
+        this.coursePage = 1
+        this.coursewarePage = 1
+        this.ifSearch = false
+        this.search()
+      },
+      query() {
+        this.ifSearch = true
+        this.search()
+      },
+      search() {
+        const data = {
+          token: this.user.Token,
+          subjectId: this.courseId,
+          page: this.currentPage,
+          status: this.status1 == '全部' ? '' : this.status1 == '已通过' ? 1 : this.status1 == '已通过' ? 2 : 3,
+        }
+        if(this.ifSearch) {
+          data.studentName = this.studentName
+          data.submitTime = this.submitTime ? this.submitTime.getTime()/1000 : ''
+        }
+        getExamList(data).then(res => {
+          if(res.flag == 100) {
+            this.tableData = res.data
+          }else {
+            this.$message.error(res.flagString);
+          }
+        })
+      },
+      refresh() {
+        const data = {
+          token: this.user.Token,
+          subjectId: this.courseId
+        }
+        getExamList(data).then(res => {
+          if(res.flag == 100) {
+            this.tableData = res.data
+          }else {
+            this.$message.error(res.flagString);
+          }
+        })
+      },
     },
     mounted() {
-      
+      this.refresh()
     }
   }
 </script>

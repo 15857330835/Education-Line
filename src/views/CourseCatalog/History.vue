@@ -13,7 +13,7 @@
           >
           <el-table-column width="30">
             <template slot-scope="scope">
-              <el-radio v-model="radio" :label="scope.row.ID"></el-radio>
+              <el-radio v-model="radio" :label="scope.row.id"></el-radio>
             </template>
           </el-table-column>
           <el-table-column align="center" width="50" prop="id" label="ID"></el-table-column>
@@ -48,8 +48,8 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex'
-  import { getExamList, addExam } from '@/api/studentcourse'
+  import { mapState, mapMutations } from 'vuex'
+  import { getExamList, addExam, submitExam } from '@/api/studentcourse'
   export default {
     components: {
     },
@@ -69,6 +69,9 @@
       ])
     },
     methods: {
+        ...mapMutations([
+              'CHANGE_URL'
+        ]),
         assess() {
           const data = {
             token: this.user.Token,
@@ -78,6 +81,7 @@
           }
           addExam(data).then(res => {
             if(res.flag == 100) {
+              this.CHANGE_URL('https://' + res.data.project.pageUrl)
               this.$router.push('production')
             }else {
               this.$message.error(res.flagString);
@@ -85,7 +89,20 @@
           })
         },
         submit() {
-
+          const data = {
+            token: this.user.Token,
+            examId: this.radio
+          }
+          submitExam(data).then(res => {
+            if(res.flag == 100) {
+              this.$message({
+                  message: '上传成功！',
+                  type: 'success'
+              });
+            }else {
+              this.$message.error(res.flagString);
+            }
+          })
         },
         handleEdit(url) {
           this.dialogVisible = true

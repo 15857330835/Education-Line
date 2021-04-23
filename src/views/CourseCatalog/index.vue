@@ -130,7 +130,8 @@
             'CHANGE_ACTIVEINDEX',
             'CHANGE_COURSEWAREID',
             'CHANGE_RECORD',
-            'CHANGE_TOOLID'
+            'CHANGE_TOOLID',
+            'CHANGE_URL'
       ]),
       handleSelect(key) {
           this.CHANGE_ACTIVEINDEX(key)
@@ -150,6 +151,7 @@
           if(res.flag == 100) {
             this.CHANGE_RECORD(true)
             this.CHANGE_COURSEWAREID(id)
+            this.CHANGE_URL('https://' + res.data.project.pageUrl)
             this.$router.push('production')
           }else {
             this.$message.error(res.flagString);

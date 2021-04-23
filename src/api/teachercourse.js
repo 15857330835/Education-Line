@@ -85,3 +85,8 @@ export const editNces = (payload = {}) => {
 export const saveRstUrl = (payload = {}) => {
     return axios.post(url + '/saveRstUrl', payload)
 }
+
+//获取考核成绩
+export const getExamList = (payload = {}) => {
+    return axios.post(url + '/getExamList', payload)
+}

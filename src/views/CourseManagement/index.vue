@@ -70,7 +70,7 @@
             </div>
         </div>
         <div class="mask">
-          <el-button type="primary" plain round size="mini" @click="goto($event, 'assess')">考核评分</el-button>
+          <el-button type="primary" plain round size="mini" @click="goto($event, 'assess', course.id)">考核评分</el-button>
           <el-button type="primary" plain round size="mini" @click="setup($event, course.id)">设置</el-button>
           <el-button :type="course.status ? 'primary' : 'warning'" plain round size="mini" @click="online($event, course.id, course.status)">{{ course.status ? '上线' : '下线' }}</el-button>
           <el-button type="primary" plain round size="mini" @click="del($event, course.id)">删除</el-button>
