@@ -31,7 +31,8 @@
           'coursewareID',
           'projectId',
           'subjectId',
-          'toolId'
+          'toolId',
+          'examId'
       ])
     },
     watch: {
@@ -59,8 +60,9 @@
         }else {
           const data1 = {
             token: this.user.Token,
-            coursewareId: this.coursewareID,
-            toolId: this.toolId
+            examId: this.examId,
+            projectId: this.projectId,
+            subjectId: this.subjectId
           }
           if(this.recordStatus == 1) {
             startVideoStudent(data1).then(res => {

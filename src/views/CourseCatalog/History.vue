@@ -70,17 +70,20 @@
     },
     methods: {
         ...mapMutations([
-              'CHANGE_URL'
+              'CHANGE_URL',
+              'CHANGE_PROJECTID',
+              'CHANGE_EXAMID'
         ]),
         assess() {
           const data = {
             token: this.user.Token,
             subjectId: this.tableData[0].subjectId,
             coursewareId: this.coursewareID,
-            title: 'test'
           }
           addExam(data).then(res => {
             if(res.flag == 100) {
+              this.CHANGE_PROJECTID(res.data.projectId)
+              this.CHANGE_EXAMID(res.data.id)
               this.CHANGE_URL('https://' + res.data.project.pageUrl)
               this.$router.push('production')
             }else {

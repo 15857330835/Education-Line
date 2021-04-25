@@ -130,8 +130,10 @@
             'CHANGE_ACTIVEINDEX',
             'CHANGE_COURSEWAREID',
             'CHANGE_RECORD',
-            'CHANGE_TOOLID',
-            'CHANGE_URL'
+            'CHANGE_URL',
+            'CHANGE_SUBJECTID',
+            'CHANGE_PROJECTID',
+            'CHANGE_EXAMID'
       ]),
       handleSelect(key) {
           this.CHANGE_ACTIVEINDEX(key)
@@ -145,12 +147,13 @@
           token: this.user.Token,
           subjectId: this.$route.query.id,
           coursewareId: id,
-          title: 'test'
         }
         addExam(data).then(res => {
           if(res.flag == 100) {
             this.CHANGE_RECORD(true)
             this.CHANGE_COURSEWAREID(id)
+            this.CHANGE_PROJECTID(res.data.projectId)
+            this.CHANGE_EXAMID(res.data.id)
             this.CHANGE_URL('https://' + res.data.project.pageUrl)
             this.$router.push('production')
           }else {
@@ -175,7 +178,7 @@
       getSubjectInfo(data).then(res => {
         if(res.flag == 100) {
           this.courseInfo = res.data
-          this.CHANGE_TOOLID(res.data.toolId)
+          this.CHANGE_SUBJECTID(res.data.id)
         }else {
           this.$message.error(res.flagString);
         }
