@@ -39,8 +39,8 @@
               <div>
                 <el-button plain @click="play(item.urlAddr)">播放课件</el-button>
                 <el-button plain @click="play(item.urlVideo)" v-if="own">成果</el-button>
-                <el-button plain @click="assess(item.id)" v-if="own">考核</el-button>
-                <el-button plain v-if="own" @click="history(item.id)">历史记录</el-button>
+                <el-button plain @click="assess(item.id, item.projectId)" v-if="own">考核</el-button>
+                <el-button plain v-if="own" @click="history(item.id, item.projectId)">历史记录</el-button>
               </div>
             </div>
           </div>
@@ -133,7 +133,8 @@
             'CHANGE_URL',
             'CHANGE_SUBJECTID',
             'CHANGE_PROJECTID',
-            'CHANGE_EXAMID'
+            'CHANGE_EXAMID',
+            'CHANGE_PARENTPROJECTID'
       ]),
       handleSelect(key) {
           this.CHANGE_ACTIVEINDEX(key)
@@ -142,17 +143,19 @@
         this.dialogVisible = true
         this.url = url
       },
-      assess(id) {
+      assess(id, parentProjectId) {
         const data = {
           token: this.user.Token,
           subjectId: this.$route.query.id,
           coursewareId: id,
+          parentProjectId
         }
         addExam(data).then(res => {
           if(res.flag == 100) {
             this.CHANGE_RECORD(true)
             this.CHANGE_COURSEWAREID(id)
             this.CHANGE_PROJECTID(res.data.projectId)
+            this.CHANGE_PARENTPROJECTID(parentProjectId)
             this.CHANGE_EXAMID(res.data.id)
             this.CHANGE_URL('https://' + res.data.project.pageUrl)
             this.$router.push('production')
@@ -161,8 +164,9 @@
           }
         })
       },
-      history(id) {
+      history(id, parentProjectId) {
         this.CHANGE_COURSEWAREID(id)
+        this.CHANGE_PARENTPROJECTID(parentProjectId)
         this.$router.push('history')
       }
     },

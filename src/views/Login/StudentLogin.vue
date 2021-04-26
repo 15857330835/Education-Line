@@ -94,7 +94,7 @@
 
         i {
             display: inline-block;
-            width: 140px;
+            width: 240px;
             height: 50px;
             background: url('../../assets/img/logo-white.png') no-repeat center;
         }
@@ -110,7 +110,7 @@
         position: absolute;
         width: 571px;
         height: 177px;
-        background: url('../../assets/img/title.png');
+        background: url('../../assets/img/title.png') center/cover;
         top: 251px;
         left: 285px;
     }

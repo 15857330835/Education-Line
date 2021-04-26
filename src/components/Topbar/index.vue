@@ -205,7 +205,7 @@
         float: left;
         height: 60px;
         line-height: 60px;
-        width: 120px;
+        width: 200px;
         text-align: left;
         font-weight: bold;
         color: lightblue;

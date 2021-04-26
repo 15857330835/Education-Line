@@ -15,6 +15,7 @@ export default new Vuex.Store({
     subjectId: 0, //课程ID
     coursewareID: 0, //课件ID
     projectId: 0, //工程ID
+    parentProjectId: 0, //父工程ID
     toolId: 0, //工具ID
     examId: 0, //考核ID
     url: 'https://www.baidu.com', //工具地址
@@ -49,6 +50,9 @@ export default new Vuex.Store({
     CHANGE_PROJECTID(state, date) {
       state.projectId = date
     },
+    CHANGE_PARENTPROJECTID(state, date) {
+      state.parentProjectId = date
+    },
     CHANGE_TOOLID(state, date) {
       state.toolId = date
     },
@@ -72,7 +76,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
         storage: window.sessionStorage,
-        paths: ["user", "identity", "tabKey", 'own', 'modify', 'activeIndex', 'subjectId', 'coursewareID', 'projectId', 'toolId', 'examId', 'url']
+        paths: ["user", "identity", "tabKey", 'own', 'modify', 'activeIndex', 'subjectId', 'coursewareID', 'projectId', 'parentProjectId', 'toolId', 'examId', 'url']
     })
   ]
 })

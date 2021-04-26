@@ -84,6 +84,10 @@
 
     },
     mounted() {
+      window.addEventListener( "message",(e)=>{
+        console.log(e.data)
+        this.$router.push({path: 'courseware', query: {data: this.subjectId}})
+      },	false)
       const data = {
         token: this.user.Token,
       }

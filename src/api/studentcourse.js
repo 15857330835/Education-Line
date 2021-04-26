@@ -50,3 +50,8 @@ export const endVideoStudent = (payload = {}) => {
 export const submitExam = (payload = {}) => {
     return axios.post(url + '/submitExam', payload)
 }
+
+//删除考核
+export const deleteExam = (payload = {}) => {
+    return axios.post(url + '/deleteExam', payload)
+}

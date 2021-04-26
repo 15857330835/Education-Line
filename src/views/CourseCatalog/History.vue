@@ -28,7 +28,7 @@
           <el-table-column align="center" label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="mini" @click="handleEdit(scope.row.urlAddr)">成果</el-button>
-              <el-button type="text" size="mini" @click="del">删除</el-button>
+              <el-button type="text" size="mini" @click="del(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -49,7 +49,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
-  import { getExamList, addExam, submitExam } from '@/api/studentcourse'
+  import { getExamList, addExam, submitExam, deleteExam } from '@/api/studentcourse'
   export default {
     components: {
     },
@@ -65,7 +65,8 @@
         ...mapState([
           'user',
           'coursewareID',
-          'toolId'
+          'toolId',
+          'parentProjectId'
       ])
     },
     methods: {
@@ -79,6 +80,7 @@
             token: this.user.Token,
             subjectId: this.tableData[0].subjectId,
             coursewareId: this.coursewareID,
+            parentProjectId: this.parentProjectId
           }
           addExam(data).then(res => {
             if(res.flag == 100) {
@@ -111,7 +113,7 @@
           this.dialogVisible = true
           this.url = url
         },
-        del() {
+        del(id) {
             this.$confirm('是否确定删除该课件？<br><i style="color:#FA6400">课件删除后将无法恢复，</i>您还要继续吗？', '', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
@@ -119,30 +121,40 @@
                 dangerouslyUseHTMLString: true,
                 type: 'warning'
             }).then(() => {
-                this.$message({
-                    type: 'success',
-                    message: '删除成功!'
-                });
+                const data = {
+                  token: this.user.Token,
+                  examId: id
+                }
+                deleteExam(data).then(res => {
+                  if(res.flag == 100) {
+                    this.refresh()
+                  }else {
+                    this.$message.error(res.flagString);
+                  }
+                })
             }).catch(() => {
                 this.$message({
                     type: 'info',
                     message: '已取消'
                 });          
             });
+        },
+        refresh() {
+          const data = {
+            token: this.user.Token,
+            coursewareId: this.coursewareID
+          }
+          getExamList(data).then(res => {
+            if(res.flag == 100) {
+              this.tableData = res.data
+            }else {
+              this.$message.error(res.flagString);
+            }
+          })
         }
     },
     mounted() {
-      const data = {
-        token: this.user.Token,
-        coursewareId: this.coursewareID
-      }
-      getExamList(data).then(res => {
-        if(res.flag == 100) {
-          this.tableData = res.data
-        }else {
-          this.$message.error(res.flagString);
-        }
-      })
+      this.refresh()
     }
   }
 </script>
