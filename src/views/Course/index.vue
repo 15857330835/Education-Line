@@ -57,7 +57,7 @@
               <p>已有18051人订阅</p>
               <p>好评度 95%</p>
             </div>
-            <div>
+            <div v-if="course.priceStatus">
               <i class="discount">￥{{ course.priceDiscount }}</i>
               <i class="original">原价￥{{ course.price }}</i>
             </div>

@@ -41,9 +41,9 @@
       </div>
     </div>
     <div class="operation">
-      <el-button type="primary" plain size="mini" @click="allChoose">全选</el-button>
+      <!-- <el-button type="primary" plain size="mini" @click="allChoose">全选</el-button> -->
       <el-button type="primary" plain size="mini" @click="setup($event)">新建</el-button>
-      <el-button type="primary" plain size="mini" @click="del($event)">批量删除</el-button>
+      <!-- <el-button type="primary" plain size="mini" @click="del($event)">批量删除</el-button> -->
     </div>
     <div class="content">
       <div class="course" v-for="(course, index) in courses" :key="index">
@@ -64,7 +64,7 @@
               <p>已有18051人订阅</p>
               <p>好评度 95%</p>
             </div>
-            <div>
+            <div v-if="course.priceStatus">
               <i class="discount">￥{{ course.priceDiscount }}</i>
               <i class="original">原价￥{{ course.price }}</i>
             </div>

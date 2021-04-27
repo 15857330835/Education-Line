@@ -45,10 +45,10 @@
     </div>
     <div class="operation">
       <el-button type="primary" plain size="mini" @click="production">制作课件</el-button>
-      <el-button type="primary" plain size="mini">全选</el-button>
+      <!-- <el-button type="primary" plain size="mini">全选</el-button>
       <el-button type="primary" plain size="mini">批量上线</el-button>
       <el-button type="primary" plain size="mini">批量下线</el-button>
-      <el-button type="primary" plain size="mini">批量删除</el-button>
+      <el-button type="primary" plain size="mini">批量删除</el-button> -->
     </div>
     <div class="content">
       <el-table
@@ -86,7 +86,7 @@
             <el-button type="text" size="mini" @click="play(scope.row.urlAddr)">播放</el-button>
             <el-button type="text" size="mini" @click="modify(scope.row.id, scope.row.ncesId, scope.row.subjectId)" :disabled='scope.row.ncesId ? false : true'>修改</el-button>
             <el-button type="text" size="mini" @click="play(scope.row.urlVideo)">成果</el-button>
-            <el-button type="text" size="mini" @click="line" :disabled='scope.row.finishStatus ? false : true'>{{ scope.row.status ? '下线' : '上线' }}</el-button>
+            <el-button type="text" size="mini" @click="line(scope.row.id, scope.row.status)" :disabled='scope.row.finishStatus ? false : true'>{{ scope.row.status ? '下线' : '上线' }}</el-button>
             <el-button type="text" size="mini" @click="del(scope.row.id, scope.row.projectId, scope.row.subjectId)" :disabled='scope.row.status ? true : false'>删除</el-button>
           </template>
         </el-table-column>
@@ -150,7 +150,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
-  import { getCoursewareList, addCourseware, delCourseware, editNces } from '@/api/teachercourse'
+  import { getCoursewareList, addCourseware, delCourseware, editNces, updateCoursewareStatus } from '@/api/teachercourse'
   export default {
     data() {
       return {
@@ -241,8 +241,19 @@
           }
         })
       },
-      line() {
-
+      line(id, status) {
+        const data = {
+          token: this.user.Token,
+          coursewareId: id,
+          status: status ? 0 : 1
+        }
+        updateCoursewareStatus(data).then(res => {
+          if(res.flag == 100) {
+            this.refresh()
+          }else {
+            this.$message.error(res.flagString);
+          }
+        })
       },
       production() {
         this.dialogFormVisible = true

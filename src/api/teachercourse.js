@@ -51,6 +51,11 @@ export const updateSubject = (payload = {}) => {
     return axios.post(url + '/updateSubject', payload)
 }
 
+//更新课件状态
+export const updateCoursewareStatus = (payload = {}) => {
+    return axios.post(url + '/updateCoursewareStatus', payload)
+}
+
 //上传图片
 export const uploadPic = (payload = {}) => {
     return axios.post(url + '/uploadPic', payload, config)

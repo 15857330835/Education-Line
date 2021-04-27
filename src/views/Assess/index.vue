@@ -72,7 +72,7 @@
           </template>
         </el-table-column>
         <el-table-column align="center" label="操作">
-          <el-button type="text" size="mini" @click="handleEdit">批阅</el-button>
+          <!-- <el-button type="text" size="mini" @click="handleEdit">批阅</el-button> -->
           <el-button type="text" size="mini" @click="handleEdit">成果</el-button>
         </el-table-column>
       </el-table>
