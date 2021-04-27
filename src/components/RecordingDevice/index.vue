@@ -22,7 +22,8 @@
   import plupload from 'plupload'
   import Countdown from './Countdown'
   import { mapState, mapMutations } from 'vuex'
-  import { saveVideoUrl, createNces } from '@/api/teachercourse'
+  import { saveVideoUrlTeacher, createNces } from '@/api/teachercourse'
+  import { saveVideoUrlStudent } from '@/api/studentcourse'
   export default {
     name: 'RecordingDevice',
     components: {
@@ -56,7 +57,8 @@
           'user',
           'identity',
           'subjectId',
-          'coursewareID'
+          'coursewareID',
+          'examId'
         ]),
         timing() {
             var min = this.time/60 > 9 ? parseInt(this.time/60) : '0' + parseInt(this.time/60)
@@ -100,25 +102,41 @@
                     FileUploaded: function(uploader,file,responseObject) {
                         that.uploading = false
                         const res = JSON.parse(responseObject.response)
-                        const data = {
-                            token: that.user.Token,
-                            coursewareId: that.coursewareID,
-                            urlAddr: res.location
-                        }
                         that.location = res.location
-                        saveVideoUrl(data).then(res => {
-                            if(res.flag == 100) {
-                                that.$message({
-                                    message: '上传成功！',
-                                    type: 'success'
-                                });
-                                if(that.identity == 'human') {
-                                    that.$router.push('history')
-                                }
-                            }else {
-                                that.$message.error(res.flagString);
+                        if(that.identity == 'manager') {
+                            const data = {
+                                token: that.user.Token,
+                                coursewareId: that.coursewareID,
+                                urlAddr: res.location
                             }
-                        })
+                            saveVideoUrlTeacher(data).then(res => {
+                                if(res.flag == 100) {
+                                    that.$message({
+                                        message: '上传成功！',
+                                        type: 'success'
+                                    });
+                                }else {
+                                    that.$message.error(res.flagString);
+                                }
+                            })
+                        }else {
+                            const data = {
+                                token: that.user.Token,
+                                examId: that.examId,
+                                urlAddr: res.location
+                            }
+                            saveVideoUrlStudent(data).then(res => {
+                                if(res.flag == 100) {
+                                    that.$message({
+                                        message: '上传成功！',
+                                        type: 'success'
+                                    });
+                                    that.$router.push('history')
+                                }else {
+                                    that.$message.error(res.flagString);
+                                }
+                            })
+                        }
                     },
                     Error: function(uploader,errObject) {
                         that.$message.error(errObject.message)

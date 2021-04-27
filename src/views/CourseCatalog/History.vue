@@ -18,11 +18,19 @@
           </el-table-column>
           <el-table-column align="center" width="50" prop="id" label="ID"></el-table-column>
           <el-table-column align="center" prop="title" label="标题"></el-table-column>
-          <el-table-column align="center" prop="createtime" label="开始时间" sortable></el-table-column>
-          <el-table-column align="center" prop="endTime" label="结束时间" sortable></el-table-column>
+          <el-table-column align="center" label="开始时间" sortable>
+            <template slot-scope="scope">
+              <span>{{ formatDate(scope.row.createtime) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="结束时间" sortable>
+            <template slot-scope="scope">
+              <span>{{ formatDate(scope.row.endTime) }}</span>
+            </template>
+          </el-table-column>
           <el-table-column align="center" label="状态">
             <template slot-scope="scope">
-              <span :class="scope.row.status == '1' ? 'submitted' : 'nosubmitted'">{{ scope.row.status }}</span>
+              <span :class="scope.row.submitStatus == '1' ? 'submitted' : 'nosubmitted'">{{ scope.row.submitStatus ? '已提交' : '-' }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="操作">
@@ -105,6 +113,7 @@
                   message: '上传成功！',
                   type: 'success'
               });
+              this.refresh()
             }else {
               this.$message.error(res.flagString);
             }
@@ -152,6 +161,25 @@
               this.$message.error(res.flagString);
             }
           })
+        },
+        formatDate (value) {
+          if (typeof (value) == 'undefined') {
+              return ''
+          } else {
+              let date = new Date(parseInt(value * 1000))
+              let y = date.getFullYear()
+              let MM = date.getMonth() + 1
+              MM = MM < 10 ? ('0' + MM) : MM
+              let d = date.getDate()
+              d = d < 10 ? ('0' + d) : d
+              let h = date.getHours()
+              h = h < 10 ? ('0' + h) : h
+              let m = date.getMinutes()
+              m = m < 10 ? ('0' + m) : m
+              let s = date.getSeconds()
+              s = s < 10 ? ('0' + s) : s
+              return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
+          }
         }
     },
     mounted() {

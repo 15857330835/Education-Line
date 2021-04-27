@@ -62,7 +62,7 @@ export const uploadPic = (payload = {}) => {
 }
 
 //保存视频
-export const saveVideoUrl = (payload = {}) => {
+export const saveVideoUrlTeacher = (payload = {}) => {
     return axios.post(url + '/saveVideoUrl', payload)
 }
 

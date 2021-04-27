@@ -63,7 +63,7 @@
         <el-table-column align="center" prop="inspectionTime" label="考核次数"></el-table-column>
         <el-table-column align="center" label="提交时间" sortable>
           <template slot-scope="scope">
-            <span>{{ scope.row.submitTime }}</span>
+            <span>{{ formatDate(scope.row.submitTime) }}</span>
           </template>
         </el-table-column>
         <el-table-column align="center" label="状态">
@@ -180,6 +180,25 @@
           }
         })
       },
+      formatDate (value) {
+        if (typeof (value) == 'undefined') {
+            return ''
+        } else {
+            let date = new Date(parseInt(value * 1000))
+            let y = date.getFullYear()
+            let MM = date.getMonth() + 1
+            MM = MM < 10 ? ('0' + MM) : MM
+            let d = date.getDate()
+            d = d < 10 ? ('0' + d) : d
+            let h = date.getHours()
+            h = h < 10 ? ('0' + h) : h
+            let m = date.getMinutes()
+            m = m < 10 ? ('0' + m) : m
+            let s = date.getSeconds()
+            s = s < 10 ? ('0' + s) : s
+            return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
+        }
+      }
     },
     mounted() {
       this.refresh()
@@ -220,11 +239,11 @@
       }
 
       .el-select {
-        width: 120px;
+        width: unset;
       }
 
       .el-input {
-        width: 128px;
+        width: unset;
         height: 30px;
         margin-right: 30px;
       }
