@@ -84,7 +84,7 @@
         <el-table-column align="center" width="200px" label="操作">
           <template slot-scope="scope">
             <el-button type="text" size="mini" @click="play(scope.row.urlAddr)">播放</el-button>
-            <el-button type="text" size="mini" @click="modify(scope.row.projectId, scope.row.subjectId)" :disabled='scope.row.status ? true : false'>修改</el-button>
+            <el-button type="text" size="mini" @click="modify(scope.row.id, scope.row.ncesId, scope.row.subjectId)" :disabled='scope.row.ncesId ? false : true'>修改</el-button>
             <el-button type="text" size="mini" @click="play(scope.row.urlVideo)">成果</el-button>
             <el-button type="text" size="mini" @click="line" :disabled='scope.row.finishStatus ? false : true'>{{ scope.row.status ? '下线' : '上线' }}</el-button>
             <el-button type="text" size="mini" @click="del(scope.row.id, scope.row.projectId, scope.row.subjectId)" :disabled='scope.row.status ? true : false'>删除</el-button>
@@ -224,15 +224,16 @@
         this.dialogVisible = true
         this.url = url
       },
-      modify(projectId, subjectId) {
+      modify(id, ncesId, subjectId) {
         const data = {
           token: this.user.Token,
-          ncesId: projectId,
+          ncesId,
           subjectId
         }
         editNces(data).then(res => {
           if(res.flag == 100) {
             this.CHANGE_RECORD(false)
+            this.CHANGE_COURSEWAREID(id)
             this.CHANGE_URL('https://' + res.data.pageUrl)
             this.$router.push('production')
           }else {

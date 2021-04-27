@@ -52,7 +52,7 @@
           <el-tag effect="dark" size="mini">{{ course.label }}</el-tag>
           <p class="title">{{ course.title }}</p>
           <el-tooltip class="item" popper-class="prompt" effect="dark" content="Top Left 提示文字" placement="top">
-            <p class="intro">这里是描述这里是描述这里是述这里是描述这描述这里是描述</p>
+            <p class="intro">{{ course.remarks }}</p>
           </el-tooltip>
         </div>
         <div class="center">

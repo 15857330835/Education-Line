@@ -176,8 +176,8 @@
                                 }
                                 that.record.addEventListener("dataavailable",event => {
                                     let videoUrl = URL.createObjectURL(event.data, {type: 'video/mp4'})
-                                    that.file = new File([event.data], 'video.webm', {
-                                        type: 'video/webm'
+                                    that.file = new File([event.data], `video${new Date().getTime()}.mp4`, {
+                                        type: 'video/mp4'
                                     });
                                     that.url = videoUrl
                                 })

@@ -66,7 +66,8 @@
           'user',
           'coursewareID',
           'toolId',
-          'parentProjectId'
+          'parentProjectId',
+          'subjectId'
       ])
     },
     methods: {
@@ -78,7 +79,7 @@
         assess() {
           const data = {
             token: this.user.Token,
-            subjectId: this.tableData[0].subjectId,
+            subjectId: this.subjectId,
             coursewareId: this.coursewareID,
             parentProjectId: this.parentProjectId
           }

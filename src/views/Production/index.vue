@@ -1,6 +1,6 @@
 <template>
   <div id="production">
-      <iframe :src="url"></iframe>
+      <iframe id="iframeWindow" :src="url"></iframe>
       <RecordingDevice :parameters='parameters' v-if="record"></RecordingDevice>
   </div>
 </template>
@@ -85,8 +85,11 @@
     },
     mounted() {
       window.addEventListener( "message",(e)=>{
-        console.log(e.data)
-        this.$router.push({path: 'courseware', query: {data: this.subjectId}})
+        if(e.data == '提交') {
+          // this.$router.push({path: 'courseware', query: {data: this.subjectId}})
+        }else if(e.data == 'ID') {
+          document.getElementById('iframeWindow').contentWindow.postMessage(this.coursewareID,'*')
+        }
       },	false)
       const data = {
         token: this.user.Token,
