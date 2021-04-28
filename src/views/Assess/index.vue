@@ -6,10 +6,10 @@
       <el-menu-item index="courseware">课件</el-menu-item>
     </el-menu>
     <div class="search">
-      <div>
+      <!-- <div>
         <label>状态：</label>
         <i v-for="(item, index) in status" :key="index" :class="item == status1 ? 'active' : ''" @click="select(item)">{{ item }}</i>
-      </div>
+      </div> -->
       <div>
         <label>姓名：</label>
         <el-input v-model="studentName" size="mini" placeholder="请输入内容"></el-input>
@@ -66,10 +66,10 @@
             <span>{{ formatDate(scope.row.submitTime) }}</span>
           </template>
         </el-table-column>
-        <el-table-column align="center" label="状态">
-          <template slot-scope="scope">
+        <el-table-column align="center" prop="score" label="分数">
+          <!-- <template slot-scope="scope">
             <span :class="scope.row.state == '已通过' ? 'through' : scope.row.state == '未通过' ? 'nothrough' : 'nofinish'">{{ scope.row.submitStatus }}</span>
-          </template>
+          </template> -->
         </el-table-column>
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">

@@ -34,7 +34,7 @@
               <div class="title">
                 <i class="el-icon-video-play"></i>
                 <h4>{{ item.title }}</h4>
-                <p>({{ item.learnTime }})</p>
+                <p>({{ time(item.endTime - item.stratTime) }})</p>
               </div>
               <div>
                 <el-button plain @click="play(item.urlAddr)">播放课件</el-button>
@@ -186,6 +186,12 @@
         this.CHANGE_COURSEWAREID(id)
         this.CHANGE_PARENTPROJECTID(parentProjectId)
         this.$router.push('history')
+      },
+      time(time) {
+        var h = Math.floor(time/3600) > 9 ? Math.floor(time/3600) : '0' + Math.floor(time/3600)
+        var m = Math.floor(time%3600/60) > 9 ? Math.floor(time%3600/60) : '0' + Math.floor(time%3600/60)
+        var s = Math.floor(time%60) > 9 ? Math.floor(time%60) : '0' + Math.floor(time%60)
+        return h + ':' + m + ':' + s
       }
     },
     mounted() {

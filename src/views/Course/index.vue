@@ -62,7 +62,7 @@
               <i class="original">原价￥{{ course.price }}</i>
             </div>
         </div>
-        <div class="mask" @click="buy($event, course.id, course.priceDiscount)" v-if="$route.fullPath == '/course?1'">立即购买</div>
+        <div class="mask" @click="buy($event, course.id, course.priceDiscount)" v-if="$route.fullPath == '/course?1'">{{ course.payStatus ? '已购买' : '立即购买' }}</div>
         <div class="mask" v-else>马上学习</div>
       </div>
         <el-dialog

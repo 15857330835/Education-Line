@@ -70,7 +70,11 @@
             <el-tag type="warning" size="mini" v-for="(item, index) in scope.row.label.split(',')" :key="index">{{ item }}</el-tag>
           </template>
         </el-table-column>
-        <el-table-column align="center" width="80px" prop="learnTime" label="课件时长"></el-table-column>
+        <el-table-column align="center" width="80px" label="课件时长">
+          <template slot-scope="scope">
+            <span>{{ time(scope.row.endTime - scope.row.stratTime) }}</span>
+          </template>
+        </el-table-column>
         <el-table-column align="center" width="200px" label="创建时间" sortable>
           <template slot-scope="scope">
             <span>{{ formatDate(scope.row.createtime) }}</span>
@@ -375,6 +379,12 @@
             s = s < 10 ? ('0' + s) : s
             return y + '-' + MM + '-' + d + ' ' + h + ':' + m + ':' + s
         }
+      },
+      time(time) {
+        var h = Math.floor(time/3600) > 9 ? Math.floor(time/3600) : '0' + Math.floor(time/3600)
+        var m = Math.floor(time%3600/60) > 9 ? Math.floor(time%3600/60) : '0' + Math.floor(time%3600/60)
+        var s = Math.floor(time%60) > 9 ? Math.floor(time%60) : '0' + Math.floor(time%60)
+        return h + ':' + m + ':' + s
       }
     },
     mounted() {
