@@ -126,6 +126,7 @@
       <el-dialog
         class="play"
         :visible.sync="dialogVisible"
+        destroy-on-close
         width="100%">
         <div id="MPSplayer"></div>
       </el-dialog>
