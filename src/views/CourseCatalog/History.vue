@@ -18,19 +18,24 @@
           </el-table-column>
           <el-table-column align="center" width="50" prop="id" label="ID"></el-table-column>
           <el-table-column align="center" prop="title" label="标题"></el-table-column>
-          <el-table-column align="center" label="开始时间" sortable>
+          <el-table-column align="center" label="开始时间">
             <template slot-scope="scope">
               <span>{{ formatDate(scope.row.createtime) }}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="结束时间" sortable>
+          <el-table-column align="center" label="结束时间">
             <template slot-scope="scope">
               <span>{{ formatDate(scope.row.endTime) }}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="状态">
+          <el-table-column align="center" width="100px" label="状态">
             <template slot-scope="scope">
               <span :class="scope.row.submitStatus == '1' ? 'submitted' : 'nosubmitted'">{{ scope.row.submitStatus ? '已提交' : '-' }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" width="100px" label="分数">
+            <template slot-scope="scope">
+              <span>{{ scope.row.score ? scope.row.score : '-' }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" label="操作">

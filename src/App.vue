@@ -61,6 +61,10 @@
       flex-direction: column;
     }
   }
+
+  .el-table::before {
+    display: none;
+  }
 }
 
 .prompt {

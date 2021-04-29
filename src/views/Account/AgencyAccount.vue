@@ -149,6 +149,7 @@
   import { mapState } from 'vuex'
   import { getCompanyList, updateStatus, addCompany, delCompany, updatePassword, updateInfo } from '@/api/institution'
   import { getToolList } from '@/api/tool'
+  import { Loading } from 'element-ui'
   export default {
     data() {
       return {
@@ -198,12 +199,21 @@
         this.form.token = this.user.Token
         addCompany(this.form).then(res => {
             if(res.flag == 100) {
+                loadingInstance.close()
                 this.dialogFormVisible = false
                 this.reset()
             }else {
                 this.$message.error(res.flagString);
             }
+        }).catch(() => {
+          this.$message.error('创建失败，请重试！');
+          loadingInstance.close()
+          this.dialogFormVisible = false
         })
+        let options = {
+          text: '创建中，请稍等...'
+        }
+        let loadingInstance = Loading.service(options)
       },
       query() {
         this.ifSearch = true

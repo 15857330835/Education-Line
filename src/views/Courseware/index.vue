@@ -136,12 +136,12 @@
       </el-dialog>
     </div>
     <div class="bottom">
-      <el-pagination
+      <!-- <el-pagination
         @current-change="handleCurrentChange"
         :current-page="currentPage"
         layout="total, prev, pager, next, jumper"
         :total="tableData.length">
-      </el-pagination>
+      </el-pagination> -->
     </div>
     </div>
   </div>
@@ -180,7 +180,7 @@
                 value: '5',
                 label: '培训'
             }],
-        currentPage: 1,
+        // currentPage: 1,
         tableData: [],
         dialogFormVisible: false,
         form: {
@@ -215,10 +215,10 @@
         this.online = value
         this.search()
       },
-      handleCurrentChange(val) {
-        this.currentPage = val
-        this.search()
-      },
+      // handleCurrentChange(val) {
+      //   this.currentPage = val
+      //   this.search()
+      // },
       play(url) {
         this.dialogVisible = true
         const this_ = this
@@ -304,7 +304,7 @@
         this.title = ''
         this.stime = ''
         this.label = []
-        this.currentPage = 1
+        // this.currentPage = 1
         this.ifSearch = false
         this.search()
       },
@@ -316,9 +316,9 @@
         const data = {
           token: this.user.Token,
           subjectId: this.courseId,
-          page: this.currentPage,
-          status: this.online == '全部' ? '' : this.online == '上线' ? 1 : 0,
-          finishStatus: this.status == '全部' ? '' : this.status == '已完成' ? 1 : 0
+          // page: this.currentPage,
+          status: this.online == '全部' ? -1 : this.online == '上线' ? 1 : 0,
+          finishStatus: this.status == '全部' ? -1 : this.status == '已完成' ? 1 : 0
         }
         if(this.ifSearch) {
           data.title = this.title
@@ -398,6 +398,11 @@
 #courseware {
     height: 95%;
     background: white;
+    overflow: auto;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     .search {
       margin-bottom: 30px;
@@ -441,6 +446,10 @@
       button {
         margin-right: 10px;
       }
+    }
+
+    .bottom {
+      min-height: 50px;
     }
 
     .content {
