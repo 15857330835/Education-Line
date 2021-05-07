@@ -47,11 +47,13 @@
         timer: null,
         record: null,
         stream: null,
+        localstream: null,
+        mediastream: null,
         new: true,
         url: null,
         file: null,
         uploaderObj: null,
-        action: '',
+        action: '停止',
         isstart: false,
         isend: true,
         isedit: true,
@@ -181,15 +183,27 @@
             if($('.el-icon-caret-right').length) {
                 if(this.new) {
                     navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
-                        .then(function(stream) {
+                        .then(function(localstream) {
                             navigator.mediaDevices.getUserMedia({ audio: true }).then(mediastream => {
-                                stream.addTrack(mediastream.getTracks()[0])
+                                let audioContext = new AudioContext();//创建音频上下文
+                                let mixedOutput = audioContext.createMediaStreamDestination();//创建一个输出媒体流节点
+                                let localMicrophoneStreamNode = audioContext.createMediaStreamSource(mediastream);//创建节点
+                                localMicrophoneStreamNode.connect(mixedOutput);//把麦克风节点和系统音节点添加到输出媒体流
+                                if(localstream.getTracks()[1]) {
+                                    let audioStreamNode = audioContext.createMediaStreamSource(localstream);//创建系统音频节点
+                                    audioStreamNode.connect(mixedOutput);
+                                }
+                                let stream = new MediaStream()
+                                stream.addTrack(mixedOutput.stream.getTracks()[0])
+                                stream.addTrack(localstream.getVideoTracks()[0])
                                 that.new = false
                                 that.isedit = true
                                 that.isstart = true
                                 $('#recordingDevice').addClass('hide')
                                 $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
                                 that.stream = stream
+                                that.localstream = localstream
+                                that.mediastream = mediastream
                                 that.action = '开始'
                                 var options = {
                                     mimeType : 'video/webm;codecs=h264'
@@ -244,8 +258,9 @@
             $('#recordingDevice').removeClass('hide')
             $('.el-icon-refresh-right').removeClass('el-icon-refresh-right').addClass('el-icon-caret-right')
             this.stream.getTracks()[0].stop()
-            if(this.stream.getTracks()[1]) this.stream.getTracks()[1].stop()
-            if(this.stream.getTracks()[2]) this.stream.getTracks()[2].stop()
+            this.stream.getTracks()[1].stop()
+            this.mediastream.getTracks()[0].stop()
+            this.localstream.getTracks()[0].stop()
             clearInterval(this.timer)
             this.CHANGE_RECORDSTATUS(2)
             this.action = '停止'
