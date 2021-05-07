@@ -4,10 +4,18 @@
             {{ uploading ? progress + '%' : this.timing }}
         </div>
         <div class="controller">
-            <el-button icon="el-icon-caret-right" circle @click="start" :disabled='isstart'></el-button>
-            <el-button icon="el-icon-s-help" circle @click="end" :disabled='isend'></el-button>
-            <el-button icon="el-icon-upload" circle @click="upload" :disabled='isupload'></el-button>
-            <el-button icon="el-icon-s-ticket" circle @click="edit" :disabled='isedit' v-if="identity == 'manager'"></el-button>
+            <el-tooltip :content="action == '停止' ? '开始' : action == '暂停' ? '继续' : '暂停'" placement="top" effect="light">
+                <el-button icon="el-icon-caret-right" circle @click="start" :disabled='isstart'></el-button>
+            </el-tooltip>
+            <el-tooltip content="停止" placement="top" effect="light">
+                <el-button icon="el-icon-s-help" circle @click="end" :disabled='isend'></el-button>
+            </el-tooltip>
+            <el-tooltip content="上传" placement="top" effect="light">
+                <el-button icon="el-icon-upload" circle @click="upload" :disabled='isupload'></el-button>
+            </el-tooltip>
+            <el-tooltip content="编辑" placement="top" effect="light">
+                <el-button icon="el-icon-s-ticket" circle @click="edit" :disabled='isedit' v-if="identity == 'manager'"></el-button>
+            </el-tooltip>
         </div>
         <i id="none"></i>
         <div class="video">
@@ -178,15 +186,20 @@
                                 stream.addTrack(mediastream.getTracks()[0])
                                 that.new = false
                                 that.isedit = true
+                                that.isstart = true
                                 $('#recordingDevice').addClass('hide')
                                 $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
                                 that.stream = stream
                                 that.action = '开始'
-                                that.record = new MediaRecorder(stream)
+                                var options = {
+                                    mimeType : 'video/webm;codecs=h264'
+                                }
+                                that.record = new MediaRecorder(stream, options)
                                 that.time = 0
                                 setTimeout(function(){
                                     that.record.start()
                                     that.CHANGE_RECORDSTATUS(1)
+                                    that.isstart = false
                                     that.isend = false
                                     that.timer = setInterval(function() { that.time++ },1000)
                                 },2000)
@@ -213,9 +226,11 @@
                 }else {
                     $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
                     this.action = '继续'
+                    this.isstart = true
                     setTimeout(function(){
                         that.timer = setInterval(function() { that.time++ },1000)
                         that.record.resume()
+                        that.isstart = false
                     },2000)
                 }
             }else {
@@ -233,6 +248,7 @@
             if(this.stream.getTracks()[2]) this.stream.getTracks()[2].stop()
             clearInterval(this.timer)
             this.CHANGE_RECORDSTATUS(2)
+            this.action = '停止'
             this.new = true
             this.isstart = true
             this.isend = true
