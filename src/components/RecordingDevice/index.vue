@@ -160,7 +160,8 @@
     methods: {
         ...mapMutations([
             'CHANGE_URL',
-            'CHANGE_RECORDSTATUS'
+            'CHANGE_RECORDSTATUS',
+            'CHANGE_VIDEOTYPE'
         ]),
         mousedown(e) {
             this.x = e.x - $('#recordingDevice').offset().left
@@ -280,6 +281,7 @@
             }
             createNces(data).then(res => {
                 if(res.flag == 100) {
+                    this.CHANGE_VIDEOTYPE(1)
                     this.CHANGE_URL('https://' + res.data.pageUrl)
                 }else {
                     this.$message.error(res.flagString);
@@ -303,7 +305,7 @@
         }
     },
     mounted() {
-
+        this.CHANGE_VIDEOTYPE(2)
     }
   }
 </script>

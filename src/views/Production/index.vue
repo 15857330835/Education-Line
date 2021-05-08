@@ -32,7 +32,8 @@
           'projectId',
           'subjectId',
           'toolId',
-          'examId'
+          'examId',
+          'videoType'
       ])
     },
     watch: {
@@ -88,7 +89,11 @@
         if(e.data == '提交') {
           // this.$router.push({path: 'courseware', query: {data: this.subjectId}})
         }else if(e.data == 'ID') {
-          document.getElementById('iframeWindow').contentWindow.postMessage(this.coursewareID,'*')
+          const data = {
+            id: this.coursewareID,
+            type: this.videoType
+          }
+          document.getElementById('iframeWindow').contentWindow.postMessage(data,'*')
         }
       },	false)
       const data = {
