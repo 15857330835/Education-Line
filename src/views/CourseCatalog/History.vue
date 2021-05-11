@@ -16,7 +16,7 @@
               <el-radio v-model="radio" :label="scope.row.id"></el-radio>
             </template>
           </el-table-column>
-          <el-table-column align="center" width="50" prop="id" label="ID"></el-table-column>
+          <el-table-column align="center" width="100px" prop="id" label="ID"></el-table-column>
           <el-table-column align="center" prop="title" label="标题"></el-table-column>
           <el-table-column align="center" label="开始时间">
             <template slot-scope="scope">
@@ -38,7 +38,7 @@
               <span>{{ scope.row.score ? scope.row.score : '-' }}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="操作">
+          <el-table-column align="center" width="200px" label="操作">
             <template slot-scope="scope">
               <el-button type="text" size="mini" @click="handleEdit(scope.row.urlAddr)">成果</el-button>
               <el-button type="text" size="mini" @click="del(scope.row.id)">删除</el-button>

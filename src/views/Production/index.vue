@@ -1,6 +1,7 @@
 <template>
   <div id="production">
       <iframe id="iframeWindow" :src="url"></iframe>
+      <div id="mask"></div>
       <RecordingDevice :parameters='parameters' v-if="record"></RecordingDevice>
   </div>
 </template>
@@ -49,6 +50,8 @@
             startVideoTeacher(data).then(res => {
               if(res.flag !== 100) {
                 this.$message.error(res.flagString);
+              }else {
+                $('#mask').css({'display': 'none'})
               }
             })
           }else if (this.recordStatus == 2) {
@@ -69,12 +72,16 @@
             startVideoStudent(data1).then(res => {
               if(res.flag !== 100) {
                 this.$message.error(res.flagString);
+              }else {
+                $('#mask').css({'display': 'none'})
               }
             })
           }else if (this.recordStatus == 2) {
             endVideoStudent(data1).then(res => {
               if(res.flag !== 100) {
                 this.$message.error(res.flagString);
+              }else {
+                this.$router.push('history')
               }
             })
           }
@@ -93,6 +100,7 @@
             id: this.coursewareID,
             type: this.videoType
           }
+          if(this.identity == 'human') data.examId = this.examId
           document.getElementById('iframeWindow').contentWindow.postMessage(data,'*')
         }
       },	false)
@@ -133,6 +141,15 @@
     iframe {
       width: 100%;
       height: 100%;
+    }
+
+    #mask {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      background: rgba($color: #000000, $alpha: 0.6);
     }
 }
 

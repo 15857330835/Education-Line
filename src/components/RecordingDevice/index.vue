@@ -3,7 +3,7 @@
         <div class="timing" @mousedown="mousedown">
             {{ uploading ? progress + '%' : this.timing }}
         </div>
-        <div class="controller">
+        <div class="controller" v-if="identity == 'manager'">
             <el-tooltip :content="action == '停止' ? '开始' : action == '暂停' ? '继续' : '暂停'" placement="top" effect="light">
                 <el-button icon="el-icon-caret-right" circle @click="start" :disabled='isstart'></el-button>
             </el-tooltip>
@@ -14,7 +14,15 @@
                 <el-button icon="el-icon-upload" circle @click="upload" :disabled='isupload'></el-button>
             </el-tooltip>
             <el-tooltip content="编辑" placement="top" effect="light">
-                <el-button icon="el-icon-s-ticket" circle @click="edit" :disabled='isedit' v-if="identity == 'manager'"></el-button>
+                <el-button icon="el-icon-s-ticket" circle @click="edit" :disabled='isedit'></el-button>
+            </el-tooltip>
+        </div>
+        <div class="controller" v-else>
+            <el-tooltip :content="action == '停止' ? '开始' : action == '暂停' ? '继续' : '暂停'" placement="top" effect="light">
+                <el-button icon="el-icon-caret-right" circle @click="start1" :disabled='isstart'></el-button>
+            </el-tooltip>
+            <el-tooltip content="保存" placement="top" effect="light">
+                <el-button icon="el-icon-s-help" circle @click="end1" :disabled='isend'></el-button>
             </el-tooltip>
         </div>
         <i id="none"></i>
@@ -30,8 +38,7 @@
   import plupload from 'plupload'
   import Countdown from './Countdown'
   import { mapState, mapMutations } from 'vuex'
-  import { saveVideoUrlTeacher, createNces } from '@/api/teachercourse'
-  import { saveVideoUrlStudent } from '@/api/studentcourse'
+  import { createNces } from '@/api/teachercourse'
   import { getSeekableBlob } from '@/api/ebml.util'
   export default {
     name: 'RecordingDevice',
@@ -114,40 +121,10 @@
                         that.uploading = false
                         const res = JSON.parse(responseObject.response)
                         that.location = res.location
-                        if(that.identity == 'manager') {
-                            const data = {
-                                token: that.user.Token,
-                                coursewareId: that.coursewareID,
-                                urlAddr: res.location
-                            }
-                            saveVideoUrlTeacher(data).then(res => {
-                                if(res.flag == 100) {
-                                    that.$message({
-                                        message: '上传成功！',
-                                        type: 'success'
-                                    });
-                                }else {
-                                    that.$message.error(res.flagString);
-                                }
-                            })
-                        }else {
-                            const data = {
-                                token: that.user.Token,
-                                examId: that.examId,
-                                urlAddr: res.location
-                            }
-                            saveVideoUrlStudent(data).then(res => {
-                                if(res.flag == 100) {
-                                    that.$message({
-                                        message: '上传成功！',
-                                        type: 'success'
-                                    });
-                                    that.$router.push('history')
-                                }else {
-                                    that.$message.error(res.flagString);
-                                }
-                            })
-                        }
+                        that.$message({
+                            message: '上传成功！',
+                            type: 'success'
+                        });
                     },
                     Error: function(uploader,errObject) {
                         that.$message.error(errObject.message)
@@ -161,7 +138,8 @@
         ...mapMutations([
             'CHANGE_URL',
             'CHANGE_RECORDSTATUS',
-            'CHANGE_VIDEOTYPE'
+            'CHANGE_VIDEOTYPE',
+            'CHANGE_RECORD'
         ]),
         mousedown(e) {
             this.x = e.x - $('#recordingDevice').offset().left
@@ -245,6 +223,7 @@
                     setTimeout(function(){
                         that.timer = setInterval(function() { that.time++ },1000)
                         that.record.resume()
+                        $('#mask').css({'display': 'none'})
                         that.isstart = false
                     },2000)
                 }
@@ -252,6 +231,7 @@
                 $('.el-icon-refresh-right').removeClass('el-icon-refresh-right').addClass('el-icon-caret-right')
                 clearInterval(this.timer)
                 this.action = '暂停'
+                $('#mask').css({'display': 'block'})
                 this.record.pause()
             }
         },
@@ -263,6 +243,7 @@
             this.mediastream.getTracks()[0].stop()
             this.localstream.getTracks()[0].stop()
             clearInterval(this.timer)
+            $('#mask').css({'display': 'block'})
             this.CHANGE_RECORDSTATUS(2)
             this.action = '停止'
             this.new = true
@@ -282,6 +263,8 @@
             createNces(data).then(res => {
                 if(res.flag == 100) {
                     this.CHANGE_VIDEOTYPE(1)
+                    this.CHANGE_RECORD(false)
+                    $('#mask').css({'display': 'none'})
                     this.CHANGE_URL('https://' + res.data.pageUrl)
                 }else {
                     this.$message.error(res.flagString);
@@ -302,6 +285,49 @@
             this.isupload = true
             this.time = 0
             $('.video').css({'display': 'none'})
+        },
+        start1() {
+            const that = this
+            if($('.el-icon-caret-right').length) {
+                if(this.new) {
+                    that.new = false
+                    that.isstart = true
+                    $('#recordingDevice').addClass('hide')
+                    $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
+                    that.action = '开始'
+                    that.time = 0
+                    setTimeout(function(){
+                        that.isstart = false
+                        that.isend = false
+                        that.CHANGE_RECORDSTATUS(1)
+                        that.timer = setInterval(function() { that.time++ },1000)
+                    },2000)
+                }else {
+                    $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
+                    this.action = '继续'
+                    this.isstart = true
+                    setTimeout(function(){
+                        that.timer = setInterval(function() { that.time++ },1000)
+                        $('#mask').css({'display': 'none'})
+                        that.isstart = false
+                    },2000)
+                }
+            }else {
+                $('.el-icon-refresh-right').removeClass('el-icon-refresh-right').addClass('el-icon-caret-right')
+                clearInterval(this.timer)
+                $('#mask').css({'display': 'block'})
+                this.action = '暂停'
+            }
+        },
+        end1() {
+            $('#recordingDevice').removeClass('hide')
+            $('.el-icon-refresh-right').removeClass('el-icon-refresh-right').addClass('el-icon-caret-right')
+            clearInterval(this.timer)
+            this.CHANGE_RECORDSTATUS(2)
+            this.action = '停止'
+            this.new = true
+            this.isstart = true
+            this.isend = true
         }
     },
     mounted() {

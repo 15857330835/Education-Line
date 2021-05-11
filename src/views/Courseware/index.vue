@@ -205,7 +205,8 @@
             'CHANGE_URL',
             'CHANGE_RECORD',
             'CHANGE_SUBJECTID',
-            'CHANGE_PROJECTID'
+            'CHANGE_PROJECTID',
+            'CHANGE_VIDEOTYPE'
       ]),
       selectstate(value) {
         this.status = value
@@ -256,6 +257,7 @@
           if(res.flag == 100) {
             this.CHANGE_RECORD(false)
             this.CHANGE_COURSEWAREID(id)
+            this.CHANGE_VIDEOTYPE(1)
             this.CHANGE_URL('https://' + res.data.pageUrl)
             this.$router.push('production')
           }else {
