@@ -271,13 +271,25 @@
           coursewareId: id,
           status: status ? 0 : 1
         }
-        updateCoursewareStatus(data).then(res => {
-          if(res.flag == 100) {
-            this.refresh()
-          }else {
-            this.$message.error(res.flagString);
-          }
-        })
+        let text = status ? '下线' : '上线'
+        this.$confirm(`是否${text}该课程？`, '', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          updateCoursewareStatus(data).then(res => {
+            if(res.flag == 100) {
+              this.refresh()
+            }else {
+              this.$message.error(res.flagString);
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          });          
+        });
       },
       production() {
         this.dialogFormVisible = true
@@ -355,13 +367,24 @@
           projectId,
           subjectId
         }
-        delCourseware(data).then(res => {
-          if(res.flag == 100) {
-            this.refresh()
-          }else {
-            this.$message.error(res.flagString);
-          }
-        })
+        this.$confirm('此操作将永久删除该课程, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          delCourseware(data).then(res => {
+            if(res.flag == 100) {
+              this.refresh()
+            }else {
+              this.$message.error(res.flagString);
+            }
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
       },
       formatDate (value) {
         if (typeof (value) == 'undefined') {

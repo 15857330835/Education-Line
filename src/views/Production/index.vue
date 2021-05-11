@@ -1,7 +1,7 @@
 <template>
   <div id="production">
       <iframe id="iframeWindow" :src="url"></iframe>
-      <div id="mask"></div>
+      <div id="mask" v-if="record"></div>
       <RecordingDevice :parameters='parameters' v-if="record"></RecordingDevice>
   </div>
 </template>
@@ -12,7 +12,7 @@
   import { getAccessStudent } from '@/api/student'
   import { getAccessTeacher } from '@/api/teacher'
   import { startVideoTeacher, endVideoTeacher } from '@/api/teachercourse'
-  import { startVideoStudent, endVideoStudent } from '@/api/studentcourse'
+  import { startVideoStudent, endVideoStudent, grade } from '@/api/studentcourse'
   export default {
     components: {
         RecordingDevice
@@ -81,7 +81,18 @@
               if(res.flag !== 100) {
                 this.$message.error(res.flagString);
               }else {
-                this.$router.push('history')
+                const data2 = {
+                  token: this.user.Token,
+                  examId: this.examId,
+                }
+                grade(data2).then(res => {
+                  if(res.flag == 100) {
+                    this.$router.push('history')
+                  }else {
+                    this.$router.push('history')
+                    this.$message.error(res.flagString);
+                  }
+                })
               }
             })
           }

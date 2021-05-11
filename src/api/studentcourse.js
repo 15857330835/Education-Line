@@ -60,3 +60,8 @@ export const deleteExam = (payload = {}) => {
 export const saveVideoUrlStudent = (payload = {}) => {
     return axios.post(url + '/saveVideoUrl', payload)
 }
+
+//评分
+export const grade = (payload = {}) => {
+    return axios.post(url + '/grade', payload)
+}

@@ -30,7 +30,7 @@
       </div>
     </div>
     <div class="content">
-      <div class="course" v-for="(course, index) in courses" :key="index" @click="goto($event, course.id)">
+      <div class="course" v-for="(course, index) in courses" :key="index" @click="goto($event, course.id, course.payStatus)">
         <div class="top" :style="{backgroundImage: `url(${course.coverAddr})`}">
           <div class="tag" :class="course.state == '通过' ? 'through' : course.state == '未通过' ? 'nothrough' : 'nofinish'" v-if="$route.fullPath == '/course?2'"></div>
           <el-tag effect="dark" size="mini">{{ course.label }}</el-tag>
@@ -154,9 +154,9 @@
         this.currentPage = val
         this.search()
       },
-      goto(e, id) {
+      goto(e, id, payStatus) {
         e.stopPropagation()
-        const own = this.$route.fullPath == '/course?2' ? true : false
+        const own = this.$route.fullPath == '/course?2' ? true : payStatus == 1 ? true : false
         this.CHANGE_OWN(own)
         this.CHANGE_ACTIVEINDEX('2')
         this.$router.push({path: 'courseCatalog', query: {id}})
