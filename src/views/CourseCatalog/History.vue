@@ -95,7 +95,7 @@
             if(res.flag == 100) {
               this.CHANGE_PROJECTID(res.data.projectId)
               this.CHANGE_EXAMID(res.data.id)
-              this.CHANGE_URL('https://' + res.data.project.pageUrl)
+              this.CHANGE_URL(res.data.project.pageUrl)
               this.$router.push('production')
             }else {
               this.$message.error(res.flagString);

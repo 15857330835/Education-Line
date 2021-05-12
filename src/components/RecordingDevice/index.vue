@@ -209,8 +209,9 @@
                                     })
                                 })
                             })
-                            .catch(function(err) {
-                                console.log(err)
+                            .catch(function() {
+                                localstream.getTracks()[0].stop()
+                                that.$message.error({message: '未找到可用的麦克风'})
                             })
                         })
                         .catch(function(err) {
@@ -265,7 +266,7 @@
                     this.CHANGE_VIDEOTYPE(1)
                     this.CHANGE_RECORD(false)
                     $('#mask').css({'display': 'none'})
-                    this.CHANGE_URL('https://' + res.data.pageUrl)
+                    this.CHANGE_URL(res.data.pageUrl)
                 }else {
                     this.$message.error(res.flagString);
                 }

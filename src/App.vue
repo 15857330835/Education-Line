@@ -26,7 +26,7 @@
       page() {
         const arr = ['/', '/studentLogin', '/teacherLogin', '/institutionLogin', '/serviceProviderLogin']
         if(arr.indexOf(this.page) == -1) {
-          if(this.user == '') {
+          if(!this.user) {
             this.$message.error('请登录！');
             this.$router.push('/')
           }
@@ -34,6 +34,15 @@
       }
     },
     methods: {
+    },
+    mounted() {
+      const arr = ['/', '/studentLogin', '/teacherLogin', '/institutionLogin', '/serviceProviderLogin']
+      if(arr.indexOf(this.page) == -1) {
+        if(!this.user) {
+          this.$message.error('请登录！');
+          this.$router.push('/')
+        }
+      }
     }
   }
 </script>

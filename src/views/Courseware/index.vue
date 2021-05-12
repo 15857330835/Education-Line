@@ -258,7 +258,7 @@
             this.CHANGE_RECORD(false)
             this.CHANGE_COURSEWAREID(id)
             this.CHANGE_VIDEOTYPE(1)
-            this.CHANGE_URL('https://' + res.data.pageUrl)
+            this.CHANGE_URL(res.data.pageUrl)
             this.$router.push('production')
           }else {
             this.$message.error(res.flagString);
@@ -305,7 +305,7 @@
             this.CHANGE_COURSEWAREID(res.data.id)
             this.CHANGE_PROJECTID(res.data.projectId)
             this.CHANGE_RECORD(true)
-            this.CHANGE_URL('https://' + res.data.project.pageUrl)
+            this.CHANGE_URL(res.data.project.pageUrl)
             this.$router.push('production')
           }else {
             this.$message.error(res.flagString);
