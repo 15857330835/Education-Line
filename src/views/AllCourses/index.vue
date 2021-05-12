@@ -64,10 +64,10 @@
               <p>已有18051人订阅</p>
               <p>好评度 95%</p>
             </div>
-            <div v-if="course.priceStatus">
+            <!-- <div v-if="course.priceStatus">
               <i class="discount">￥{{ course.priceDiscount }}</i>
               <i class="original">原价￥{{ course.price }}</i>
-            </div>
+            </div> -->
         </div>
         <div class="mask">
           复制
@@ -78,8 +78,7 @@
       <el-pagination
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        layout="total, prev, pager, next, jumper"
-        :total="courses.length">
+        layout="total, prev, pager, next, jumper">
       </el-pagination>
     </div>
   </div>

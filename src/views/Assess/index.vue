@@ -90,8 +90,7 @@
       <el-pagination
         @current-change="handleCurrentChange"
         :current-page="this.currentPage"
-        layout="total, prev, pager, next, jumper"
-        :total="tableData.length">
+        layout="total, prev, pager, next, jumper">
       </el-pagination>
     </div>
     </div>

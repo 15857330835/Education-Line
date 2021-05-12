@@ -146,8 +146,7 @@
       <el-pagination
         @current-change="handleCurrentChange"
         :current-page="currentPage"
-        layout="total, prev, pager, next, jumper"
-        :total="tableDatas.length">
+        layout="total, prev, pager, next, jumper">
       </el-pagination>
     </div>
     </div>
@@ -345,6 +344,11 @@
 #account {
     height: 95%;
     background: white;
+    overflow: auto;
+    
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     .search {
       margin-bottom: 30px;

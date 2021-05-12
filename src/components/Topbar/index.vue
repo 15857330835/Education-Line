@@ -90,13 +90,13 @@
               text: '工具模板',
               key: 'authorware'
             },
+            // {
+            //   index: "2",
+            //   text: '课程管理',
+            //   key: 'allCourses'
+            // },
             {
               index: "2",
-              text: '课程管理',
-              key: 'allCourses'
-            },
-            {
-              index: "3",
               text: '账号管理',
               key: 'agencyAccount'
             }
