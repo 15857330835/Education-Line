@@ -87,7 +87,7 @@
         </el-table-column>
         <el-table-column align="center" width="200px" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="mini" @click="play(scope.row.urlAddr)">播放</el-button>
+            <el-button type="text" size="mini" @click="play(scope.row.urlAddr)" :disabled='scope.row.urlAddr ? false : true'>播放</el-button>
             <el-button type="text" size="mini" @click="modify(scope.row.id, scope.row.ncesId, scope.row.subjectId)" :disabled='scope.row.ncesId ? false : true'>修改</el-button>
             <el-button type="text" size="mini" @click="play(scope.row.urlVideo)" v-if="scope.row.urlVideo">成果</el-button>
             <el-button type="text" size="mini" @click="line(scope.row.id, scope.row.status)" :disabled='scope.row.finishStatus ? false : true'>{{ scope.row.status ? '下线' : '上线' }}</el-button>

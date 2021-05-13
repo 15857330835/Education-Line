@@ -181,7 +181,7 @@
         const data = {
           token: this.user.Token,
           page: this.currentPage,
-          toolId: tool ? tool.id : ''
+          toolId: tool ? tool.id : -1
         }
         if(this.ifSearch) {
           data.title = this.title

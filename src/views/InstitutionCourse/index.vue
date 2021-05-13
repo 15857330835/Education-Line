@@ -184,8 +184,8 @@
         const data = {
           token: this.user.Token,
           page: this.currentPage,
-          status: this.online1 == '全部' ? '' : this.online1 == '上线' ? 0 : 1,
-          toolId: tool ? tool.id : ''
+          status: this.online1 == '全部' ? -1 : this.online1 == '上线' ? 0 : 1,
+          toolId: tool ? tool.id : -1
         }
         if(this.ifSearch) {
           data.title = this.title
