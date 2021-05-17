@@ -56,7 +56,7 @@
           </el-tooltip>
         </div>
         <div class="center">
-          <p>学习周期：{{ course.period }}天 | 8课时<i>奥点教育</i></p>
+          <p>学习周期：{{ course.period }}天 | 8课时</p>
           <p>创建时间：{{ formatDate(course.createtime) }}</p>
         </div>
         <div class="bottom">

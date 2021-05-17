@@ -5,24 +5,24 @@
         </div>
         <div class="controller" v-if="identity == 'manager'">
             <el-tooltip :content="action == '停止' ? '开始' : action == '暂停' ? '继续' : '暂停'" placement="top" effect="light">
-                <el-button icon="el-icon-caret-right" circle @click="start" :disabled='isstart'></el-button>
+                <el-button icon="iconfont icon-kaishi" circle @click="start" :disabled='isstart'></el-button>
             </el-tooltip>
             <el-tooltip content="停止" placement="top" effect="light">
-                <el-button icon="el-icon-s-help" circle @click="end" :disabled='isend'></el-button>
+                <el-button icon="iconfont icon-weibiaoti517" circle @click="end" :disabled='isend'></el-button>
             </el-tooltip>
             <el-tooltip content="上传" placement="top" effect="light">
-                <el-button icon="el-icon-upload" circle @click="upload" :disabled='isupload'></el-button>
+                <el-button icon="iconfont icon-baocun" circle @click="upload" :disabled='isupload'></el-button>
             </el-tooltip>
             <el-tooltip content="编辑" placement="top" effect="light">
-                <el-button icon="el-icon-s-ticket" circle @click="edit" :disabled='isedit'></el-button>
+                <el-button icon="iconfont icon-bianji" circle @click="edit" :disabled='isedit'></el-button>
             </el-tooltip>
         </div>
         <div class="controller" v-else>
             <el-tooltip :content="action == '停止' ? '开始' : action == '暂停' ? '继续' : '暂停'" placement="top" effect="light">
-                <el-button icon="el-icon-caret-right" circle @click="start1" :disabled='isstart'></el-button>
+                <el-button icon="iconfont icon-kaishi" circle @click="start1" :disabled='isstart'></el-button>
             </el-tooltip>
             <el-tooltip content="保存" placement="top" effect="light">
-                <el-button icon="el-icon-s-help" circle @click="end1" :disabled='isend'></el-button>
+                <el-button icon="iconfont icon-weibiaoti517" circle @click="end1" :disabled='isend'></el-button>
             </el-tooltip>
         </div>
         <i id="none"></i>
@@ -159,7 +159,7 @@
         },
         start() {
             const that = this
-            if($('.el-icon-caret-right').length) {
+            if($('.icon-kaishi').length) {
                 if(this.new) {
                     navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
                         .then(function(localstream) {
@@ -179,7 +179,7 @@
                                 that.isedit = true
                                 that.isstart = true
                                 $('#recordingDevice').addClass('hide')
-                                $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
+                                $('.icon-kaishi').removeClass('icon-kaishi').addClass('icon-zantingtingzhi')
                                 that.stream = stream
                                 that.localstream = localstream
                                 that.mediastream = mediastream
@@ -218,7 +218,7 @@
                             console.log(err)
                         })
                 }else {
-                    $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
+                    $('.icon-kaishi').removeClass('icon-kaishi').addClass('icon-zantingtingzhi')
                     this.action = '继续'
                     this.isstart = true
                     setTimeout(function(){
@@ -229,7 +229,7 @@
                     },2000)
                 }
             }else {
-                $('.el-icon-refresh-right').removeClass('el-icon-refresh-right').addClass('el-icon-caret-right')
+                $('.icon-zantingtingzhi').removeClass('icon-zantingtingzhi').addClass('icon-kaishi')
                 clearInterval(this.timer)
                 this.action = '暂停'
                 $('#mask').css({'display': 'block'})
@@ -238,7 +238,7 @@
         },
         end() {
             $('#recordingDevice').removeClass('hide')
-            $('.el-icon-refresh-right').removeClass('el-icon-refresh-right').addClass('el-icon-caret-right')
+            $('.icon-zantingtingzhi').removeClass('icon-zantingtingzhi').addClass('icon-kaishi')
             this.stream.getTracks()[0].stop()
             this.stream.getTracks()[1].stop()
             this.mediastream.getTracks()[0].stop()
@@ -289,12 +289,12 @@
         },
         start1() {
             const that = this
-            if($('.el-icon-caret-right').length) {
+            if($('.icon-kaishi').length) {
                 if(this.new) {
                     that.new = false
                     that.isstart = true
-                    $('#recordingDevice').addClass('hide')
-                    $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
+                    $('#recordingDevice').addClass('hide1')
+                    $('.icon-kaishi').removeClass('icon-kaishi').addClass('icon-zantingtingzhi')
                     that.action = '开始'
                     that.time = 0
                     setTimeout(function(){
@@ -304,7 +304,7 @@
                         that.timer = setInterval(function() { that.time++ },1000)
                     },2000)
                 }else {
-                    $('.el-icon-caret-right').removeClass('el-icon-caret-right').addClass('el-icon-refresh-right')
+                    $('.icon-kaishi').removeClass('icon-kaishi').addClass('icon-zantingtingzhi')
                     this.action = '继续'
                     this.isstart = true
                     setTimeout(function(){
@@ -314,15 +314,15 @@
                     },2000)
                 }
             }else {
-                $('.el-icon-refresh-right').removeClass('el-icon-refresh-right').addClass('el-icon-caret-right')
+                $('.icon-zantingtingzhi').removeClass('icon-zantingtingzhi').addClass('icon-kaishi')
                 clearInterval(this.timer)
                 $('#mask').css({'display': 'block'})
                 this.action = '暂停'
             }
         },
         end1() {
-            $('#recordingDevice').removeClass('hide')
-            $('.el-icon-refresh-right').removeClass('el-icon-refresh-right').addClass('el-icon-caret-right')
+            $('#recordingDevice').removeClass('hide1')
+            $('.icon-zantingtingzhi').removeClass('icon-zantingtingzhi').addClass('icon-kaishi')
             clearInterval(this.timer)
             this.CHANGE_RECORDSTATUS(2)
             this.action = '停止'
@@ -353,6 +353,16 @@
         }
     }
 
+    &.hide1 {
+        right: 0;
+        left: unset !important;
+
+        &:hover {
+            right: 100px;
+            transition: 0.5s;
+        }
+    }
+
     .timing {
         width: 50px;
         height: 50px;
@@ -372,7 +382,6 @@
     }
 
     .controller {
-        width: 230px;
         height: 40px;
         border-radius: 20px;
         background: white;

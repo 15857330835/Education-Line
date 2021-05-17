@@ -40,7 +40,7 @@
           </el-tooltip>
         </div>
         <div class="center">
-          <p>学习周期：{{ course.period }}天 | 8课时<i>奥点教育</i></p>
+          <p>学习周期：{{ course.period }}天 | 8课时</p>
           <p>创建时间：{{ formatDate(course.createtime) }}</p>
           <div class="schedule" v-if="$route.fullPath == '/course?2'">
             <div v-if="course.state == '未完成'">
@@ -62,7 +62,7 @@
               <i class="original">原价￥{{ course.price }}</i>
             </div> -->
         </div>
-        <div class="mask" @click="buy($event, course.id, course.priceDiscount)" v-if="$route.fullPath == '/course?1'">{{ course.payStatus ? '已购买' : '立即购买' }}</div>
+        <div class="mask" @click="buy($event, course.id)" v-if="$route.fullPath == '/course?1'">{{ course.payStatus ? '已订阅' : '立即订阅' }}</div>
         <div class="mask" v-else>马上学习</div>
       </div>
         <el-dialog
@@ -227,10 +227,10 @@
           })
         }
       },
-      buy(e, id, price) {
+      buy(e, id) {
         e.stopPropagation()
-        this.$confirm(`购买此课程<br><i style="color:#FA6400">将花费${price}元</i>，您还要继续吗？`, '', {
-          confirmButtonText: '继续',
+        this.$confirm(`确定要订阅该课程吗？`, '', {
+          confirmButtonText: '确认',
           cancelButtonText: '取消',
           dangerouslyUseHTMLString: true,
           type: 'warning'
@@ -243,7 +243,7 @@
             if(res.flag == 100) {
               this.$message({
                 type: 'success',
-                message: '购买成功!'
+                message: '订阅成功!'
               });
             }else {
               this.$message.error(res.flagString);

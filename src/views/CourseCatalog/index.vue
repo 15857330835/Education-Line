@@ -4,8 +4,7 @@
           <div class="title">
               <h2>{{ courseInfo.title }}</h2>
               <el-tag effect="dark" size="mini">{{ courseInfo.label }}</el-tag>
-              <i>奥点教育</i>
-              <el-button type="info" v-if="own">已报名</el-button>
+              <el-button type="info" v-if="own">已订阅</el-button>
           </div>
           <div class="details">
               <p><i>最近在学  2003人</i><i>累计订阅 218215人</i><i>好评度100%</i><i>8课时</i><i>学习周期{{ courseInfo.period }}天</i></p>
@@ -246,10 +245,6 @@
 
             span {
               margin: 3.5px 13px;
-            }
-
-            i {
-              color: #1890FF;
             }
             
             .el-button {

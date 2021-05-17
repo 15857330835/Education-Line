@@ -1,0 +1,44 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "980890",
+      "name": "结束",
+      "font_class": "weibiaoti517",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "17833678",
+      "name": "保存",
+      "font_class": "baocun",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "17833699",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e62b",
+      "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "19653499",
+      "name": "开始",
+      "font_class": "kaishi",
+      "unicode": "e60e",
+      "unicode_decimal": 58894
+    },
+    {
+      "icon_id": "21151020",
+      "name": "暂停",
+      "font_class": "zantingtingzhi",
+      "unicode": "e65a",
+      "unicode_decimal": 58970
+    }
+  ]
+}
