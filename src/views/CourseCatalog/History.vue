@@ -82,7 +82,8 @@
         ...mapMutations([
               'CHANGE_URL',
               'CHANGE_PROJECTID',
-              'CHANGE_EXAMID'
+              'CHANGE_EXAMID',
+              'CHANGE_RECORD'
         ]),
         assess() {
           const data = {
@@ -93,6 +94,7 @@
           }
           addExam(data).then(res => {
             if(res.flag == 100) {
+              this.CHANGE_RECORD(true)
               this.CHANGE_PROJECTID(res.data.projectId)
               this.CHANGE_EXAMID(res.data.id)
               this.CHANGE_URL(res.data.project.pageUrl)

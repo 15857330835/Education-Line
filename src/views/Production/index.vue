@@ -58,6 +58,12 @@
             endVideoTeacher(data).then(res => {
               if(res.flag !== 100) {
                 this.$message.error(res.flagString);
+              }else {
+                const data = {
+                  id: this.coursewareID,
+                  type: this.videoType
+                }
+                document.getElementById('iframeWindow').contentWindow.postMessage(data,'*')
               }
             })
           }
@@ -81,16 +87,18 @@
               if(res.flag !== 100) {
                 this.$message.error(res.flagString);
               }else {
+                const data = {
+                  id: this.coursewareID,
+                  examId: this.examId
+                }
+                document.getElementById('iframeWindow').contentWindow.postMessage(data,'*')
                 const data2 = {
                   token: this.user.Token,
                   examId: this.examId,
                 }
                 grade(data2).then(res => {
-                  if(res.flag == 100) {
-                    this.$router.push('history')
-                  }else {
-                    this.$router.push('history')
-                    this.$message.error(res.flagString);
+                  if(res.flag !== 100) {
+                    this.$message.error(res.flagString)
                   }
                 })
               }
@@ -115,6 +123,8 @@
           }
           if(this.identity == 'human') data.examId = this.examId
           document.getElementById('iframeWindow').contentWindow.postMessage(data,'*')
+        }else if(e.data == '提交1') {
+          this.$router.push('history')
         }
       },	false)
       const data = {
