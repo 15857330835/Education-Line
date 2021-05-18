@@ -16,7 +16,7 @@
               <el-radio v-model="radio" :label="scope.row.id"></el-radio>
             </template>
           </el-table-column>
-          <el-table-column align="center" width="100px" prop="id" label="ID"></el-table-column>
+          <el-table-column align="center" width="100px" prop="orderId" label="ID"></el-table-column>
           <el-table-column align="center" prop="title" label="标题"></el-table-column>
           <el-table-column align="center" label="开始时间">
             <template slot-scope="scope">
@@ -25,7 +25,7 @@
           </el-table-column>
           <el-table-column align="center" label="结束时间">
             <template slot-scope="scope">
-              <span>{{ formatDate(scope.row.endTime) }}</span>
+              <span>{{ scope.row.endTime ? formatDate(scope.row.endTime) : '-' }}</span>
             </template>
           </el-table-column>
           <el-table-column align="center" width="100px" label="状态">
@@ -40,7 +40,7 @@
           </el-table-column>
           <el-table-column align="center" width="200px" label="操作">
             <template slot-scope="scope">
-              <el-button type="text" size="mini" @click="play(scope.row.urlAddr)">成果</el-button>
+              <el-button type="text" size="mini" @click="play(scope.row.urlAddr)" v-if="scope.row.urlAddr">成果</el-button>
               <el-button type="text" size="mini" @click="del(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>

@@ -87,7 +87,8 @@
         </el-table-column>
         <el-table-column align="center" width="200px" label="操作">
           <template slot-scope="scope">
-            <el-button type="text" size="mini" @click="play(scope.row.urlAddr)" :disabled='scope.row.urlAddr ? false : true'>播放</el-button>
+            <el-button type="text" size="mini" @click="play(scope.row.urlAddr)" v-if="scope.row.urlAddr">播放</el-button>
+            <el-button type="text" size="mini" @click="make(scope.row.id, scope.row.subjectId)" v-else>制作</el-button>
             <el-button type="text" size="mini" @click="modify(scope.row.id, scope.row.ncesId, scope.row.subjectId)" :disabled='scope.row.ncesId ? false : true'>修改</el-button>
             <el-button type="text" size="mini" @click="play(scope.row.urlVideo)" v-if="scope.row.urlVideo">成果</el-button>
             <el-button type="text" size="mini" @click="line(scope.row.id, scope.row.status)" :disabled='scope.row.finishStatus ? false : true'>{{ scope.row.status ? '下线' : '上线' }}</el-button>
@@ -149,7 +150,7 @@
 
 <script>
   import { mapState, mapMutations } from 'vuex'
-  import { getCoursewareList, addCourseware, delCourseware, editNces, updateCoursewareStatus } from '@/api/teachercourse'
+  import { getCoursewareList, addCourseware, delCourseware, editNces, updateCoursewareStatus, editCourseware } from '@/api/teachercourse'
   export default {
     data() {
       return {
@@ -246,6 +247,24 @@
             ieUseH5:true,//boolean ie下是否使用H5（支持win10下ie（ie11）和edge） 默认false
             isloadcount: 1//网络波动卡顿loading图标显示(默认1s后) 
         });
+      },
+      make(coursewareId, subjectId) {
+        const data = {
+          token: this.user.Token,
+          coursewareId,
+          subjectId
+        }
+        editCourseware(data).then(res => {
+          if(res.flag == 100) {
+            this.CHANGE_COURSEWAREID(coursewareId)
+            this.CHANGE_PROJECTID(res.data.projectId)
+            this.CHANGE_RECORD(true)
+            this.CHANGE_URL(res.data.project.pageUrl)
+            this.$router.push('production')
+          }else {
+            this.$message.error(res.flagString);
+          }
+        })
       },
       modify(id, ncesId, subjectId) {
         const data = {

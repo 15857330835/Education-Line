@@ -22,7 +22,7 @@
         </div>
         <div class="directory" v-else-if="activeIndex == 2">
           <div class="block" v-for="(item, index) in coursewares" :key="index">
-            <div class="img"></div>
+            <!-- <div class="img"></div> -->
             <div class="introduce">
               <h3>{{ index + 1 > 9 ? (index + 1 + ' ' + item.title) : ('0' + (index + 1 + ' ' + item.title))}}
                 <i :class="item.state == '已通过' ? 'through' : item.state == '未通过' ? 'nothrough' : 'nofinish'" v-if="own">{{ item.status }}</i>
@@ -316,8 +316,8 @@
           }
 
           .introduce {
-            display: inline-block;
-            width: 80%;
+            // display: inline-block;
+            // width: 80%;
             height: 100px;
             vertical-align: top;
             text-align: left;

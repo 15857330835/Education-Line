@@ -100,12 +100,14 @@
       }
     },
     methods: {
-
+      updateHandler(e) {
+        e.returnValue=("您是否确认离开此页面-您输入的数据可能不会被保存");
+      },
     },
     mounted() {
       window.addEventListener( "message",(e)=>{
         if(e.data == '提交') {
-          // this.$router.push({path: 'courseware', query: {data: this.subjectId}})
+          this.$router.push({path: 'courseware', query: {data: this.subjectId}})
         }else if(e.data == 'ID') {
           const data = {
             id: this.coursewareID,
@@ -135,6 +137,10 @@
           }
         })
       }
+      window.addEventListener('beforeunload', this.updateHandler)
+    },
+    destroyed() {
+      window.removeEventListener('beforeunload', this.updateHandler)
     }
   }
 </script>

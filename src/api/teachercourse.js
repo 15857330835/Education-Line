@@ -26,6 +26,11 @@ export const addCourseware = (payload = {}) => {
     return axios.post(url + '/addCourseware', payload)
 }
 
+//修改课件
+export const editCourseware = (payload = {}) => {
+    return axios.post(url + '/editCourseware', payload)
+}
+
 //删除课件
 export const delCourseware = (payload = {}) => {
     return axios.post(url + '/delCourseware', payload)
