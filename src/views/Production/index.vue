@@ -2,7 +2,7 @@
   <div id="production">
       <iframe id="iframeWindow" :src="url"></iframe>
       <div id="mask" v-if="record"></div>
-      <RecordingDevice :parameters='parameters' v-if="record"></RecordingDevice>
+      <RecordingDevice :parameters='parameters'></RecordingDevice>
   </div>
 </template>
 

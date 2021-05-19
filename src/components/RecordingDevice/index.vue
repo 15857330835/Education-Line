@@ -4,17 +4,23 @@
             {{ uploading ? progress + '%' : this.timing }}
         </div>
         <div class="controller" v-if="identity == 'manager'">
-            <el-tooltip :content="action == '停止' ? '开始' : action == '暂停' ? '继续' : '暂停'" placement="top" effect="light">
+            <el-tooltip :content="action == '停止' ? '开始' : action == '暂停' ? '继续' : '暂停'" placement="top" effect="light" v-if="record">
                 <el-button icon="iconfont icon-kaishi" circle @click="start" :disabled='isstart'></el-button>
             </el-tooltip>
-            <el-tooltip content="停止" placement="top" effect="light">
+            <el-tooltip content="停止" placement="top" effect="light" v-if="record">
                 <el-button icon="iconfont icon-weibiaoti517" circle @click="end" :disabled='isend'></el-button>
             </el-tooltip>
-            <el-tooltip content="上传" placement="top" effect="light">
+            <el-tooltip content="上传" placement="top" effect="light" v-if="record">
                 <el-button icon="iconfont icon-baocun" circle @click="upload" :disabled='isupload'></el-button>
             </el-tooltip>
-            <el-tooltip content="编辑" placement="top" effect="light">
+            <el-tooltip content="编辑" placement="top" effect="light" v-if="record">
                 <el-button icon="iconfont icon-bianji" circle @click="edit" :disabled='isedit'></el-button>
+            </el-tooltip>
+            <el-tooltip content="导出" placement="top" effect="light" v-if="!record">
+                <el-button icon="iconfont icon-daochu" circle @click="output"></el-button>
+            </el-tooltip>
+            <el-tooltip content="返回" placement="top" effect="light">
+                <el-button icon="iconfont icon-fanhui" circle @click="back"></el-button>
             </el-tooltip>
         </div>
         <div class="controller" v-else>
@@ -52,7 +58,7 @@
         y: 0,
         time: 0,
         timer: null,
-        record: null,
+        record1: null,
         stream: null,
         localstream: null,
         mediastream: null,
@@ -76,7 +82,8 @@
           'identity',
           'subjectId',
           'coursewareID',
-          'examId'
+          'examId',
+          'record'
         ]),
         timing() {
             var min = this.time/60 > 9 ? parseInt(this.time/60) : '0' + parseInt(this.time/60)
@@ -187,19 +194,19 @@
                                 var options = {
                                     mimeType : 'video/webm;codecs=h264'
                                 }
-                                that.record = new MediaRecorder(stream, options)
+                                that.record1 = new MediaRecorder(stream, options)
                                 that.time = 0
                                 setTimeout(function(){
-                                    that.record.start()
+                                    that.record1.start()
                                     that.CHANGE_RECORDSTATUS(1)
                                     that.isstart = false
                                     that.isend = false
                                     that.timer = setInterval(function() { that.time++ },1000)
                                 },2000)
                                 stream.getVideoTracks()[0].onended = () => {
-                                    that.record.stop()
+                                    that.record1.stop()
                                 }
-                                that.record.addEventListener("dataavailable",event => {
+                                that.record1.addEventListener("dataavailable",event => {
                                     getSeekableBlob(event.data,function(seekableBlob){
                                         let videoUrl = URL.createObjectURL(seekableBlob, {type: 'video/mp4'})
                                         that.file = new File([seekableBlob], `video${new Date().getTime()}.mp4`, {
@@ -223,7 +230,7 @@
                     this.isstart = true
                     setTimeout(function(){
                         that.timer = setInterval(function() { that.time++ },1000)
-                        that.record.resume()
+                        that.record1.resume()
                         $('#mask').css({'display': 'none'})
                         that.isstart = false
                     },2000)
@@ -233,7 +240,7 @@
                 clearInterval(this.timer)
                 this.action = '暂停'
                 $('#mask').css({'display': 'block'})
-                this.record.pause()
+                this.record1.pause()
             }
         },
         end() {
@@ -266,6 +273,7 @@
                     this.CHANGE_VIDEOTYPE(1)
                     this.CHANGE_RECORD(false)
                     $('#mask').css({'display': 'none'})
+                    $('.video').css({'display': 'none'})
                     this.CHANGE_URL(res.data.pageUrl)
                 }else {
                     this.$message.error(res.flagString);
@@ -286,6 +294,16 @@
             this.isupload = true
             this.time = 0
             $('.video').css({'display': 'none'})
+        },
+        output() {
+            const data = {
+                id: this.coursewareID,
+                type: 1
+            }
+            document.getElementById('iframeWindow').contentWindow.postMessage(data,'*')
+        },
+        back() {
+            this.$router.push({path: 'courseware', query: {data: this.subjectId}})
         },
         start1() {
             const that = this
@@ -348,7 +366,7 @@
         left: unset !important;
 
         &:hover {
-            right: 180px;
+            right: 220px;
             transition: 0.5s;
         }
     }

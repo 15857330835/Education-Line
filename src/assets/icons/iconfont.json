@@ -13,6 +13,13 @@
       "unicode_decimal": 58900
     },
     {
+      "icon_id": "13135318",
+      "name": "导出",
+      "font_class": "daochu",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
       "icon_id": "17833678",
       "name": "保存",
       "font_class": "baocun",
@@ -25,6 +32,13 @@
       "font_class": "bianji",
       "unicode": "e62b",
       "unicode_decimal": 58923
+    },
+    {
+      "icon_id": "18386855",
+      "name": "返回",
+      "font_class": "fanhui",
+      "unicode": "e6d5",
+      "unicode_decimal": 59093
     },
     {
       "icon_id": "19653499",

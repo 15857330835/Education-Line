@@ -25,7 +25,7 @@
             <!-- <div class="img"></div> -->
             <div class="introduce">
               <h3>{{ index + 1 > 9 ? (index + 1 + ' ' + item.title) : ('0' + (index + 1 + ' ' + item.title))}}
-                <i :class="item.state == '已通过' ? 'through' : item.state == '未通过' ? 'nothrough' : 'nofinish'" v-if="own">{{ item.status }}</i>
+                <i :class="item.score >= 60 ? 'through' : item.submitStatus ? 'nothrough' : 'nofinish'" v-if="own">{{ item.score >= 60 ? '考核通过' : item.submitStatus ? '未通过考核' : '未提交考核' }}</i>
               </h3>
               <p>{{ item.remarks }}</p>
             </div>
