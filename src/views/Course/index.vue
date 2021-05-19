@@ -15,6 +15,7 @@
             multiple
             filterable 
             collapse-tags
+            allow-create
             size="mini"
             style="margin-left: 20px;"
             placeholder="请选择">
