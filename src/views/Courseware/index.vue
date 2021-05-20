@@ -60,7 +60,7 @@
         <el-table-column align="center" width="150px" prop="title" label="标题"></el-table-column>
         <el-table-column align="center" width="" label="简介">
           <template slot-scope="scope">
-            <el-tooltip class="item" popper-class="prompt" effect="dark" :content="scope.row.remarks" placement="top">
+            <el-tooltip class="item" popper-class="prompt" effect="dark" :content="scope.row.remarks" placement="bottom">
               <p class="intro">{{ scope.row.remarks }}</p>
             </el-tooltip>
           </template>

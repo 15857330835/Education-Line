@@ -52,7 +52,7 @@
           <el-button size="mini" icon="el-icon-check" class="choice" circle @click="choose($event)"></el-button>
           <el-tag effect="dark" size="mini">{{ course.label }}</el-tag>
           <p class="title">{{ course.title }}</p>
-          <el-tooltip class="item" popper-class="prompt" effect="dark" content="Top Left 提示文字" placement="top">
+          <el-tooltip class="item" popper-class="prompt" effect="dark" :content="course.remarks" placement="bottom">
             <p class="intro">{{ course.remarks }}</p>
           </el-tooltip>
         </div>

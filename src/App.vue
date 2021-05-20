@@ -78,6 +78,7 @@
 
 .prompt {
   background: rgba($color: #000000, $alpha: 0.6) !important;
+  max-width: 300px;
 }
 
 .el-menu--popup {

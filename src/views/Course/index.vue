@@ -36,7 +36,7 @@
           <div class="tag" :class="course.state == '通过' ? 'through' : course.state == '未通过' ? 'nothrough' : 'nofinish'" v-if="$route.fullPath == '/course?2'"></div>
           <el-tag effect="dark" size="mini">{{ course.label }}</el-tag>
           <p class="title">{{ course.title }}</p>
-          <el-tooltip class="item" popper-class="prompt" effect="dark" :content="course.remarks" placement="top">
+          <el-tooltip class="item" popper-class="prompt" effect="dark" :content="course.remarks" placement="bottom">
             <p class="intro">{{ course.remarks }}</p>
           </el-tooltip>
         </div>
