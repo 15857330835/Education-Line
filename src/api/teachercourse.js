@@ -100,3 +100,8 @@ export const saveRstUrl = (payload = {}) => {
 export const getExamList = (payload = {}) => {
     return axios.post(url + '/getExamList', payload)
 }
+
+//保存教学工程视频地址
+export const saveProjectUrl = (payload = {}) => {
+    return axios.post(url + '/saveProjectUrl', payload)
+}

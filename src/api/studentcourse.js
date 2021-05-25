@@ -57,7 +57,7 @@ export const deleteExam = (payload = {}) => {
 }
 
 //保存考核视频
-export const saveVideoUrlStudent = (payload = {}) => {
+export const saveVideoUrl = (payload = {}) => {
     return axios.post(url + '/saveVideoUrl', payload)
 }
 

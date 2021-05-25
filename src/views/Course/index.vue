@@ -246,6 +246,7 @@
                 type: 'success',
                 message: '订阅成功!'
               });
+              this.reset()
             }else {
               this.$message.error(res.flagString);
             }

@@ -11,8 +11,8 @@
   import { mapState } from 'vuex'
   import { getAccessStudent } from '@/api/student'
   import { getAccessTeacher } from '@/api/teacher'
-  import { startVideoTeacher, endVideoTeacher } from '@/api/teachercourse'
-  import { startVideoStudent, endVideoStudent, grade } from '@/api/studentcourse'
+  import { startVideoTeacher, endVideoTeacher, saveProjectUrl } from '@/api/teachercourse'
+  import { startVideoStudent, endVideoStudent, grade, saveVideoUrl } from '@/api/studentcourse'
   export default {
     components: {
         RecordingDevice
@@ -99,6 +99,13 @@
                 grade(data2).then(res => {
                   if(res.flag !== 100) {
                     this.$message.error(res.flagString)
+                    this.$router.push('history')
+                  }else {
+                    this.$message({
+                      type: 'success',
+                      message: `视频生成中,请等待一定时间后刷新页面...`
+                    });
+                    this.$router.push('history')
                   }
                 })
               }
@@ -123,8 +130,30 @@
           }
           if(this.identity == 'human') data.examId = this.examId
           document.getElementById('iframeWindow').contentWindow.postMessage(data,'*')
-        }else if(e.data == '提交1') {
-          this.$router.push('history')
+        }else if(e.data.type == 'AQES'){
+          if(this.identity == 'manager') {
+            const data = {
+              token: this.user.Token,
+              coursewareID: this.coursewareID,
+              url: 'http://' + e.data.url
+            }
+            saveProjectUrl(data).then(res => {
+              if(res.flag !== 100) {
+                this.$message.error(res.flagString);
+              }
+            })
+          }else {
+            const data = {
+              token: this.user.Token,
+              examId: this.examId,
+              urlAddr: 'http://' + e.data.url
+            }
+            saveVideoUrl(data).then(res => {
+              if(res.flag !== 100) {
+                this.$message.error(res.flagString);
+              }
+            })
+          }
         }
       },	false)
       const data = {

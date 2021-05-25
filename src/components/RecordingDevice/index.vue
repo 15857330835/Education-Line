@@ -218,7 +218,8 @@
                             })
                             .catch(function() {
                                 localstream.getTracks()[0].stop()
-                                that.$message.error({message: '未找到可用的麦克风'})
+                                if(localstream.getTracks()[1]) localstream.getTracks()[1].stop()
+                                that.$message.error({message: '麦克风不可用或系统错误'})
                             })
                         })
                         .catch(function(err) {
@@ -250,6 +251,7 @@
             this.stream.getTracks()[1].stop()
             this.mediastream.getTracks()[0].stop()
             this.localstream.getTracks()[0].stop()
+            if(this.localstream.getTracks()[1]) this.localstream.getTracks()[1].stop()
             clearInterval(this.timer)
             $('#mask').css({'display': 'block'})
             this.CHANGE_RECORDSTATUS(2)
