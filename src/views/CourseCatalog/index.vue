@@ -20,8 +20,9 @@
           <label>简介：</label>
           <p>{{ courseInfo.remarks }}</p>
         </div>
-        <div class="directory" v-else-if="activeIndex == 2">
-          <div class="block" v-for="(item, index) in coursewares" :key="index">
+        <div class="directory" v-else-if="activeIndex == 2" ref="wrapper">
+          <ul>
+          <li class="block" v-for="(item, index) in coursewares" :key="index">
             <!-- <div class="img"></div> -->
             <div class="introduce">
               <h3>{{ index + 1 > 9 ? (index + 1 + ' ' + item.title) : ('0' + (index + 1 + ' ' + item.title))}}
@@ -42,7 +43,8 @@
                 <el-button plain v-if="own" @click="history(item.id, item.projectId)">历史记录</el-button>
               </div>
             </div>
-          </div>
+          </li>
+          </ul>
           <el-dialog
             :visible.sync="dialogVisible"
             destroy-on-close
@@ -86,6 +88,7 @@
 </template>
 
 <script>
+  import Bscroll from 'better-scroll'
   import { mapState, mapMutations } from 'vuex'
   import { getSubjectInfo, getCoursewareList, addExam } from '@/api/studentcourse'
   export default {
@@ -95,6 +98,8 @@
       return {
         courseInfo: '',
         coursewares: [],
+        page: 1,
+        has: true,
         radio: 3,
         value: 3.7,
         dialogVisible: false,
@@ -132,6 +137,11 @@
       ]),
       handleSelect(key) {
           this.CHANGE_ACTIVEINDEX(key)
+          if(key == 2) {
+            this.page = 1
+            this.has = true
+            this.$nextTick(() => this.loadData())
+          } 
       },
       play(url) {
         this.dialogVisible = true
@@ -191,16 +201,40 @@
         var m = Math.floor(time%3600/60) > 9 ? Math.floor(time%3600/60) : '0' + Math.floor(time%3600/60)
         var s = Math.floor(time%60) > 9 ? Math.floor(time%60) : '0' + Math.floor(time%60)
         return h + ':' + m + ':' + s
+      },
+      loadData() {
+        if(!this.has) return
+        const data = {
+          token: this.user.Token,
+          subjectId: this.$route.query.id,
+          page: this.page
+        }
+        getCoursewareList(data).then((res) => {
+          this.coursewares = res.data.concat(this.coursewares)
+          this.page++
+          if(res.data.length == 0) this.has = false
+          this.$nextTick(() => {
+            if (!this.scroll) {
+              this.scroll = new Bscroll(this.$refs.wrapper, {
+                mouseWheel: true
+              })
+              this.scroll.on('scrollEnd', (pos) => {
+                // 下拉动作
+                if (pos.y < -50) {
+                  this.loadData()
+                }
+              })
+            } else {
+              this.scroll.refresh()
+            }
+          })
+        })
       }
     },
     mounted() {
       const data = {
         token: this.user.Token,
         id: this.$route.query.id
-      }
-      const data1 = {
-        token: this.user.Token,
-        subjectId: this.$route.query.id
       }
       getSubjectInfo(data).then(res => {
         if(res.flag == 100) {
@@ -210,13 +244,7 @@
           this.$message.error(res.flagString);
         }
       })
-      getCoursewareList(data1).then(res => {
-        if(res.flag == 100) {
-          this.coursewares = res.data
-        }else {
-          this.$message.error(res.flagString);
-        }
-      })
+      this.loadData()
     }
   }
 </script>
@@ -280,11 +308,6 @@
       flex: 1;
       width: 1332px;
       margin: 30px auto;
-      overflow: auto;
-
-      &::-webkit-scrollbar {
-        display: none;
-      }
 
       .overview {
         text-align: left;
@@ -302,6 +325,8 @@
       }
 
       .directory {
+        height: 75%;
+        overflow: hidden;
 
         .block {
           width: 90%;
