@@ -27,6 +27,7 @@
       <el-table
         :data="tableDatas"
         style="width: 100%"
+        height="100%"
         :header-cell-style="{'font-weight': 'bold', 'background-color': '#F8F8F8'}"
         :default-sort = "{prop: 'date', order: 'descending'}"
         >
@@ -344,11 +345,6 @@
 #account {
     height: 95%;
     background: white;
-    overflow: auto;
-    
-    &::-webkit-scrollbar {
-      display: none;
-    }
 
     .search {
       margin-bottom: 30px;

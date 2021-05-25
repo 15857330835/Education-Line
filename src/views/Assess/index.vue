@@ -34,6 +34,7 @@
         v-if="state == 'course'"
         :data="tableData"
         style="width: 100%"
+        height="100%"
         :header-cell-style="{'font-weight': 'bold', 'background-color': '#F8F8F8'}"
         :default-sort = "{prop: 'date', order: 'descending'}"
         >
@@ -55,6 +56,7 @@
         v-else
         :data="tableData"
         style="width: 100%"
+        height="100%"
         :header-cell-style="{'font-weight': 'bold', 'background-color': '#F8F8F8'}"
         :default-sort = "{prop: 'date', order: 'descending'}"
         >
@@ -329,7 +331,7 @@
     }
 
     .bottom {
-        height: 70px;
+        height: 40px;
     }
 }
 
