@@ -8,7 +8,7 @@
 
 <script>
   import { RecordingDevice } from '@/components'
-  import { mapState } from 'vuex'
+  import { mapState, mapMutations } from 'vuex'
   import { getAccessStudent } from '@/api/student'
   import { getAccessTeacher } from '@/api/teacher'
   import { startVideoTeacher, endVideoTeacher, saveProjectUrl } from '@/api/teachercourse'
@@ -115,6 +115,9 @@
       }
     },
     methods: {
+      ...mapMutations([
+            'CHANGE_GENERATEID'
+      ]),
       updateHandler(e) {
         e.returnValue=("您是否确认离开此页面-您输入的数据可能不会被保存");
       },
@@ -122,6 +125,7 @@
     mounted() {
       window.addEventListener( "message",(e)=>{
         if(e.data == '提交') {
+          this.CHANGE_GENERATEID(this.coursewareID)
           this.$router.push({path: 'courseware', query: {data: this.subjectId}})
         }else if(e.data == 'ID') {
           const data = {

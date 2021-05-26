@@ -21,7 +21,8 @@ export default new Vuex.Store({
     url: 'https://www.baidu.com', //工具地址
     record: true, //是否出现录制悬浮窗
     recordStatus: 0, //录制状态 0 默认 1 开始录制 2 结束录制
-    videoType: 2 //导出视频类型 1播放 2成果
+    videoType: 2, //导出视频类型 1播放 2成果
+    generateID: 0 //成果生成中的课件ID
   },
   mutations: {
     CHANGE_USER(state, date) {
@@ -72,6 +73,9 @@ export default new Vuex.Store({
     CHANGE_VIDEOTYPE(state, date) {
       state.videoType = date
     },
+    CHANGE_GENERATEID(state, date) {
+      state.generateID = date
+    },
   },
   actions: {
   },
@@ -80,7 +84,7 @@ export default new Vuex.Store({
   plugins: [
     createPersistedState({
         storage: window.sessionStorage,
-        paths: ["user", "identity", "tabKey", 'own', 'modify', 'activeIndex', 'subjectId', 'coursewareID', 'projectId', 'record', 'parentProjectId', 'toolId', 'examId', 'url', 'videoType']
+        paths: ["user", "identity", "tabKey", 'own', 'modify', 'activeIndex', 'subjectId', 'coursewareID', 'projectId', 'record', 'parentProjectId', 'toolId', 'examId', 'url', 'videoType', 'generateID']
     })
   ]
 })
