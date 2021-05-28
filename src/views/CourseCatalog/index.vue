@@ -140,6 +140,7 @@
           if(key == 2) {
             this.page = 1
             this.has = true
+            this.coursewares = []
             this.$nextTick(() => this.loadData())
           } 
       },

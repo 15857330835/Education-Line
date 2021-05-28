@@ -168,7 +168,7 @@
             const that = this
             if($('.icon-kaishi').length) {
                 if(this.new) {
-                    navigator.mediaDevices.getDisplayMedia({ video: true, audio: true })
+                    navigator.mediaDevices.getDisplayMedia({ video: true, audio: {autoGainControl: false, echoCancellation: false, noiseSuppression: false} })
                         .then(function(localstream) {
                             navigator.mediaDevices.getUserMedia({ audio: true }).then(mediastream => {
                                 let audioContext = new AudioContext();//创建音频上下文
